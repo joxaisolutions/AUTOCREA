@@ -1,0 +1,822 @@
+🚀 PROMPT COMPLETO PARA REPLIT — AUTOCREA V2.0 CON JOXCODER
+📋 TABLA DE CONTENIDOS
+
+Contexto del Proyecto
+Arquitectura General
+Stack Tecnológico
+Fase 1: Setup Inicial
+Fase 2: Integración JoxCoder
+Fase 3: Frontend Mejorado
+Fase 4: Backend Robusto
+Fase 5: Sistema de Autenticación
+Fase 6: Manejo de Errores
+Fase 7: Testing & Deployment
+Checklist Final
+
+
+🎯 CONTEXTO DEL PROYECTO {#contexto}
+Objetivo Principal
+Crear AUTOCREA V2.0: Un agente autónomo de desarrollo full-stack que utiliza JoxCoder (modelo LLM propio entrenado) como motor principal de generación de código, con opción para que usuarios agreguen APIs externas (OpenAI, Anthropic, etc.) de forma opcional.
+Características Clave
+
+✅ Desarrollo autónomo: De idea a aplicación completa sin intervención
+✅ Multi-rol: Arquitecto, Developer, DevOps, Tester, Security Auditor
+✅ JoxCoder integrado: Modelo propio sin dependencias externas obligatorias
+✅ APIs opcionales: Usuarios pueden conectar GPT-4, Claude, etc. si lo desean
+✅ Free trial: 100 tokens de prueba gratuita al registrarse
+✅ Sistema de pago: Stripe para planes de suscripción
+✅ Preview en tiempo real: Ver la app generándose paso a paso
+✅ Gestión Git: Commits automáticos, branches, deploy directo
+
+Diferenciadores vs Competencia
+CaracterísticaReplitCursorBoltAUTOCREAModelo propio❌❌❌✅ JoxCoder100% autónomo⚠️ Parcial❌⚠️ Parcial✅Free trial generoso❌❌⚠️ Limitado✅ 100 tokensMulti-rol (DevOps, Security)❌❌❌✅Preview en tiempo real✅❌✅✅
+
+🏗️ ARQUITECTURA GENERAL {#arquitectura}
+┌─────────────────────────────────────────────────────────────┐
+│                      AUTOCREA V2.0                          │
+│                   (Next.js 14 Frontend)                     │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+         ┌───────────┼───────────┬─────────────┐
+         │           │           │             │
+         ▼           ▼           ▼             ▼
+    ┌────────┐  ┌────────┐  ┌─────────┐  ┌────────┐
+    │FastAPI │  │ Convex │  │  Auth   │  │ Stripe │
+    │Backend │  │Database│  │(Clerk)  │  │Payments│
+    └────┬───┘  └────────┘  └─────────┘  └────────┘
+         │
+         ▼
+    ┌─────────────────────────────────────────┐
+    │         JOXCODER (Modelo Propio)        │
+    │   Hugging Face API / Self-Hosted       │
+    │   + APIs Opcionales (GPT-4, Claude)    │
+    └─────────────────────────────────────────┘
+```
+
+### Flujo de Generación de Código
+```
+Usuario escribe: "Crear e-commerce con pagos Stripe"
+         ↓
+   AUTOCREA Orchestrator
+         ↓
+    ┌────┴────┬────────┬─────────┬──────────┐
+    ▼         ▼        ▼         ▼          ▼
+Architect  Backend  Frontend  DevOps   Security
+  (Plan)   (APIs)    (UI)    (Deploy) (Audit)
+    │         │        │         │          │
+    └─────────┴────────┴─────────┴──────────┘
+                     ↓
+         Código generado + Tests
+                     ↓
+              Preview en vivo
+                     ↓
+         Git commit + Deploy (opcional)
+
+💻 STACK TECNOLÓGICO {#stack}
+Frontend
+
+Framework: Next.js 14 (App Router)
+Lenguaje: TypeScript
+Estilos: Tailwind CSS + shadcn/ui
+Animaciones: Framer Motion
+State: React Query + Zustand
+3D/Effects: Three.js (opcional para hero)
+
+Backend
+
+API: FastAPI (Python 3.11+)
+Database: Convex (real-time, serverless)
+Auth: Clerk (incluye JWT, OAuth, MFA)
+Pagos: Stripe (suscripciones, webhooks)
+Cache: Redis (para rate limiting)
+Storage: AWS S3 o Cloudflare R2 (archivos generados)
+
+AI/ML
+
+Modelo Principal: JoxCoder (Hugging Face Inference API)
+Embeddings: sentence-transformers/all-MiniLM-L6-v2
+Vector DB: ChromaDB (para RAG/memoria)
+APIs Opcionales: OpenAI SDK, Anthropic SDK
+
+DevOps
+
+CI/CD: GitHub Actions
+Deploy Frontend: Vercel
+Deploy Backend: Railway / Render
+Monitoring: Sentry + Axiom
+Logs: Pino.js
+
+
+🔧 FASE 1: SETUP INICIAL {#fase-1}
+1.1 Estructura del Proyecto
+bashautocrea-v2/
+├── frontend/                 # Next.js 14
+│   ├── app/
+│   │   ├── (auth)/
+│   │   │   ├── login/
+│   │   │   └── register/
+│   │   ├── (dashboard)/
+│   │   │   ├── chat/
+│   │   │   ├── projects/
+│   │   │   └── settings/
+│   │   ├── api/             # Route handlers
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── ui/              # shadcn components
+│   │   ├── chat/
+│   │   ├── code-editor/
+│   │   └── preview/
+│   ├── lib/
+│   │   ├── convex.ts
+│   │   ├── stripe.ts
+│   │   └── utils.ts
+│   ├── hooks/
+│   ├── types/
+│   └── public/
+├── backend/                  # FastAPI
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── routes/
+│   │   │   │   ├── generate.py
+│   │   │   │   ├── projects.py
+│   │   │   │   └── webhooks.py
+│   │   │   └── deps.py
+│   │   ├── core/
+│   │   │   ├── config.py
+│   │   │   ├── security.py
+│   │   │   └── joxcoder.py
+│   │   ├── models/
+│   │   ├── services/
+│   │   │   ├── code_generator.py
+│   │   │   ├── git_manager.py
+│   │   │   └── deployment.py
+│   │   └── main.py
+│   ├── tests/
+│   ├── requirements.txt
+│   └── Dockerfile
+├── convex/                   # Convex backend
+│   ├── schema.ts
+│   ├── projects.ts
+│   ├── tokens.ts
+│   ├── users.ts
+│   └── subscriptions.ts
+├── docs/
+│   ├── API.md
+│   ├── DEPLOYMENT.md
+│   └── TROUBLESHOOTING.md
+├── .github/
+│   └── workflows/
+│       ├── frontend.yml
+│       └── backend.yml
+├── docker-compose.yml
+├── .env.example
+└── README.md
+1.2 Variables de Entorno Críticas
+bash# .env.example
+
+# === FRONTEND ===
+NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_API_URL=http://localhost:8000
+
+# === BACKEND ===
+# JoxCoder (Modelo propio)
+JOXCODER_API_URL=https://api-inference.huggingface.co/models/tu-usuario/joxcoder-33b-v1
+JOXCODER_API_KEY=hf_...
+
+# APIs Opcionales (usuarios pueden agregar)
+OPENAI_API_KEY=sk-...  # Opcional
+ANTHROPIC_API_KEY=sk-ant-...  # Opcional
+
+# Database & Cache
+CONVEX_DEPLOY_KEY=prod:...
+REDIS_URL=redis://localhost:6379
+
+# Stripe
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_ID_BASIC=price_...
+STRIPE_PRICE_ID_PRO=price_...
+
+# Storage
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_S3_BUCKET=autocrea-projects
+
+# Monitoring
+SENTRY_DSN=https://...
+AXIOM_TOKEN=xaat-...
+
+# Security
+JWT_SECRET=your-super-secret-key-change-in-production
+ALLOWED_ORIGINS=http://localhost:3000,https://autocrea.joxai.com
+1.3 Instalación de Dependencias
+bash# Frontend
+cd frontend
+npm install next@14 react react-dom typescript
+npm install @clerk/nextjs convex stripe
+npm install @radix-ui/react-dialog @radix-ui/react-dropdown-menu
+npm install tailwindcss postcss autoprefixer
+npm install framer-motion lucide-react
+npm install react-query zustand
+npm install @monaco-editor/react  # Code editor
+npm install react-split-pane  # Split layout
+
+# Backend
+cd ../backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install fastapi uvicorn[standard]
+pip install huggingface-hub transformers
+pip install openai anthropic  # Opcionales
+pip install redis chromadb
+pip install stripe python-jose passlib
+pip install pydantic pydantic-settings
+pip install pytest pytest-asyncio httpx
+1.4 Configuración de Convex
+typescript// convex/schema.ts
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
+
+export default defineSchema({
+  users: defineTable({
+    clerkId: v.string(),
+    email: v.string(),
+    name: v.string(),
+    avatarUrl: v.optional(v.string()),
+    tokenBalance: v.number(),
+    subscription: v.optional(v.id("subscriptions")),
+    createdAt: v.number(),
+  }).index("by_clerk_id", ["clerkId"]),
+
+  projects: defineTable({
+    userId: v.id("users"),
+    name: v.string(),
+    description: v.string(),
+    prompt: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("generating"),
+      v.literal("completed"),
+      v.literal("failed")
+    ),
+    code: v.optional(v.object({
+      frontend: v.string(),
+      backend: v.string(),
+      config: v.string(),
+    })),
+    githubUrl: v.optional(v.string()),
+    previewUrl: v.optional(v.string()),
+    tokensUsed: v.number(),
+    createdAt: v.number(),
+    completedAt: v.optional(v.number()),
+  }).index("by_user", ["userId"]),
+
+  subscriptions: defineTable({
+    userId: v.id("users"),
+    stripeCustomerId: v.string(),
+    stripeSubscriptionId: v.string(),
+    plan: v.union(v.literal("free"), v.literal("basic"), v.literal("pro")),
+    status: v.union(
+      v.literal("active"),
+      v.literal("canceled"),
+      v.literal("past_due")
+    ),
+    currentPeriodEnd: v.number(),
+  }).index("by_user", ["userId"]),
+
+  tokens: defineTable({
+    userId: v.id("users"),
+    amount: v.number(),
+    type: v.union(
+      v.literal("trial"),
+      v.literal("purchase"),
+      v.literal("subscription")
+    ),
+    description: v.string(),
+    createdAt: v.number(),
+  }).index("by_user", ["userId"]),
+
+  generations: defineTable({
+    projectId: v.id("projects"),
+    step: v.string(),  // "architecture", "backend", "frontend", etc.
+    output: v.string(),
+    tokensUsed: v.number(),
+    model: v.string(),  // "joxcoder", "gpt-4", "claude-3"
+    createdAt: v.number(),
+  }).index("by_project", ["projectId"]),
+});
+
+🤖 FASE 2: INTEGRACIÓN JOXCODER {#fase-2}
+2.1 Cliente JoxCoder (Backend)
+python# backend/app/core/joxcoder.py
+from typing import Optional, Literal
+import httpx
+import os
+from pydantic import BaseModel
+
+class JoxCoderClient:
+    """Cliente para interactuar con JoxCoder (Hugging Face Inference API)"""
+    
+    def __init__(self):
+        self.api_url = os.getenv("JOXCODER_API_URL")
+        self.api_key = os.getenv("JOXCODER_API_KEY")
+        self.headers = {"Authorization": f"Bearer {self.api_key}"}
+    
+    async def generate(
+        self,
+        prompt: str,
+        role: Literal["architect", "backend", "frontend", "devops", "security"],
+        max_tokens: int = 2048,
+        temperature: float = 0.2,
+    ) -> str:
+        """
+        Genera código usando JoxCoder con contexto de rol específico
+        
+        Args:
+            prompt: Descripción de lo que se necesita generar
+            role: Rol del agente (arquitecto, developer, etc.)
+            max_tokens: Longitud máxima de la respuesta
+            temperature: Creatividad (0.0-1.0, recomendado 0.2 para código)
+        """
+        
+        # System prompts especializados por rol
+        system_prompts = {
+            "architect": """You are an expert software architect. 
+                           Analyze requirements and create detailed technical specifications.
+                           Output: JSON with architecture decisions, tech stack, file structure.""",
+            
+            "backend": """You are a senior backend developer expert in FastAPI, Node.js, Django.
+                         Generate production-ready backend code with:
+                         - REST/GraphQL APIs
+                         - Database models
+                         - Authentication & authorization
+                         - Error handling
+                         - Tests""",
+            
+            "frontend": """You are a React/Next.js expert. Generate modern, responsive UIs with:
+                          - TypeScript
+                          - Tailwind CSS
+                          - Component composition
+                          - State management
+                          - Accessibility""",
+            
+            "devops": """You are a DevOps engineer. Generate:
+                        - Dockerfiles
+                        - docker-compose.yml
+                        - Kubernetes manifests
+                        - CI/CD pipelines (GitHub Actions)
+                        - Environment configs""",
+            
+            "security": """You are a security expert. Perform code audits for:
+                          - SQL injection
+                          - XSS vulnerabilities
+                          - Authentication issues
+                          - Secrets in code
+                          Provide fixes for all issues found."""
+        }
+        
+        full_prompt = f"{system_prompts[role]}\n\nUser request:\n{prompt}"
+        
+        payload = {
+            "inputs": full_prompt,
+            "parameters": {
+                "max_new_tokens": max_tokens,
+                "temperature": temperature,
+                "top_p": 0.95,
+                "do_sample": True,
+                "return_full_text": False
+            }
+        }
+        
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(
+                self.api_url,
+                headers=self.headers,
+                json=payload
+            )
+            response.raise_for_status()
+            
+            result = response.json()
+            generated_text = result[0]["generated_text"]
+            
+            return generated_text
+    
+    async def generate_with_fallback(
+        self,
+        prompt: str,
+        role: str,
+        fallback_model: Optional[Literal["openai", "anthropic"]] = None
+    ) -> str:
+        """
+        Intenta generar con JoxCoder, si falla usa modelo de fallback opcional
+        """
+        try:
+            return await self.generate(prompt, role)
+        except Exception as e:
+            print(f"JoxCoder error: {e}")
+            
+            if fallback_model == "openai":
+                return await self._fallback_openai(prompt, role)
+            elif fallback_model == "anthropic":
+                return await self._fallback_anthropic(prompt, role)
+            else:
+                raise Exception("JoxCoder failed and no fallback configured")
+    
+    async def _fallback_openai(self, prompt: str, role: str) -> str:
+        """Fallback a GPT-4 si usuario tiene API key configurada"""
+        import openai
+        
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        if not openai.api_key:
+            raise Exception("OpenAI API key not configured")
+        
+        response = await openai.ChatCompletion.acreate(
+            model="gpt-4-turbo-preview",
+            messages=[
+                {"role": "system", "content": f"You are a {role}"},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=2048,
+            temperature=0.2
+        )
+        
+        return response.choices[0].message.content
+    
+    async def _fallback_anthropic(self, prompt: str, role: str) -> str:
+        """Fallback a Claude si usuario tiene API key configurada"""
+        import anthropic
+        
+        client = anthropic.AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        if not client.api_key:
+            raise Exception("Anthropic API key not configured")
+        
+        message = await client.messages.create(
+            model="claude-3-opus-20240229",
+            max_tokens=2048,
+            temperature=0.2,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        return message.content[0].text
+2.2 Orquestador de Generación
+python# backend/app/services/code_generator.py
+from typing import Dict, List
+from app.core.joxcoder import JoxCoderClient
+import json
+
+class CodeGenerationOrchestrator:
+    """
+    Orquesta el proceso completo de generación de una aplicación
+    usando múltiples agentes especializados
+    """
+    
+    def __init__(self):
+        self.joxcoder = JoxCoderClient()
+        self.generation_steps = [
+            "architecture",
+            "backend",
+            "frontend",
+            "devops",
+            "security_audit"
+        ]
+    
+    async def generate_full_app(
+        self,
+        user_prompt: str,
+        project_id: str,
+        on_progress: callable = None
+    ) -> Dict[str, str]:
+        """
+        Genera una aplicación completa paso a paso
+        
+        Returns:
+            Dict con todo el código generado por componente
+        """
+        results = {}
+        
+        # PASO 1: Arquitectura
+        if on_progress:
+            await on_progress("Analizando requisitos y diseñando arquitectura...")
+        
+        architecture_prompt = f"""
+        Analyze this application requirement and create a detailed architecture:
+        
+        {user_prompt}
+        
+        Provide a JSON response with:
+        - tech_stack: list of technologies to use
+        - file_structure: complete directory tree
+        - database_schema: tables and relationships
+        - api_endpoints: list of endpoints needed
+        - components: frontend components to create
+        """
+        
+        architecture = await self.joxcoder.generate(
+            architecture_prompt,
+            role="architect"
+        )
+        results["architecture"] = architecture
+        
+        # Parsear JSON de arquitectura
+        try:
+            arch_data = json.loads(architecture)
+        except:
+            # Si no es JSON válido, usar como texto
+            arch_data = {"raw": architecture}
+        
+        # PASO 2: Backend
+        if on_progress:
+            await on_progress("Generando backend APIs y modelos...")
+        
+        backend_prompt = f"""
+        Based on this architecture:
+        {json.dumps(arch_data, indent=2)}
+        
+        Original request: {user_prompt}
+        
+        Generate complete backend code including:
+        - FastAPI or Express.js setup
+        - Database models/schemas
+        - API routes with authentication
+        - Validation and error handling
+        - Unit tests
+        
+        Provide code for each file separately with clear file paths as comments.
+        """
+        
+        backend_code = await self.joxcoder.generate(
+            backend_prompt,
+            role="backend",
+            max_tokens=4096
+        )
+        results["backend"] = backend_code
+        
+        # PASO 3: Frontend
+        if on_progress:
+            await on_progress("Creando interfaz de usuario...")
+        
+        frontend_prompt = f"""
+        Based on this architecture:
+        {json.dumps(arch_data, indent=2)}
+        
+        Backend APIs available:
+        {backend_code[:1000]}...  # Primeros 1000 chars para contexto
+        
+        Original request: {user_prompt}
+        
+        Generate a modern React/Next.js frontend with:
+        - TypeScript
+        - Tailwind CSS for styling
+        - Components for all features
+        - API integration with fetch/axios
+        - Forms with validation
+        - Responsive design
+        
+        Provide code for each component as separate files.
+        """
+        
+        frontend_code = await self.joxcoder.generate(
+            frontend_prompt,
+            role="frontend",
+            max_tokens=4096
+        )
+        results["frontend"] = frontend_code
+        
+        # PASO 4: DevOps
+        if on_progress:
+            await on_progress("Configurando deployment...")
+        
+        devops_prompt = f"""
+        Tech stack: {arch_data.get('tech_stack', 'Node.js, React')}
+        
+        Generate deployment configuration:
+        - Dockerfile for backend
+        - Dockerfile for frontend
+        - docker-compose.yml for local development
+        - .github/workflows/deploy.yml for CI/CD
+        - Environment variables template (.env.example)
+        - README.md with setup instructions
+        """
+        
+        devops_code = await self.joxcoder.generate(
+            devops_prompt,
+            role="devops",
+            max_tokens=2048
+        )
+        results["devops"] = devops_code
+        
+        # PASO 5: Security Audit
+        if on_progress:
+            await on_progress("Auditando seguridad del código...")
+        
+        security_prompt = f"""
+        Audit this codebase for security vulnerabilities:
+        
+        Backend:
+        {backend_code[:2000]}
+        
+        Frontend:
+        {frontend_code[:2000]}
+        
+        Check for:
+        - SQL injection risks
+        - XSS vulnerabilities
+        - Authentication/authorization issues
+        - Secrets or API keys in code
+        - CORS misconfigurations
+        - Input validation gaps
+        
+        Provide a report with issues found and code fixes.
+        """
+        
+        security_report = await self.joxcoder.generate(
+            security_prompt,
+            role="security",
+            max_tokens=2048
+        )
+        results["security_audit"] = security_report
+        
+        if on_progress:
+            await on_progress("¡Aplicación completada! 🎉")
+        
+        return results
+    
+    def extract_files_from_code(self, generated_code: str) -> Dict[str, str]:
+        """
+        Parsea el código generado y lo separa en archivos individuales
+        Busca comentarios como: # backend/app/main.py
+        """
+        files = {}
+        current_file = None
+        current_content = []
+        
+        for line in generated_code.split('\n'):
+            # Detectar inicio de nuevo archivo
+            if line.strip().startswith('#') and '/' in line:
+                if current_file:
+                    files[current_file] = '\n'.join(current_content)
+                current_file = line.strip().lstrip('#').strip()
+                current_content = []
+            elif line.strip().startswith('//') and '/' in line:  # JS/TS files
+                if current_file:
+                    files[current_file] = '\n'.join(current_content)
+                current_file = line.strip().lstrip('//').strip()
+                current_content = []
+            else:
+                if current_file:
+                    current_content.append(line)
+        
+        # Guardar último archivo
+        if current_file:
+            files[current_file] = '\n'.join(current_content)
+        
+        return files
+2.3 Endpoint de Generación
+python# backend/app/api/routes/generate.py
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from pydantic import BaseModel
+from app.services.code_generator import CodeGenerationOrchestrator
+from app.core.security import get_current_user
+from app.api.deps import get_convex_client
+
+router = APIRouter(prefix="/generate", tags=["generation"])
+
+class GenerateRequest(BaseModel):
+    prompt: str
+    project_name: str
+    model_preference: str = "joxcoder"  # "joxcoder", "openai", "anthropic"
+
+@router.post("/")
+async def generate_application(
+    request: GenerateRequest,
+    background_tasks: BackgroundTasks,
+    current_user = Depends(get_current_user),
+    convex = Depends(get_convex_client)
+):
+    """
+    Endpoint principal para generar una aplicación completa
+    """
+    
+    # Verificar balance de tokens del usuario
+    user_tokens = await convex.query("users/getTokenBalance", {"userId": current_user.id})
+    
+    TOKENS_REQUIRED = 50  # Estimado para una app completa
+    
+    if user_tokens < TOKENS_REQUIRED:
+        raise HTTPException(
+            status_code=402,
+            detail=f"Insufficient tokens. Required: {TOKENS_REQUIRED}, Available: {user_tokens}"
+        )
+    
+    # Crear proyecto en Convex
+    project = await convex.mutation("projects/create", {
+        "userId": current_user.id,
+        "name": request.project_name,
+        "description": request.prompt,
+        "prompt": request.prompt,
+        "status": "pending"
+    })
+    
+    # Generar código en background
+    orchestrator = CodeGenerationOrchestrator()
+    
+    async def generate_in_background():
+        try:
+            # Actualizar estado a "generating"
+            await convex.mutation("projects/updateStatus", {
+                "projectId": project["_id"],
+                "status": "generating"
+            })
+            
+            # Callback para actualizar progreso en tiempo real
+            async def on_progress(message: str):
+                await convex.mutation("generations/create", {
+                    "projectId": project["_id"],
+                    "step": message,
+                    "output": "",
+                    "tokensUsed": 0,
+                    "model": request.model_preference
+                })
+            
+            # Generar aplicación completa
+            results = await orchestrator.generate_full_app(
+                user_prompt=request.prompt,
+                project_id=project["_id"],
+                on_progress=on_progress
+            )
+            
+            # Extraer archivos individuales
+            all_files = {}
+            for component, code in results.items():
+                files = orchestrator.extract_files_from_code(code)
+                all_files.update(files)
+            
+            # Guardar código en proyecto
+            await convex.mutation("projects/updateCode", {
+                "projectId": project["_id"],
+                "code": {
+                    "files": all_files,
+                    "architecture": results.get("architecture", ""),
+                    "security_audit": results.get("security_audit", "")
+                },
+                "status": "completed",
+                "tokensUsed": TOKENS_REQUIRED
+            })
+            
+            # Descontar tokens del usuario
+            await convex.mutation("users/decrementTokens", {
+                "userId": current_user.id,
+                "amount": TOKENS_REQUIRED
+            })
+            
+        except Exception as e:
+            # Marcar como fallido
+            await convex.mutation("projects/updateStatus", {
+                "projectId": project["_id"],
+                "status": "failed"
+            })
+            raise e
+    
+    background_tasks.add_task(generate_in_background)
+    
+    return {
+        "projectId": project["_id"],
+        "status": "pending",
+        "message": "Generation started. Check project status for updates."
+    }
+
+@router.get("/status/{project_id}")
+async def get_generation_status(
+    project_id: str,
+    current_user = Depends(get_current_user),
+    convex = Depends(get_convex_client)
+):
+    """
+    Obtiene el estado actual de la generación
+    """
+    project = await convex.query("projects/get", {"projectId": project_id})
+    
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    if project["userId"] != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    # Obtener pasos de generación
+    steps = await convex.query("generations/listByProject", {"projectId": project_id})
+    
+    return {
+        "project": project,
+        "steps": steps,
+        "progress": len(steps) / 5 * 100  # 5 pasos totales
+    }
+
+🎨 FASE 3: FRONTEND MEJORADO {#fase-3}
+3.1 Página Principal del Chat
+typescript// frontend/app/(dashboard)/chat/page.tsx
+"use client";
+
+import { useState, useEffect } from "react";Claude aún no tiene la capacidad de ejecutar el código que genera.J
