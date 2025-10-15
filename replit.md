@@ -2,13 +2,14 @@
 
 ## Overview
 
-AUTOCREA V2.0 is a complete autonomous full-stack development platform powered by JoxCoder (proprietary LLM model). The application enables users to generate complete applications from natural language descriptions, with real-time preview and multi-role AI agents.
+AUTOCREA V2.0 is a complete autonomous full-stack development platform powered by **JoxCoder V2.0 Hybrid System** - combining DeepSeek-Coder-33B and CodeLlama-34B with intelligent routing.
 
-**Current Status:** ✅ Frontend & Infrastructure Complete (Ready for JoxCoder Integration)
+**Current Status:** ✅ Frontend & Infrastructure Complete | ✅ Adapted for JoxCoder V2.0 Hybrid
 
 **Core Value Proposition:**
 - 100% autonomous app generation from idea to deployment
-- Proprietary JoxCoder model (no external API dependencies required)
+- **Hybrid AI System**: DeepSeek-33B (Architecture/DevOps/Security) + CodeLlama-34B (Frontend/Backend)
+- **Smart Router**: Automatically selects the best model for each task
 - Optional user-provided API keys for GPT-4, Claude, etc.
 - Real-time code preview and generation steps visualization
 - Automated Git operations (commits, branches, deployments)
@@ -211,19 +212,28 @@ components/
 - Token purchase system UI complete
 - Webhook handling (pending implementation)
 
-### AI/ML Core
+### AI/ML Core - JoxCoder V2.0 Hybrid System
 
-**Primary Model:** JoxCoder (Proprietary)
+**Primary System:** JoxCoder Hybrid (Proprietary)
+- **DeepSeek-Coder-33B**: Architecture, Blockchain, DevOps, Security specialist
+- **CodeLlama-34B**: Frontend, Backend, Python/JS, Debugging specialist
+- **Smart Router**: Keyword analysis + role-based model selection
 - Hugging Face Inference API integration ready
-- Multi-role agent system implemented
-- No external dependencies required
+- Multi-agent system with specialized model assignments
+- No external AI dependencies required
 
-**Multi-Agent Roles:**
-1. **Architect**: System design and technology selection
-2. **Backend**: API and database implementation
-3. **Frontend**: UI/UX development
-4. **DevOps**: Deployment and infrastructure
-5. **Security**: Code auditing and best practices
+**Multi-Agent Roles with Model Assignment:**
+1. **Architect** (DeepSeek-33B): System design and technology selection
+2. **Backend** (CodeLlama-34B): API and database implementation
+3. **Frontend** (CodeLlama-34B): UI/UX development
+4. **DevOps** (DeepSeek-33B): Deployment and infrastructure
+5. **Security** (DeepSeek-33B): Code auditing and best practices
+
+**Router Decision Logic:**
+- Analyzes prompt keywords (react, blockchain, devops, etc.)
+- Considers agent role
+- Calculates confidence score
+- Selects optimal model automatically
 
 **Optional External APIs:**
 - User-provided keys for GPT-4, Claude, Gemini
@@ -257,9 +267,14 @@ components/
 
 **Required Environment Variables:**
 ```bash
-# JoxCoder (Primary - Add when ready)
-JOXCODER_API_URL=https://api-inference.huggingface.co/models/your-org/joxcoder
-JOXCODER_API_KEY=hf_...
+# JoxCoder V2.0 Hybrid System (Primary - Add when models are trained)
+# DeepSeek-Coder-33B (Architecture, Blockchain, DevOps, Security)
+JOXCODER_DEEPSEEK_API_URL=https://api-inference.huggingface.co/models/your-username/joxcoder-deepseek-33b
+JOXCODER_DEEPSEEK_API_KEY=hf_...
+
+# CodeLlama-34B (Frontend, Backend, Python/JS, Debugging)
+JOXCODER_CODELLAMA_API_URL=https://api-inference.huggingface.co/models/your-username/joxcoder-codellama-34b
+JOXCODER_CODELLAMA_API_KEY=hf_...
 
 # Clerk (Required for real auth)
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
@@ -300,12 +315,19 @@ npx convex deploy    # Deploy schema to production
 - Start command: `npm run start`
 - Port: 5000 (configured in package.json)
 
-## Next Steps (When JoxCoder is Ready)
+## Next Steps (When JoxCoder Models Are Trained)
 
-1. **JoxCoder Integration:**
-   - Add Hugging Face API credentials
+1. **Train JoxCoder Hybrid Models:**
+   - Follow `attached_assets/JoxCoder_V2_Training.txt`
+   - Train DeepSeek-Coder-33B (~4-5 hours on A100)
+   - Train CodeLlama-34B (~4-5 hours on A100)
+   - Upload both to Hugging Face
+
+2. **JoxCoder Integration:**
+   - Add both Hugging Face API credentials to `.env.local`
    - Test multi-agent workflow
-   - Implement streaming responses
+   - Verify router is selecting models correctly
+   - Monitor confidence scores
    - Add error handling and retries
 
 2. **Convex Setup:**

@@ -1,17 +1,28 @@
 # AUTOCREA V2.0 🚀
 
-The most powerful autonomous development platform powered by JoxCoder - our proprietary AI model.
+The most powerful autonomous development platform powered by **JoxCoder Hybrid** - our proprietary AI system.
 
-![AUTOCREA V2.0](https://img.shields.io/badge/Version-2.0-blue) ![Status](https://img.shields.io/badge/Status-Ready%20for%20JoxCoder-green) ![License](https://img.shields.io/badge/License-Proprietary-red)
+![AUTOCREA V2.0](https://img.shields.io/badge/Version-2.0-blue) ![JoxCoder](https://img.shields.io/badge/JoxCoder-Hybrid%20System-purple) ![Status](https://img.shields.io/badge/Status-Ready%20for%20Integration-green) ![License](https://img.shields.io/badge/License-Proprietary-red)
 
 ## 🌟 Overview
 
-AUTOCREA V2.0 is an autonomous full-stack development agent that creates complete applications from natural language descriptions. Built with Next.js 14, it features:
+AUTOCREA V2.0 is an autonomous full-stack development agent that creates complete applications from natural language descriptions. Built with Next.js 14 and powered by the **JoxCoder V2.0 Hybrid System**.
+
+### 🔥 JoxCoder Hybrid System
+
+**Two specialized models working together:**
+
+- 🏗️ **DeepSeek-Coder-33B** - Expert in Architecture, Blockchain, DevOps, Security
+- 💻 **CodeLlama-34B** - Expert in Frontend, Backend, Python/JS, Debugging
+- 🎯 **Smart Router** - Automatically selects the best model for each task
+
+### ✨ Key Features
 
 - ✅ **100% Autonomous Development** - From idea to deployed app
-- ✅ **JoxCoder AI Model** - Our proprietary LLM trained specifically for code generation
-- ✅ **Multi-Role Agents** - Architect, Backend Dev, Frontend Dev, DevOps, Security Auditor
-- ✅ **Real-time Preview** - Watch your app being built step by step with Monaco Editor
+- ✅ **Hybrid AI System** - DeepSeek-33B + CodeLlama-34B with intelligent routing
+- ✅ **Multi-Role Agents** - 5 specialized agents (Architect, Backend, Frontend, DevOps, Security)
+- ✅ **Real-time Preview** - Watch your app being built with Monaco Editor
+- ✅ **Smart Model Selection** - Router automatically chooses the best model
 - ✅ **Free Trial** - 100 tokens free on signup
 - ✅ **Optional External APIs** - Connect GPT-4, Claude, or Gemini if desired
 
@@ -32,12 +43,12 @@ AUTOCREA V2.0 is an autonomous full-stack development agent that creates complet
 - **State Management** with Zustand
 - **Token Tracking** and usage analytics
 
-### Multi-Agent System
-1. **🧠 Architect** - System design and technology selection
-2. **⚙️ Backend** - API and database implementation
-3. **🎨 Frontend** - UI/UX development
-4. **🚀 DevOps** - Deployment and infrastructure
-5. **🛡️ Security** - Code auditing and best practices
+### Multi-Agent System with Hybrid Models
+1. **🧠 Architect** (DeepSeek-33B) - System design and technology selection
+2. **⚙️ Backend** (CodeLlama-34B) - API and database implementation
+3. **🎨 Frontend** (CodeLlama-34B) - UI/UX development
+4. **🚀 DevOps** (DeepSeek-33B) - Deployment and infrastructure
+5. **🛡️ Security** (DeepSeek-33B) - Code auditing and best practices
 
 ## 🚀 Quick Start
 
@@ -63,25 +74,32 @@ The app will run on `http://localhost:5000`
 
 ### Environment Variables
 
-Create a `.env.local` file:
+Create a `.env.local` file (see `.env.example` for complete list):
 
 ```bash
-# JoxCoder (Primary AI Model)
-JOXCODER_API_URL=https://api-inference.huggingface.co/models/your-org/joxcoder
-JOXCODER_API_KEY=hf_your_key
+# JoxCoder V2.0 Hybrid System (Primary AI)
+# DeepSeek-Coder-33B (Architecture, Blockchain, DevOps, Security)
+JOXCODER_DEEPSEEK_API_URL=https://api-inference.huggingface.co/models/your-username/joxcoder-deepseek-33b
+JOXCODER_DEEPSEEK_API_KEY=hf_your_key_here
 
-# Clerk Authentication (Optional for now)
+# CodeLlama-34B (Frontend, Backend, Python/JS, Debugging)
+JOXCODER_CODELLAMA_API_URL=https://api-inference.huggingface.co/models/your-username/joxcoder-codellama-34b
+JOXCODER_CODELLAMA_API_KEY=hf_your_key_here
+
+# Optional: Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 
-# Convex Database (Optional for now)
+# Optional: Convex Database
 NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 CONVEX_DEPLOY_KEY=prod:...
 
-# Stripe Payments (Optional for now)
+# Optional: Stripe Payments
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 ```
+
+📖 **See `JOXCODER_INTEGRATION.md` for complete setup guide**
 
 ## 📁 Project Structure
 
@@ -121,7 +139,8 @@ autocrea-v2/
 **Backend:**
 - Convex (Database)
 - Next.js API Routes
-- JoxCoder (AI Model)
+- JoxCoder Hybrid (DeepSeek-33B + CodeLlama-34B)
+- Smart Router for model selection
 
 **Infrastructure:**
 - Clerk (Auth)
