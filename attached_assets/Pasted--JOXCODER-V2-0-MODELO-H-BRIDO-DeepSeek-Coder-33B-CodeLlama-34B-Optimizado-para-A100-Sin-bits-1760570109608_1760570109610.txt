@@ -1,0 +1,1562 @@
+🚀 JOXCODER V2.0 - MODELO HÍBRIDO
+DeepSeek-Coder-33B + CodeLlama-34B
+Optimizado para A100 | Sin bitsandbytes | Entrenamiento < 12 horas
+
+📋 ÍNDICE
+
+Visión General
+Arquitectura del Sistema
+Preparación del Entorno
+Datasets Especializados
+Entrenamiento Modelo 1: DeepSeek
+Entrenamiento Modelo 2: CodeLlama
+Sistema de Router Inteligente
+Integración con AUTOCREA
+Testing y Validación
+Deployment
+
+
+🎯 VISIÓN GENERAL {#vision}
+Objetivo
+Crear JoxCoder: un modelo LLM híbrido que combina las fortalezas de:
+
+DeepSeek-Coder-33B: Excelente en arquitecturas complejas, blockchain, DevOps
+CodeLlama-34B: Superior en Python, JavaScript, debugging
+
+Tiempo Estimado Total
+
+⏱️ Setup: 1 hora
+⏱️ Datasets: 2-3 horas
+⏱️ Entrenamiento DeepSeek: 4-5 horas
+⏱️ Entrenamiento CodeLlama: 4-5 horas
+⏱️ Router + Testing: 1 hora
+TOTAL: ~11-13 horas ✅
+
+Hardware
+
+GPU: A100 (40-80GB VRAM)
+RAM: 32GB+
+Storage: 200GB en Google Drive
+
+Costos
+
+Colab Pro+: $50/mes (recomendado para 12 horas continuas)
+Datasets: GRATIS (todos open-source)
+Hugging Face hosting: GRATIS
+TOTAL mensual: ~$50 USD
+
+
+🏗️ ARQUITECTURA DEL SISTEMA {#arquitectura}
+┌────────────────────────────────────────────────────────┐
+│                  AUTOCREA Frontend                     │
+│              (Usuario hace request)                    │
+└─────────────────────┬──────────────────────────────────┘
+                      │
+                      ▼
+┌────────────────────────────────────────────────────────┐
+│              JoxCoder API Gateway                      │
+│         (FastAPI con smart routing)                    │
+└─────────────────────┬──────────────────────────────────┘
+                      │
+        ┌─────────────┴─────────────┐
+        ▼                           ▼
+┌──────────────────┐     ┌──────────────────┐
+│  DeepSeek-33B    │     │ CodeLlama-34B    │
+│  (Fine-tuned)    │     │  (Fine-tuned)    │
+│                  │     │                  │
+│ Especializado en:│     │ Especializado en:│
+│ • Arquitectura   │     │ • Python/JS      │
+│ • Blockchain     │     │ • Debugging      │
+│ • DevOps         │     │ • Frontend       │
+│ • Security       │     │ • Data Science   │
+└──────────────────┘     └──────────────────┘
+        │                           │
+        └─────────────┬─────────────┘
+                      ▼
+            ┌──────────────────┐
+            │ Response Merger  │
+            │ (combina outputs)│
+            └──────────────────┘
+                      │
+                      ▼
+              Código generado
+Flujo de Decisión del Router
+pythonUsuario: "Crear e-commerce con Stripe y React"
+         ↓
+Router analiza keywords: ["React", "Stripe", "e-commerce"]
+         ↓
+    ┌────┴────┐
+    │         │
+    ▼         ▼
+Frontend   Backend
+(CodeLlama)(DeepSeek)
+    │         │
+    └────┬────┘
+         ▼
+  Código completo
+
+🔧 PREPARACIÓN DEL ENTORNO {#preparacion}
+CELDA 1: Verificar GPU y Limpiar
+python# ============================================
+# VERIFICACIÓN Y LIMPIEZA INICIAL
+# ============================================
+import torch
+import gc
+import os
+from pathlib import Path
+
+# Verificar GPU
+print("="*60)
+print("🔍 VERIFICACIÓN DE HARDWARE")
+print("="*60)
+print(f"GPU: {torch.cuda.get_device_name(0)}")
+print(f"VRAM Total: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
+print(f"CUDA Version: {torch.version.cuda}")
+print(f"PyTorch Version: {torch.__version__}")
+print("="*60)
+
+# Limpiar GPU
+torch.cuda.empty_cache()
+gc.collect()
+
+# Montar Google Drive
+from google.colab import drive
+drive.mount('/content/drive')
+
+# Crear estructura de directorios
+BASE_DIR = Path("/content/drive/MyDrive/JoxCoder")
+DATASETS_DIR = BASE_DIR / "datasets"
+MODELS_DIR = BASE_DIR / "models"
+CHECKPOINTS_DIR = BASE_DIR / "checkpoints"
+
+for dir_path in [BASE_DIR, DATASETS_DIR, MODELS_DIR, CHECKPOINTS_DIR]:
+    dir_path.mkdir(exist_ok=True, parents=True)
+
+print(f"\n✅ Estructura de directorios creada en: {BASE_DIR}")
+CELDA 2: Instalaciones Optimizadas (SIN bitsandbytes)
+python# ============================================
+# INSTALACIONES - SIN BITSANDBYTES
+# ============================================
+!pip install -q -U \
+    transformers==4.39.0 \
+    datasets==2.18.0 \
+    peft==0.10.0 \
+    trl==0.8.1 \
+    accelerate==0.28.0 \
+    sentencepiece \
+    protobuf \
+    huggingface-hub \
+    wandb
+
+# Flash Attention 2 (crítico para velocidad)
+!pip install -q flash-attn --no-build-isolation
+
+print("\n✅ Todas las librerías instaladas correctamente")
+
+# Verificar imports
+import transformers
+import peft
+import trl
+print(f"Transformers: {transformers.__version__}")
+print(f"PEFT: {peft.__version__}")
+print(f"TRL: {trl.__version__}")
+
+📚 DATASETS ESPECIALIZADOS {#datasets}
+Estrategia de Datos
+Total: ~100,000 ejemplos de alta calidad
+
+Datasets Públicos (60k ejemplos)
+15 Repositorios Curados (30k archivos)
+Sintéticos Generados (10k ejemplos específicos)
+
+CELDA 3: Clonar Repositorios Elite
+python# ============================================
+# CLONAR 15 REPOSITORIOS ELITE
+# ============================================
+import os
+from pathlib import Path
+
+os.chdir(DATASETS_DIR)
+
+# Repositorios categorizados por especialidad
+repos = {
+    "fullstack": [
+        "supabase/supabase",
+        "vercel/next.js",
+        "tiangolo/fastapi",
+    ],
+    "blockchain": [
+        "OpenZeppelin/openzeppelin-contracts",
+        "foundry-rs/foundry",
+        "scaffold-eth/scaffold-eth-2",
+    ],
+    "devops": [
+        "kubernetes/kubernetes",
+        "docker/awesome-compose",
+        "hashicorp/terraform",
+    ],
+    "security": [
+        "OWASP/CheatSheetSeries",
+        "projectdiscovery/nuclei-templates",
+        "trufflesecurity/trufflehog",
+    ],
+    "datascience": [
+        "huggingface/transformers",
+        "pytorch/pytorch",
+        "microsoft/LightGBM",
+    ]
+}
+
+print("🔄 Clonando repositorios elite...\n")
+
+all_repos = []
+for category, repo_list in repos.items():
+    print(f"\n📁 Categoría: {category.upper()}")
+    for repo in repo_list:
+        repo_name = repo.split('/')[-1]
+        
+        if not Path(repo_name).exists():
+            print(f"  ⬇️  Clonando {repo}...")
+            !git clone --depth 1 --quiet https://github.com/{repo} {repo_name}
+            all_repos.append(repo_name)
+        else:
+            print(f"  ✅ {repo_name} ya existe")
+            all_repos.append(repo_name)
+
+print(f"\n✅ {len(all_repos)} repositorios listos")
+CELDA 4: Procesar Código de Repos
+python# ============================================
+# PROCESAMIENTO INTELIGENTE DE CÓDIGO
+# ============================================
+import json
+from pathlib import Path
+from typing import Dict, List
+import re
+
+# Extensiones por lenguaje
+CODE_EXTENSIONS = {
+    '.py': 'python',
+    '.js': 'javascript',
+    '.ts': 'typescript',
+    '.tsx': 'typescript',
+    '.jsx': 'javascript',
+    '.sol': 'solidity',
+    '.rs': 'rust',
+    '.go': 'go',
+    '.java': 'java',
+    '.cpp': 'cpp',
+    '.c': 'c',
+    '.rb': 'ruby',
+    '.php': 'php',
+    '.yml': 'yaml',
+    '.yaml': 'yaml',
+    '.tf': 'terraform',
+    '.sh': 'bash',
+    '.dockerfile': 'docker',
+    '.sql': 'sql',
+    '.html': 'html',
+    '.css': 'css',
+}
+
+def extract_code_intelligently(repo_path: Path, max_files: int = 2000) -> List[Dict]:
+    """
+    Extrae código con contexto inteligente
+    """
+    examples = []
+    files_processed = 0
+    
+    for file_path in repo_path.rglob('*'):
+        if files_processed >= max_files:
+            break
+            
+        if not file_path.is_file():
+            continue
+            
+        extension = file_path.suffix.lower()
+        if extension not in CODE_EXTENSIONS:
+            continue
+        
+        # Skip archivos muy grandes o binarios
+        try:
+            size = file_path.stat().st_size
+            if size > 100_000 or size < 50:  # 50 bytes a 100KB
+                continue
+        except:
+            continue
+        
+        try:
+            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                content = f.read()
+                
+            # Skip archivos vacíos o con poco contenido
+            if len(content.strip()) < 50:
+                continue
+            
+            # Crear ejemplo con contexto
+            relative_path = file_path.relative_to(repo_path)
+            language = CODE_EXTENSIONS[extension]
+            
+            # Generar instrucción basada en el tipo de archivo
+            if 'test' in str(relative_path).lower():
+                instruction = f"Write comprehensive tests for a {language} module"
+            elif 'api' in str(relative_path).lower() or 'route' in str(relative_path).lower():
+                instruction = f"Create a {language} API endpoint with proper error handling"
+            elif 'component' in str(relative_path).lower():
+                instruction = f"Build a reusable {language} component"
+            elif extension in ['.yml', '.yaml', '.tf']:
+                instruction = f"Configure infrastructure using {language}"
+            else:
+                instruction = f"Implement {relative_path.stem} in {language}"
+            
+            examples.append({
+                "instruction": instruction,
+                "input": f"Language: {language}\nContext: {relative_path.parent}\nFile: {relative_path.name}",
+                "output": content,
+                "metadata": {
+                    "language": language,
+                    "file_path": str(relative_path),
+                    "repo": repo_path.name,
+                    "lines": len(content.split('\n'))
+                }
+            })
+            
+            files_processed += 1
+            
+        except Exception as e:
+            continue
+    
+    return examples
+
+# Procesar todos los repos
+all_examples = []
+
+print("🔄 Procesando código de repositorios...\n")
+
+for repo_name in all_repos:
+    repo_path = DATASETS_DIR / repo_name
+    
+    if not repo_path.exists():
+        continue
+    
+    print(f"📁 Procesando {repo_name}...")
+    examples = extract_code_intelligently(repo_path, max_files=2000)
+    all_examples.extend(examples)
+    print(f"   ✅ {len(examples):,} ejemplos extraídos")
+
+print(f"\n✅ Total: {len(all_examples):,} ejemplos de código")
+
+# Guardar en JSONL
+output_file = DATASETS_DIR / "repos_processed.jsonl"
+with open(output_file, 'w', encoding='utf-8') as f:
+    for example in all_examples:
+        f.write(json.dumps(example) + '\n')
+
+print(f"💾 Guardado en: {output_file}")
+CELDA 5: Datasets Públicos + Mezcla Final
+python# ============================================
+# DATASETS PÚBLICOS DE ALTA CALIDAD
+# ============================================
+from datasets import load_dataset, concatenate_datasets, Dataset
+import json
+
+print("📥 Cargando datasets públicos...\n")
+
+# 1. CodeAlpaca (20k ejemplos de código)
+print("1/5 CodeAlpaca...")
+dataset_alpaca = load_dataset("sahil2801/CodeAlpaca-20k", split="train")
+
+# 2. Evol-Instruct-Code (mejor calidad, 40k)
+print("2/5 Evol-Instruct-Code...")
+dataset_evol = load_dataset("nickrosh/Evol-Instruct-Code-80k-v1", split="train[:40000]")
+
+# 3. CodeSearchNet (comentarios de código de GitHub)
+print("3/5 CodeSearchNet...")
+dataset_csn = load_dataset("code_search_net", "python", split="train[:20000]")
+
+# 4. CodeContests (problemas de programación competitiva)
+print("4/5 CodeContests...")
+dataset_contests = load_dataset("deepmind/code_contests", split="train[:10000]")
+
+# 5. Tu código procesado de repos
+print("5/5 Repos procesados...")
+with open(DATASETS_DIR / "repos_processed.jsonl", 'r') as f:
+    repos_data = [json.loads(line) for line in f]
+
+dataset_repos = Dataset.from_list(repos_data)
+
+print("\n✅ Todos los datasets cargados")
+
+# Formatear todo al mismo esquema
+def format_to_unified(example, source: str):
+    """Formato unificado para todos los datasets"""
+    
+    # CodeAlpaca
+    if source == "alpaca" and "instruction" in example:
+        return {
+            "text": f"### Instruction:\n{example['instruction']}\n\n### Input:\n{example.get('input', '')}\n\n### Response:\n{example['output']}"
+        }
+    
+    # Evol-Instruct
+    elif source == "evol" and "instruction" in example:
+        return {
+            "text": f"### Instruction:\n{example['instruction']}\n\n### Response:\n{example['output']}"
+        }
+    
+    # CodeSearchNet
+    elif source == "csn":
+        return {
+            "text": f"### Instruction:\nDocument this code\n\n### Code:\n{example['func_code_string']}\n\n### Documentation:\n{example['func_documentation_string']}"
+        }
+    
+    # CodeContests
+    elif source == "contests":
+        return {
+            "text": f"### Problem:\n{example['description']}\n\n### Solution:\n{example['solutions']['solution'][0] if example['solutions']['solution'] else 'No solution'}"
+        }
+    
+    # Repos procesados
+    elif source == "repos":
+        inp = example.get('input', '')
+        return {
+            "text": f"### Instruction:\n{example['instruction']}\n\n### Input:\n{inp}\n\n### Response:\n{example['output']}"
+        }
+    
+    return {"text": ""}
+
+# Aplicar formato
+print("\n🔄 Formateando datasets...\n")
+
+dataset_alpaca_fmt = dataset_alpaca.map(
+    lambda x: format_to_unified(x, "alpaca"),
+    remove_columns=dataset_alpaca.column_names
+)
+
+dataset_evol_fmt = dataset_evol.map(
+    lambda x: format_to_unified(x, "evol"),
+    remove_columns=dataset_evol.column_names
+)
+
+dataset_csn_fmt = dataset_csn.map(
+    lambda x: format_to_unified(x, "csn"),
+    remove_columns=dataset_csn.column_names
+)
+
+dataset_contests_fmt = dataset_contests.map(
+    lambda x: format_to_unified(x, "contests"),
+    remove_columns=dataset_contests.column_names
+)
+
+dataset_repos_fmt = dataset_repos.map(
+    lambda x: format_to_unified(x, "repos"),
+    remove_columns=dataset_repos.column_names
+)
+
+# Combinar TODOS los datasets
+final_dataset = concatenate_datasets([
+    dataset_alpaca_fmt,
+    dataset_evol_fmt,
+    dataset_csn_fmt,
+    dataset_contests_fmt,
+    dataset_repos_fmt
+])
+
+# Shuffle
+final_dataset = final_dataset.shuffle(seed=42)
+
+print(f"\n✅ Dataset final combinado: {len(final_dataset):,} ejemplos")
+print(f"📊 Distribución:")
+print(f"   • CodeAlpaca: 20,000")
+print(f"   • Evol-Instruct: 40,000")
+print(f"   • CodeSearchNet: 20,000")
+print(f"   • CodeContests: 10,000")
+print(f"   • Repos Elite: {len(repos_data):,}")
+
+# Guardar dataset final
+final_dataset.save_to_disk(str(DATASETS_DIR / "joxcoder_final_dataset"))
+print(f"\n💾 Dataset guardado en: {DATASETS_DIR / 'joxcoder_final_dataset'}")
+
+🔥 ENTRENAMIENTO MODELO 1: DeepSeek-33B {#deepseek}
+CELDA 6: Cargar DeepSeek y Configurar LoRA
+python# ============================================
+# DEEPSEEK-CODER-33B SETUP
+# ============================================
+from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
+from peft import LoraConfig, get_peft_model
+from trl import SFTTrainer
+import torch
+
+model_name = "deepseek-ai/deepseek-coder-33b-instruct"
+
+print("="*60)
+print("🚀 CARGANDO DEEPSEEK-CODER-33B")
+print("="*60)
+
+# Cargar en bfloat16 (sin quantización)
+print("\n📥 Cargando modelo...")
+model_deepseek = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+    trust_remote_code=True,
+    attn_implementation="flash_attention_2",
+    use_cache=False,
+)
+
+tokenizer_deepseek = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+tokenizer_deepseek.pad_token = tokenizer_deepseek.eos_token
+tokenizer_deepseek.padding_side = "right"
+
+print(f"✅ Modelo cargado: ~20GB VRAM")
+print(f"💾 VRAM usada: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
+
+# LoRA Config
+lora_config_deepseek = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=[
+        "q_proj", "k_proj", "v_proj", "o_proj",
+        "gate_proj", "up_proj", "down_proj"
+    ],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM",
+)
+
+# Aplicar LoRA
+model_deepseek.gradient_checkpointing_enable()
+model_deepseek = get_peft_model(model_deepseek, lora_config_deepseek)
+
+trainable = sum(p.numel() for p in model_deepseek.parameters() if p.requires_grad)
+total = sum(p.numel() for p in model_deepseek.parameters())
+
+print(f"\n✅ LoRA aplicado:")
+print(f"   Entrenables: {trainable:,} ({100 * trainable / total:.2f}%)")
+print(f"💾 VRAM después de LoRA: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
+CELDA 7: Entrenar DeepSeek
+python# ============================================
+# ENTRENAR DEEPSEEK-CODER-33B
+# ============================================
+import time
+from datetime import datetime
+
+# Cargar dataset
+from datasets import load_from_disk
+dataset = load_from_disk(str(DATASETS_DIR / "joxcoder_final_dataset"))
+
+# Training Args optimizados
+training_args_deepseek = TrainingArguments(
+    output_dir=str(CHECKPOINTS_DIR / "deepseek_checkpoints"),
+    
+    # Batch config
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=8,  # Batch efectivo = 16
+    
+    # Optimizer
+    optim="adamw_torch_fused",
+    learning_rate=2e-4,
+    weight_decay=0.01,
+    max_grad_norm=1.0,
+    
+    # LR Scheduler
+    lr_scheduler_type="cosine",
+    warmup_ratio=0.03,
+    
+    # Épocas
+    num_train_epochs=3,
+    
+    # Logging
+    logging_steps=50,
+    save_steps=1000,
+    save_total_limit=2,
+    
+    # Precisión
+    bf16=True,
+    
+    # Optimizaciones
+    dataloader_num_workers=4,
+    dataloader_pin_memory=True,
+    gradient_checkpointing=True,
+    
+    # Sin evaluación (ahorra tiempo)
+    evaluation_strategy="no",
+    save_safetensors=True,
+    report_to="none",
+)
+
+# Crear trainer
+trainer_deepseek = SFTTrainer(
+    model=model_deepseek,
+    train_dataset=dataset,
+    tokenizer=tokenizer_deepseek,
+    args=training_args_deepseek,
+    max_seq_length=2048,
+    packing=False,
+    dataset_text_field="text",
+)
+
+# ENTRENAR
+print("\n" + "="*60)
+print("🚀 INICIANDO ENTRENAMIENTO - DEEPSEEK-33B")
+print("="*60)
+print(f"📅 Inicio: {datetime.now().strftime('%H:%M:%S')}")
+print(f"📊 Ejemplos: {len(dataset):,}")
+print(f"🔄 Épocas: 3")
+print(f"⏱️ Tiempo estimado: 4-5 horas")
+print("="*60 + "\n")
+
+start_time = time.time()
+
+try:
+    trainer_deepseek.train()
+    
+    elapsed = (time.time() - start_time) / 3600
+    
+    # Guardar modelo final
+    output_dir_deepseek = MODELS_DIR / "deepseek-joxcoder-v1"
+    trainer_deepseek.save_model(str(output_dir_deepseek))
+    tokenizer_deepseek.save_pretrained(str(output_dir_deepseek))
+    
+    print("\n" + "="*60)
+    print("🎉 DEEPSEEK ENTRENADO EXITOSAMENTE")
+    print("="*60)
+    print(f"⏱️ Tiempo: {elapsed:.2f} horas")
+    print(f"💾 Guardado en: {output_dir_deepseek}")
+    print("="*60)
+    
+except Exception as e:
+    print(f"\n❌ Error: {e}")
+    trainer_deepseek.save_model(str(CHECKPOINTS_DIR / "deepseek_interrupted"))
+    print("💾 Checkpoint guardado")
+
+# Limpiar memoria antes del siguiente modelo
+del model_deepseek, trainer_deepseek
+torch.cuda.empty_cache()
+gc.collect()
+
+🦙 ENTRENAMIENTO MODELO 2: CodeLlama-34B {#codellama}
+CELDA 8: Cargar CodeLlama
+python# ============================================
+# CODELLAMA-34B SETUP
+# ============================================
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import LoraConfig, get_peft_model
+import torch
+
+model_name_llama = "codellama/CodeLlama-34b-Instruct-hf"
+
+print("="*60)
+print("🦙 CARGANDO CODELLAMA-34B")
+print("="*60)
+
+print("\n📥 Cargando modelo...")
+model_codellama = AutoModelForCausalLM.from_pretrained(
+    model_name_llama,
+    torch_dtype=torch.bfloat16,
+    device_map="auto",
+    attn_implementation="flash_attention_2",
+    use_cache=False,
+)
+
+tokenizer_codellama = AutoTokenizer.from_pretrained(model_name_llama)
+tokenizer_codellama.pad_token = tokenizer_codellama.eos_token
+tokenizer_codellama.padding_side = "right"
+
+print(f"✅ Modelo cargado")
+print(f"💾 VRAM usada: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
+
+# LoRA Config
+lora_config_llama = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=[
+        "q_proj", "k_proj", "v_proj", "o_proj",
+        "gate_proj", "up_proj", "down_proj"
+    ],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM",
+)
+
+model_codellama.gradient_checkpointing_enable()
+model_codellama = get_peft_model(model_codellama, lora_config_llama)
+
+print(f"✅ LoRA aplicado")
+print(f"💾 VRAM: {torch.cuda.memory_allocated(0) / 1e9:.2f} GB")
+CELDA 9: Entrenar CodeLlama
+python# ============================================
+# ENTRENAR CODELLAMA-34B
+# ============================================
+from trl import SFTTrainer
+from transformers import TrainingArguments
+import time
+
+# Training Args (misma config que DeepSeek)
+training_args_llama = TrainingArguments(
+    output_dir=str(CHECKPOINTS_DIR / "codellama_checkpoints"),
+    
+    # Batch config
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=8,
+    
+    # Optimizer
+    optim="adamw_torch_fused",
+    learning_rate=2e-4,
+    weight_decay=0.01,
+    max_grad_norm=1.0,
+    
+    # LR Scheduler
+    lr_scheduler_type="cosine",
+    warmup_ratio=0.03,
+    
+    # Épocas
+    num_train_epochs=3,
+    
+    # Logging
+    logging_steps=50,
+    save_steps=1000,
+    save_total_limit=2,
+    
+    # Precisión
+    bf16=True,
+    
+    # Optimizaciones
+    dataloader_num_workers=4,
+    dataloader_pin_memory=True,
+    gradient_checkpointing=True,
+    
+    evaluation_strategy="no",
+    save_safetensors=True,
+    report_to="none",
+)
+
+# Crear trainer
+trainer_codellama = SFTTrainer(
+    model=model_codellama,
+    train_dataset=dataset,
+    tokenizer=tokenizer_codellama,
+    args=training_args_llama,
+    max_seq_length=2048,
+    packing=False,
+    dataset_text_field="text",
+)
+
+# ENTRENAR
+print("\n" + "="*60)
+print("🦙 INICIANDO ENTRENAMIENTO - CODELLAMA-34B")
+print("="*60)
+print(f"📅 Inicio: {datetime.now().strftime('%H:%M:%S')}")
+print(f"📊 Ejemplos: {len(dataset):,}")
+print(f"🔄 Épocas: 3")
+print(f"⏱️ Tiempo estimado: 4-5 horas")
+print("="*60 + "\n")
+
+start_time = time.time()
+
+try:
+    trainer_codellama.train()
+    
+    elapsed = (time.time() - start_time) / 3600
+    
+    # Guardar modelo final
+    output_dir_llama = MODELS_DIR / "codellama-joxcoder-v1"
+    trainer_codellama.save_model(str(output_dir_llama))
+    tokenizer_codellama.save_pretrained(str(output_dir_llama))
+    
+    print("\n" + "="*60)
+    print("🎉 CODELLAMA ENTRENADO EXITOSAMENTE")
+    print("="*60)
+    print(f"⏱️ Tiempo: {elapsed:.2f} horas")
+    print(f"💾 Guardado en: {output_dir_llama}")
+    print("="*60)
+    
+except Exception as e:
+    print(f"\n❌ Error: {e}")
+    trainer_codellama.save_model(str(CHECKPOINTS_DIR / "codellama_interrupted"))
+    print("💾 Checkpoint guardado")
+
+# Limpiar memoria
+del model_codellama, trainer_codellama
+torch.cuda.empty_cache()
+gc.collect()
+
+print("\n✅ Ambos modelos entrenados. Continuando con el Router...")
+
+🧠 SISTEMA DE ROUTER INTELIGENTE {#router}
+CELDA 10: Implementar Router de Modelos
+python# ============================================
+# JOXCODER ROUTER - SISTEMA INTELIGENTE
+# ============================================
+from typing import Literal, Optional, Dict, List
+import re
+from transformers import pipeline
+
+class JoxCoderRouter:
+    """
+    Router inteligente que decide qué modelo usar según la tarea
+    """
+    
+    def __init__(
+        self,
+        deepseek_path: str,
+        codellama_path: str,
+        device: str = "cuda"
+    ):
+        print("🔄 Cargando JoxCoder Router...")
+        
+        # Cargar ambos modelos
+        self.deepseek = pipeline(
+            "text-generation",
+            model=deepseek_path,
+            device=device,
+            torch_dtype=torch.bfloat16
+        )
+        
+        self.codellama = pipeline(
+            "text-generation",
+            model=codellama_path,
+            device=device,
+            torch_dtype=torch.bfloat16
+        )
+        
+        # Palabras clave para routing
+        self.keywords_map = {
+            "deepseek": [
+                "architecture", "design", "system", "microservices",
+                "blockchain", "solidity", "smart contract", "web3",
+                "kubernetes", "docker", "devops", "terraform",
+                "security", "vulnerability", "audit", "penetration",
+                "fullstack", "api", "backend", "database"
+            ],
+            "codellama": [
+                "python", "javascript", "typescript", "react", "vue",
+                "frontend", "ui", "component", "debugging", "fix bug",
+                "data science", "pandas", "numpy", "machine learning",
+                "algorithm", "leetcode", "competitive programming"
+            ]
+        }
+        
+        print("✅ Router inicializado con ambos modelos")
+    
+    def analyze_task(self, prompt: str) -> Literal["deepseek", "codellama", "ensemble"]:
+        """
+        Analiza el prompt y decide qué modelo usar
+        """
+        prompt_lower = prompt.lower()
+        
+        deepseek_score = sum(
+            1 for keyword in self.keywords_map["deepseek"]
+            if keyword in prompt_lower
+        )
+        
+        codellama_score = sum(
+            1 for keyword in self.keywords_map["codellama"]
+            if keyword in prompt_lower
+        )
+        
+        # Si ambos puntajes son altos, usar ensemble
+        if deepseek_score >= 2 and codellama_score >= 2:
+            return "ensemble"
+        
+        # Si hay empate o puntajes bajos, usar DeepSeek (más general)
+        if deepseek_score == codellama_score:
+            return "deepseek"
+        
+        return "deepseek" if deepseek_score > codellama_score else "codellama"
+    
+    def generate(
+        self,
+        prompt: str,
+        max_tokens: int = 2048,
+        temperature: float = 0.2,
+        force_model: Optional[Literal["deepseek", "codellama"]] = None
+    ) -> Dict[str, str]:
+        """
+        Genera código usando el modelo apropiado
+        """
+        # Decidir qué modelo usar
+        if force_model:
+            selected_model = force_model
+        else:
+            selected_model = self.analyze_task(prompt)
+        
+        print(f"🤖 Usando modelo: {selected_model.upper()}")
+        
+        # Generar con el modelo seleccionado
+        if selected_model == "ensemble":
+            return self._generate_ensemble(prompt, max_tokens, temperature)
+        
+        model = self.deepseek if selected_model == "deepseek" else self.codellama
+        
+        result = model(
+            prompt,
+            max_new_tokens=max_tokens,
+            temperature=temperature,
+            top_p=0.95,
+            do_sample=True,
+            return_full_text=False
+        )
+        
+        return {
+            "code": result[0]["generated_text"],
+            "model_used": selected_model,
+            "confidence": "high"
+        }
+    
+    def _generate_ensemble(
+        self,
+        prompt: str,
+        max_tokens: int,
+        temperature: float
+    ) -> Dict[str, str]:
+        """
+        Genera con ambos modelos y combina resultados
+        """
+        print("🔀 Generación ensemble (ambos modelos)...")
+        
+        # Generar con DeepSeek
+        deepseek_result = self.deepseek(
+            prompt,
+            max_new_tokens=max_tokens,
+            temperature=temperature,
+            top_p=0.95,
+            do_sample=True,
+            return_full_text=False
+        )
+        
+        # Generar con CodeLlama
+        codellama_result = self.codellama(
+            prompt,
+            max_new_tokens=max_tokens,
+            temperature=temperature,
+            top_p=0.95,
+            do_sample=True,
+            return_full_text=False
+        )
+        
+        # Combinar (simple concatenación con comentarios)
+        combined = f"""# Solution from DeepSeek-Coder:
+{deepseek_result[0]["generated_text"]}
+
+# Alternative approach from CodeLlama:
+{codellama_result[0]["generated_text"]}
+"""
+        
+        return {
+            "code": combined,
+            "model_used": "ensemble",
+            "confidence": "very_high"
+        }
+
+# Instanciar Router
+router = JoxCoderRouter(
+    deepseek_path=str(MODELS_DIR / "deepseek-joxcoder-v1"),
+    codellama_path=str(MODELS_DIR / "codellama-joxcoder-v1")
+)
+
+print("\n✅ JoxCoder Router listo para usar!")
+
+🧪 TESTING Y VALIDACIÓN {#testing}
+CELDA 11: Tests Comprehensivos
+python# ============================================
+# TESTS DE CALIDAD DE JOXCODER
+# ============================================
+
+test_cases = [
+    {
+        "name": "Full-Stack App",
+        "prompt": """Create a complete e-commerce application with:
+- React frontend with product listing and cart
+- FastAPI backend with authentication
+- PostgreSQL database
+- Stripe payment integration
+- Docker deployment""",
+        "expected_model": "deepseek",
+        "keywords": ["react", "fastapi", "stripe", "docker"]
+    },
+    {
+        "name": "Python Data Science",
+        "prompt": """Write a Python script to:
+- Load CSV data with pandas
+- Clean missing values
+- Create visualizations with matplotlib
+- Train a linear regression model with scikit-learn""",
+        "expected_model": "codellama",
+        "keywords": ["pandas", "matplotlib", "scikit-learn"]
+    },
+    {
+        "name": "Blockchain Smart Contract",
+        "prompt": """Create a Solidity smart contract for an NFT marketplace with:
+- ERC-721 token standard
+- Listing and buying functions
+- Royalty distribution
+- Access control""",
+        "expected_model": "deepseek",
+        "keywords": ["solidity", "erc-721", "nft"]
+    },
+    {
+        "name": "React Component",
+        "prompt": """Build a React component for a dashboard with:
+- TypeScript
+- Tailwind CSS
+- Chart.js for data visualization
+- Responsive design""",
+        "expected_model": "codellama",
+        "keywords": ["typescript", "react", "tailwind"]
+    },
+    {
+        "name": "DevOps Configuration",
+        "prompt": """Create Kubernetes manifests for deploying a microservices app:
+- Deployment with 3 replicas
+- Service with LoadBalancer
+- ConfigMap for environment variables
+- HPA for auto-scaling""",
+        "expected_model": "deepseek",
+        "keywords": ["kubernetes", "deployment", "service"]
+    }
+]
+
+print("🧪 EJECUTANDO TESTS DE JOXCODER\n")
+print("="*60)
+
+results = []
+
+for i, test in enumerate(test_cases, 1):
+    print(f"\n📋 Test {i}/{len(test_cases)}: {test['name']}")
+    print(f"Prompt: {test['prompt'][:100]}...")
+    
+    # Generar
+    result = router.generate(
+        test['prompt'],
+        max_tokens=1024,
+        temperature=0.2
+    )
+    
+    # Verificar modelo usado
+    model_correct = result['model_used'] == test['expected_model']
+    
+    # Verificar keywords en output
+    code = result['code'].lower()
+    keywords_found = sum(1 for kw in test['keywords'] if kw in code)
+    keywords_score = keywords_found / len(test['keywords']) * 100
+    
+    # Resultados
+    print(f"✅ Modelo usado: {result['model_used'].upper()} {'✓' if model_correct else '✗'}")
+    print(f"📊 Keywords encontradas: {keywords_found}/{len(test['keywords'])} ({keywords_score:.0f}%)")
+    print(f"📝 Código generado: {len(result['code'])} caracteres")
+    
+    results.append({
+        "test": test['name'],
+        "model_correct": model_correct,
+        "keywords_score": keywords_score,
+        "code_length": len(result['code'])
+    })
+    
+    print("-" * 60)
+
+# Resumen
+print("\n" + "="*60)
+print("📊 RESUMEN DE RESULTADOS")
+print("="*60)
+
+total_tests = len(results)
+models_correct = sum(1 for r in results if r['model_correct'])
+avg_keyword_score = sum(r['keywords_score'] for r in results) / total_tests
+
+print(f"✅ Tests pasados: {models_correct}/{total_tests} ({models_correct/total_tests*100:.0f}%)")
+print(f"📊 Score promedio de keywords: {avg_keyword_score:.1f}%")
+print(f"📝 Longitud promedio de código: {sum(r['code_length'] for r in results) // total_tests:,} chars")
+
+if models_correct == total_tests and avg_keyword_score > 70:
+    print("\n🎉 ¡JOXCODER ESTÁ FUNCIONANDO PERFECTAMENTE!")
+else:
+    print("\n⚠️  Algunos tests fallaron. Revisar configuración.")
+CELDA 12: Benchmarking con HumanEval
+python# ============================================
+# BENCHMARK: HUMANEVAL (OPCIONAL)
+# ============================================
+from datasets import load_dataset
+
+print("📊 BENCHMARK: HumanEval")
+print("="*60)
+
+# Cargar HumanEval
+humaneval = load_dataset("openai_humaneval", split="test")
+
+print(f"Total problemas: {len(humaneval)}")
+print("\nEjecutando subset de 10 problemas...\n")
+
+correct_solutions = 0
+test_subset = humaneval.select(range(10))
+
+for i, example in enumerate(test_subset, 1):
+    prompt = example['prompt']
+    
+    # Generar solución
+    result = router.generate(
+        f"Complete this Python function:\n{prompt}",
+        max_tokens=512,
+        temperature=0.2
+    )
+    
+    # Extraer código
+    generated_code = result['code']
+    
+    # Verificar sintaxis (simple check)
+    try:
+        compile(generated_code, '<string>', 'exec')
+        syntax_ok = True
+    except:
+        syntax_ok = False
+    
+    print(f"{i}/10: {'✓' if syntax_ok else '✗'} Sintaxis {'correcta' if syntax_ok else 'incorrecta'}")
+    
+    if syntax_ok:
+        correct_solutions += 1
+
+pass_rate = (correct_solutions / 10) * 100
+print(f"\n📊 Pass@1 (sintaxis): {correct_solutions}/10 ({pass_rate:.0f}%)")
+
+if pass_rate >= 80:
+    print("✅ Excelente performance en HumanEval")
+elif pass_rate >= 60:
+    print("⚠️  Performance aceptable, considerar más entrenamiento")
+else:
+    print("❌ Performance baja, revisar entrenamiento")
+
+🔗 INTEGRACIÓN CON AUTOCREA {#integracion}
+CELDA 13: API Server para JoxCoder
+python# ============================================
+# API SERVER PARA JOXCODER
+# Guardar como: backend/app/api/joxcoder_server.py
+# ============================================
+
+# Este código va en tu backend de AUTOCREA
+api_server_code = '''
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Literal, Optional
+import torch
+
+app = FastAPI(title="JoxCoder API")
+
+# Cargar router global
+from joxcoder_router import JoxCoderRouter
+
+router = JoxCoderRouter(
+    deepseek_path="path/to/deepseek-joxcoder-v1",
+    codellama_path="path/to/codellama-joxcoder-v1"
+)
+
+class GenerateRequest(BaseModel):
+    prompt: str
+    role: Literal["fullstack", "backend", "frontend", "devops", "blockchain", "security"]
+    max_tokens: int = 2048
+    temperature: float = 0.2
+    force_model: Optional[Literal["deepseek", "codellama"]] = None
+
+class GenerateResponse(BaseModel):
+    code: str
+    model_used: str
+    confidence: str
+    tokens_generated: int
+
+@app.post("/generate", response_model=GenerateResponse)
+async def generate_code(request: GenerateRequest):
+    """
+    Endpoint principal para generar código con JoxCoder
+    """
+    try:
+        # Adaptar prompt según el rol
+        system_prompts = {
+            "fullstack": "You are an expert full-stack developer. Create complete applications.",
+            "backend": "You are a senior backend developer. Build robust APIs.",
+            "frontend": "You are a React/Vue expert. Create beautiful UIs.",
+            "devops": "You are a DevOps engineer. Configure infrastructure.",
+            "blockchain": "You are a blockchain developer. Write secure smart contracts.",
+            "security": "You are a security expert. Audit code for vulnerabilities."
+        }
+        
+        full_prompt = f"{system_prompts[request.role]}\\n\\n{request.prompt}"
+        
+        # Generar con router
+        result = router.generate(
+            full_prompt,
+            max_tokens=request.max_tokens,
+            temperature=request.temperature,
+            force_model=request.force_model
+        )
+        
+        return GenerateResponse(
+            code=result["code"],
+            model_used=result["model_used"],
+            confidence=result["confidence"],
+            tokens_generated=len(result["code"].split())
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "deepseek_loaded": router.deepseek is not None,
+        "codellama_loaded": router.codellama is not None,
+        "gpu_available": torch.cuda.is_available()
+    }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+'''
+
+# Guardar código del servidor
+with open(BASE_DIR / "joxcoder_server.py", 'w') as f:
+    f.write(api_server_code)
+
+print("✅ Código del servidor guardado en:")
+print(f"   {BASE_DIR / 'joxcoder_server.py'}")
+print("\nPara ejecutar:")
+print("   python joxcoder_server.py")
+CELDA 14: Cliente Python para AUTOCREA
+python# ============================================
+# CLIENTE PYTHON PARA AUTOCREA
+# ============================================
+
+client_code = '''
+import requests
+from typing import Literal, Optional
+
+class JoxCoderClient:
+    """
+    Cliente para interactuar con JoxCoder desde AUTOCREA
+    """
+    
+    def __init__(self, api_url: str = "http://localhost:8000"):
+        self.api_url = api_url
+    
+    def generate(
+        self,
+        prompt: str,
+        role: Literal["fullstack", "backend", "frontend", "devops", "blockchain", "security"],
+        max_tokens: int = 2048,
+        temperature: float = 0.2,
+        force_model: Optional[Literal["deepseek", "codellama"]] = None
+    ) -> dict:
+        """
+        Genera código usando JoxCoder
+        """
+        response = requests.post(
+            f"{self.api_url}/generate",
+            json={
+                "prompt": prompt,
+                "role": role,
+                "max_tokens": max_tokens,
+                "temperature": temperature,
+                "force_model": force_model
+            },
+            timeout=120
+        )
+        
+        response.raise_for_status()
+        return response.json()
+    
+    # Métodos de conveniencia por rol
+    def create_fullstack_app(self, description: str) -> str:
+        """Crea una aplicación full-stack completa"""
+        result = self.generate(
+            prompt=f"Create a complete full-stack application: {description}",
+            role="fullstack"
+        )
+        return result["code"]
+    
+    def create_backend_api(self, description: str) -> str:
+        """Crea APIs backend"""
+        result = self.generate(
+            prompt=f"Create a backend API: {description}",
+            role="backend"
+        )
+        return result["code"]
+    
+    def create_frontend_ui(self, description: str) -> str:
+        """Crea interfaces frontend"""
+        result = self.generate(
+            prompt=f"Create a frontend UI: {description}",
+            role="frontend",
+            force_model="codellama"  # CodeLlama es mejor para React
+        )
+        return result["code"]
+    
+    def create_smart_contract(self, description: str) -> str:
+        """Crea smart contracts"""
+        result = self.generate(
+            prompt=f"Create a smart contract: {description}",
+            role="blockchain",
+            force_model="deepseek"  # DeepSeek es mejor para Solidity
+        )
+        return result["code"]
+    
+    def setup_infrastructure(self, description: str) -> str:
+        """Configura infraestructura DevOps"""
+        result = self.generate(
+            prompt=f"Set up infrastructure: {description}",
+            role="devops",
+            force_model="deepseek"
+        )
+        return result["code"]
+    
+    def audit_security(self, code: str) -> str:
+        """Audita código en busca de vulnerabilidades"""
+        result = self.generate(
+            prompt=f"Audit this code for security vulnerabilities:\\n\\n{code}",
+            role="security"
+        )
+        return result["code"]
+    
+    def health_check(self) -> dict:
+        """Verifica el estado del servidor"""
+        response = requests.get(f"{self.api_url}/health")
+        return response.json()
+
+
+# Ejemplo de uso en AUTOCREA
+if __name__ == "__main__":
+    client = JoxCoderClient()
+    
+    # Verificar que el servidor esté funcionando
+    health = client.health_check()
+    print(f"JoxCoder Status: {health}")
+    
+    # Crear una app completa
+    app_code = client.create_fullstack_app(
+        "E-commerce with Stripe payments and admin dashboard"
+    )
+    print(f"Código generado ({len(app_code)} chars)")
+'''
+
+# Guardar cliente
+with open(BASE_DIR / "joxcoder_client.py", 'w') as f:
+    f.write(client_code)
+
+print("✅ Cliente guardado en:")
+print(f"   {BASE_DIR / 'joxcoder_client.py'}")
+
+🚀 DEPLOYMENT {#deployment}
+CELDA 15: Subir Modelos a Hugging Face
+python# ============================================
+# SUBIR MODELOS A HUGGING FACE
+# ============================================
+from huggingface_hub import HfApi, login
+
+print("🔐 Login a Hugging Face...")
+print("Ve a: https://huggingface.co/settings/tokens")
+print("Crea un token con permisos de 'write'")
+
+# Login
+login()
+
+# Instanciar API
+api = HfApi()
+
+# Tu username de HuggingFace
+HF_USERNAME = "tu-usuario"  # ⚠️ CAMBIAR ESTO
+
+# Subir DeepSeek
+print("\n📤 Subiendo DeepSeek-JoxCoder...")
+api.create_repo(
+    repo_id=f"{HF_USERNAME}/deepseek-joxcoder-v1",
+    repo_type="model",
+    exist_ok=True
+)
+
+api.upload_folder(
+    folder_path=str(MODELS_DIR / "deepseek-joxcoder-v1"),
+    repo_id=f"{HF_USERNAME}/deepseek-joxcoder-v1",
+    repo_type="model"
+)
+
+print(f"✅ DeepSeek disponible en: https://huggingface.co/{HF_USERNAME}/deepseek-joxcoder-v1")
+
+# Subir CodeLlama
+print("\n📤 Subiendo CodeLlama-JoxCoder...")
+api.create_repo(
+    repo_id=f"{HF_USERNAME}/codellama-joxcoder-v1",
+    repo_type="model",
+    exist_ok=True
+)
+
+api.upload_folder(
+    folder_path=str(MODELS_DIR / "codellama-joxcoder-v1"),
+    repo_id=f"{HF_USERNAME}/codellama-joxcoder-v1",
+    repo_type="model"
+)
+
+print(f"✅ CodeLlama disponible en: https://huggingface.co/{HF_USERNAME}/codellama-joxcoder-v1")
+
+print("\n🎉 ¡Ambos modelos subidos exitosamente!")
+print("\nPuedes usarlos ahora con:")
+print(f'  model = AutoModelForCausalLM.from_pretrained("{HF_USERNAME}/deepseek-joxcoder-v1")')
+CELDA 16: Configuración para Producción
+python# ============================================
+# DEPLOYMENT EN PRODUCCIÓN
+# ============================================
+
+deployment_guide = '''
+# 🚀 GUÍA DE DEPLOYMENT - JOXCODER
+
+## Opción 1: Hugging Face Inference API (Recomendado)
+
+### Ventajas:
+- ✅ Gratis para modelos públicos
+- ✅ Sin infraestructura propia
+- ✅ Escalamiento automático
+
+### Setup:
+1. Modelos ya están en HuggingFace (subidos en celda anterior)
+2. Obtener API token: https://huggingface.co/settings/tokens
+3. Usar en tu backend:
+```python
+from huggingface_hub import InferenceClient
+
+client = InferenceClient(token="hf_...")
+
+# Generar código
+output = client.text_generation(
+    "Create a FastAPI endpoint",
+    model="tu-usuario/deepseek-joxcoder-v1",
+    max_new_tokens=2048
+)
+```
+
+### Costos:
+- Gratuito para modelos públicos
+- Rate limits: 1000 requests/hora
+
+---
+
+## Opción 2: Railway/Render (Infraestructura propia)
+
+### Requisitos:
+- GPU con 24GB+ VRAM (A10, A100)
+- Costo: ~$300-500/mes
+
+### Deploy en Railway:
+
+1. **Crear Dockerfile:**
+```dockerfile
+FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
+
+RUN apt-get update && apt-get install -y python3 python3-pip
+RUN pip3 install transformers torch peft fastapi uvicorn
+
+COPY joxcoder_server.py /app/
+COPY models/ /app/models/
+
+WORKDIR /app
+CMD ["python3", "joxcoder_server.py"]
+```
+
+2. **Deploy:**
+```bash
+railway up
+```
+
+---
+
+## Opción 3: Self-Hosted (Máximo control)
+
+### Hardware recomendado:
+- GPU: NVIDIA A100 40GB
+- CPU: 16+ cores
+- RAM: 64GB+
+- Storage: 500GB SSD
+
+### Setup con Docker:
+```bash
+# Construir imagen
+docker build -t joxcoder-api .
+
+# Ejecutar
+docker run -p 8000:8000 --gpus all joxcoder-api
+```
+
+### Monitoreo:
+- Prometheus para métricas
+- Grafana para visualización
+- Sentry para errores
+
+---
+
+## Configuración Recomendada para AUTOCREA
+
+### Architecture:
+AUTOCREA Frontend (Vercel)
+↓
+AUTOCREA Backend (Railway)
+↓
+JoxCoder API (HuggingFace Inference)
+
+### Variables de entorno:
+```env
+# Backend de AUTOCREA
+JOXCODER_DEEPSEEK_URL=https://api-inference.huggingface.co/models/tu-usuario/deepseek-joxcoder-v1
+JOXCODER_CODELLAMA_URL=https://api-inference.huggingface.co/models/tu-usuario/codellama-joxcoder-v1
+HUGGINGFACE_TOKEN=hf_...
+```
+
+### Rate Limiting:
+```python
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
+
+@app.post("/generate", dependencies=[Depends(RateLimiter(times=10, seconds=60))])
+async def generate(request: GenerateRequest):
+    ...
+```
+
+---
+
+## Testing en Producción
+
+### Health Checks:
+```python
+@app.get("/health")
+async def health():
+    # Verificar que modelos respondan
+    test_output = router.generate("print('hello')", max_tokens=50)
+    
+    return {
+        "status": "healthy" if test_output else "unhealthy",
+        "models_loaded": 2,
+        "uptime": get_uptime()
+    }
+```
+
+### Logging:
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger("joxcoder")
+logger.info(f"Generated {tokens} tokens in {elapsed}s")
+```
+
+---
+
+## Costos Estimados
+
+| Opción | Costo/mes | Latencia | Escalabilidad |
+|--------|-----------|----------|---------------|
+| HF Inference API | $0 | ~5-10s | Alta |
+| Railway GPU | $300-500 | ~2-3s | Media |
+| Self-Hosted A100 | $800-1000 | ~1-2s | Baja |
+
+**Recomendación:** Empezar con HF Inference API, migrar a Railway si creces.
+'''
+
+# Guardar guía
+with open(BASE_DIR / "DEPLOYMENT_GUIDE.md", 'w') as f:
+    f.write(deployment_guide)
+
+print("✅ Guía de deployment guardada")
+print(f"   {BASE_DIR / 'DEPLOYMENT_GUIDE.md'}")

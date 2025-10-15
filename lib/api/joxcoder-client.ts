@@ -1,7 +1,9 @@
-export interface JoxCoderConfig {
-  apiUrl: string;
-  apiKey: string;
-  model?: string;
+export interface JoxCoderHybridConfig {
+  deepSeekApiUrl: string;
+  deepSeekApiKey: string;
+  codeLlamaApiUrl: string;
+  codeLlamaApiKey: string;
+  routerUrl?: string;
   temperature?: number;
   maxTokens?: number;
 }
@@ -11,42 +13,118 @@ export interface GenerationRequest {
   context?: string;
   agentRole?: "architect" | "backend" | "frontend" | "devops" | "security";
   previousSteps?: string[];
+  preferredModel?: "deepseek" | "codellama" | "auto";
 }
 
 export interface GenerationResponse {
   success: boolean;
   content: string;
   tokensUsed: number;
-  model: string;
+  modelUsed: string;
   error?: string;
 }
 
-export class JoxCoderClient {
-  private config: JoxCoderConfig;
+export interface RouterDecision {
+  model: "deepseek" | "codellama";
+  confidence: number;
+  reasoning: string;
+}
 
-  constructor(config: JoxCoderConfig) {
+export class JoxCoderHybridClient {
+  private config: JoxCoderHybridConfig;
+
+  constructor(config: JoxCoderHybridConfig) {
     this.config = {
-      model: "joxcoder-v1",
       temperature: 0.7,
       maxTokens: 2000,
       ...config,
     };
   }
 
+  private analyzePromptForRouter(request: GenerationRequest): RouterDecision {
+    const prompt = request.prompt.toLowerCase();
+    const role = request.agentRole || "backend";
+
+    const deepSeekKeywords = [
+      "arquitectura", "architecture", "blockchain", "smart contract",
+      "devops", "kubernetes", "docker", "terraform", "infrastructure",
+      "security", "audit", "vulnerabilidad", "solidity", "web3",
+      "microservices", "distributed", "scalability"
+    ];
+
+    const codeLlamaKeywords = [
+      "react", "vue", "angular", "frontend", "ui", "ux", "component",
+      "python", "javascript", "typescript", "debug", "error", "fix",
+      "api", "endpoint", "database", "sql", "mongodb", "express",
+      "data science", "machine learning", "pandas", "numpy"
+    ];
+
+    let deepSeekScore = 0;
+    let codeLlamaScore = 0;
+
+    deepSeekKeywords.forEach(keyword => {
+      if (prompt.includes(keyword)) deepSeekScore++;
+    });
+
+    codeLlamaKeywords.forEach(keyword => {
+      if (prompt.includes(keyword)) codeLlamaScore++;
+    });
+
+    if (role === "architect" || role === "devops" || role === "security") {
+      deepSeekScore += 3;
+    }
+
+    if (role === "frontend" || role === "backend") {
+      codeLlamaScore += 2;
+    }
+
+    const model = deepSeekScore > codeLlamaScore ? "deepseek" : "codellama";
+    const total = deepSeekScore + codeLlamaScore;
+    const confidence = total > 0 ? Math.max(deepSeekScore, codeLlamaScore) / total : 0.5;
+
+    return {
+      model,
+      confidence,
+      reasoning: `DeepSeek score: ${deepSeekScore}, CodeLlama score: ${codeLlamaScore}`
+    };
+  }
+
   async generate(request: GenerationRequest): Promise<GenerationResponse> {
     try {
-      const response = await fetch(this.config.apiUrl, {
+      let modelToUse: "deepseek" | "codellama";
+      
+      if (request.preferredModel && request.preferredModel !== "auto") {
+        modelToUse = request.preferredModel;
+      } else {
+        const decision = this.analyzePromptForRouter(request);
+        modelToUse = decision.model;
+        console.log(`🎯 Router decision: ${decision.model} (confidence: ${decision.confidence.toFixed(2)})`);
+      }
+
+      const apiUrl = modelToUse === "deepseek" 
+        ? this.config.deepSeekApiUrl 
+        : this.config.codeLlamaApiUrl;
+      
+      const apiKey = modelToUse === "deepseek"
+        ? this.config.deepSeekApiKey
+        : this.config.codeLlamaApiKey;
+
+      const fullPrompt = this.buildPrompt(request, modelToUse);
+
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${this.config.apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          inputs: this.buildPrompt(request),
+          inputs: fullPrompt,
           parameters: {
             temperature: this.config.temperature,
             max_new_tokens: this.config.maxTokens,
             return_full_text: false,
+            do_sample: true,
+            top_p: 0.95,
           },
         }),
       });
@@ -61,47 +139,53 @@ export class JoxCoderClient {
         success: true,
         content: data[0]?.generated_text || "",
         tokensUsed: this.estimateTokens(data[0]?.generated_text || ""),
-        model: this.config.model || "joxcoder-v1",
+        modelUsed: modelToUse === "deepseek" ? "DeepSeek-33B" : "CodeLlama-34B",
       };
     } catch (error) {
       return {
         success: false,
         content: "",
         tokensUsed: 0,
-        model: this.config.model || "joxcoder-v1",
+        modelUsed: "error",
         error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
 
-  private buildPrompt(request: GenerationRequest): string {
+  private buildPrompt(request: GenerationRequest, model: "deepseek" | "codellama"): string {
     let prompt = "";
 
     if (request.agentRole) {
       const rolePrompts = {
-        architect:
-          "You are an expert software architect. Design the system architecture, select technologies, and plan the project structure.",
-        backend:
-          "You are an expert backend developer. Implement robust APIs, database models, and business logic.",
-        frontend:
-          "You are an expert frontend developer. Create beautiful, responsive user interfaces with excellent UX.",
-        devops:
-          "You are an expert DevOps engineer. Set up deployment pipelines, configure infrastructure, and ensure scalability.",
-        security:
-          "You are an expert security auditor. Review code for vulnerabilities, implement security best practices, and ensure data protection.",
+        deepseek: {
+          architect: `Eres un arquitecto de software experto especializado en diseño de sistemas distribuidos, microservicios y arquitecturas escalables. Diseña la arquitectura del sistema, selecciona las tecnologías apropiadas y planifica la estructura del proyecto.`,
+          devops: `Eres un ingeniero DevOps experto en Kubernetes, Docker, Terraform e infraestructura como código. Configura pipelines de deployment, infraestructura y asegura la escalabilidad.`,
+          security: `Eres un auditor de seguridad experto en OWASP, vulnerabilidades y mejores prácticas. Revisa el código en busca de vulnerabilidades, implementa prácticas de seguridad y asegura la protección de datos.`,
+          backend: `Eres un desarrollador backend experto en APIs RESTful, GraphQL, bases de datos y lógica de negocio compleja. Implementa APIs robustas, modelos de datos y lógica de negocio.`,
+          frontend: `Eres un desarrollador frontend experto en React, Vue, Angular y diseño de interfaces. Crea interfaces hermosas y responsivas con excelente UX.`,
+        },
+        codellama: {
+          frontend: `Eres un desarrollador frontend senior experto en React, TypeScript, Next.js, Tailwind CSS y componentes modernos. Crea interfaces de usuario hermosas, responsivas y con excelente experiencia de usuario.`,
+          backend: `Eres un desarrollador backend senior experto en Python, FastAPI, Node.js, Express, bases de datos SQL/NoSQL. Implementa APIs robustas con manejo de errores apropiado.`,
+          architect: `Eres un arquitecto de software con experiencia en diseño de aplicaciones web modernas. Diseña la estructura del proyecto y selecciona las tecnologías apropiadas.`,
+          devops: `Eres un ingeniero DevOps con experiencia en CI/CD, contenedores y deployment. Configura la infraestructura y pipelines de deployment.`,
+          security: `Eres un experto en seguridad de aplicaciones web. Revisa el código e implementa las mejores prácticas de seguridad.`,
+        }
       };
-      prompt += `${rolePrompts[request.agentRole]}\n\n`;
+
+      const modelPrompts = model === "deepseek" ? rolePrompts.deepseek : rolePrompts.codellama;
+      prompt += `${modelPrompts[request.agentRole]}\n\n`;
     }
 
     if (request.context) {
-      prompt += `Context:\n${request.context}\n\n`;
+      prompt += `Contexto:\n${request.context}\n\n`;
     }
 
     if (request.previousSteps && request.previousSteps.length > 0) {
-      prompt += `Previous steps:\n${request.previousSteps.join("\n")}\n\n`;
+      prompt += `Pasos previos:\n${request.previousSteps.join("\n")}\n\n`;
     }
 
-    prompt += `Task:\n${request.prompt}`;
+    prompt += `Tarea:\n${request.prompt}\n\nProporciona código limpio, bien documentado y siguiendo las mejores prácticas.`;
 
     return prompt;
   }
@@ -113,25 +197,39 @@ export class JoxCoderClient {
   async generateMultiAgent(
     projectDescription: string
   ): Promise<{
-    steps: Array<{ role: string; content: string; tokensUsed: number }>;
+    steps: Array<{ 
+      role: string; 
+      content: string; 
+      tokensUsed: number;
+      modelUsed: string;
+    }>;
     totalTokens: number;
   }> {
-    const roles: Array<"architect" | "backend" | "frontend" | "devops" | "security"> = [
-      "architect",
-      "backend",
-      "frontend",
-      "devops",
-      "security",
+    const agentRoles: Array<{
+      role: "architect" | "backend" | "frontend" | "devops" | "security";
+      preferredModel: "deepseek" | "codellama";
+    }> = [
+      { role: "architect", preferredModel: "deepseek" },
+      { role: "backend", preferredModel: "codellama" },
+      { role: "frontend", preferredModel: "codellama" },
+      { role: "devops", preferredModel: "deepseek" },
+      { role: "security", preferredModel: "deepseek" },
     ];
 
-    const steps: Array<{ role: string; content: string; tokensUsed: number }> = [];
+    const steps: Array<{ 
+      role: string; 
+      content: string; 
+      tokensUsed: number;
+      modelUsed: string;
+    }> = [];
     const previousOutputs: string[] = [];
 
-    for (const role of roles) {
+    for (const { role, preferredModel } of agentRoles) {
       const request: GenerationRequest = {
         prompt: projectDescription,
         agentRole: role,
         previousSteps: previousOutputs,
+        preferredModel,
       };
 
       const response = await this.generate(request);
@@ -141,13 +239,15 @@ export class JoxCoderClient {
           role,
           content: response.content,
           tokensUsed: response.tokensUsed,
+          modelUsed: response.modelUsed,
         });
-        previousOutputs.push(`${role}: ${response.content}`);
+        previousOutputs.push(`${role} (${response.modelUsed}): ${response.content}`);
       } else {
         steps.push({
           role,
           content: `Error: ${response.error}`,
           tokensUsed: 0,
+          modelUsed: "error",
         });
       }
     }
@@ -158,14 +258,21 @@ export class JoxCoderClient {
   }
 }
 
-export function createJoxCoderClient(): JoxCoderClient | null {
-  const apiUrl = process.env.JOXCODER_API_URL;
-  const apiKey = process.env.JOXCODER_API_KEY;
+export function createJoxCoderHybridClient(): JoxCoderHybridClient | null {
+  const deepSeekApiUrl = process.env.JOXCODER_DEEPSEEK_API_URL;
+  const deepSeekApiKey = process.env.JOXCODER_DEEPSEEK_API_KEY;
+  const codeLlamaApiUrl = process.env.JOXCODER_CODELLAMA_API_URL;
+  const codeLlamaApiKey = process.env.JOXCODER_CODELLAMA_API_KEY;
 
-  if (!apiUrl || !apiKey) {
-    console.warn("JoxCoder API credentials not configured");
+  if (!deepSeekApiUrl || !deepSeekApiKey || !codeLlamaApiUrl || !codeLlamaApiKey) {
+    console.warn("JoxCoder Hybrid API credentials not fully configured");
     return null;
   }
 
-  return new JoxCoderClient({ apiUrl, apiKey });
+  return new JoxCoderHybridClient({
+    deepSeekApiUrl,
+    deepSeekApiKey,
+    codeLlamaApiUrl,
+    codeLlamaApiKey,
+  });
 }
