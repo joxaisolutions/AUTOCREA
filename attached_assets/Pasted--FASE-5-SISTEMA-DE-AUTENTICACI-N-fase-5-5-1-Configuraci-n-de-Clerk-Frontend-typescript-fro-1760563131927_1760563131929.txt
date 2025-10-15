@@ -1,0 +1,1063 @@
+🔥 FASE 5: SISTEMA DE AUTENTICACIÓN {#fase-5}
+5.1 Configuración de Clerk (Frontend)
+typescript// frontend/app/layout.tsx
+import { ClerkProvider } from '@clerk/nextjs';
+import { Inter } from 'next/font/google';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <ClerkProvider>
+      <html lang="es">
+        <body className={inter.className}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
+  );
+}
+typescript// frontend/middleware.ts
+import { authMiddleware } from "@clerk/nextjs";
+
+export default authMiddleware({
+  publicRoutes: ["/", "/pricing", "/about", "/api/webhooks/(.*)"],
+  ignoredRoutes: ["/api/health"],
+});
+
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};
+5.2 Páginas de Auth
+typescript// frontend/app/(auth)/login/page.tsx
+import { SignIn } from "@clerk/nextjs";
+
+export default function LoginPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <SignIn
+        appearance={{
+          elements: {
+            formButtonPrimary: "bg-cyan-500 hover:bg-cyan-600",
+            card: "bg-slate-800/50 border-slate-700",
+          }
+        }}
+        routing="path"
+        path="/login"
+        signUpUrl="/register"
+      />
+    </div>
+  );
+}
+typescript// frontend/app/(auth)/register/page.tsx
+import { SignUp } from "@clerk/nextjs";
+
+export default function RegisterPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <SignUp
+        appearance={{
+          elements: {
+            formButtonPrimary: "bg-cyan-500 hover:bg-cyan-600",
+            card: "bg-slate-800/50 border-slate-700",
+          }
+        }}
+        routing="path"
+        path="/register"
+        signInUrl="/login"
+      />
+    </div>
+  );
+}
+5.3 Webhook de Clerk (crear usuario en Convex)
+typescript// frontend/app/api/webhooks/clerk/route.ts
+import { Webhook } from 'svix';
+import { headers } from 'next/headers';
+import { WebhookEvent } from '@clerk/nextjs/server';
+import { api } from '@/convex/_generated/api';
+import { fetchMutation } from 'convex/nextjs';
+
+export async function POST(req: Request) {
+  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+
+  if (!WEBHOOK_SECRET) {
+    throw new Error('Please add CLERK_WEBHOOK_SECRET to .env');
+  }
+
+  const headerPayload = headers();
+  const svix_id = headerPayload.get('svix-id');
+  const svix_timestamp = headerPayload.get('svix-timestamp');
+  const svix_signature = headerPayload.get('svix-signature');
+
+  if (!svix_id || !svix_timestamp || !svix_signature) {
+    return new Response('Error: Missing svix headers', { status: 400 });
+  }
+
+  const payload = await req.json();
+  const body = JSON.stringify(payload);
+
+  const wh = new Webhook(WEBHOOK_SECRET);
+  let evt: WebhookEvent;
+
+  try {
+    evt = wh.verify(body, {
+      'svix-id': svix_id,
+      'svix-timestamp': svix_timestamp,
+      'svix-signature': svix_signature,
+    }) as WebhookEvent;
+  } catch (err) {
+    console.error('Error verifying webhook:', err);
+    return new Response('Error: Verification failed', { status: 400 });
+  }
+
+  const eventType = evt.type;
+
+  if (eventType === 'user.created') {
+    const { id, email_addresses, first_name, last_name, image_url } = evt.data;
+
+    // Crear usuario en Convex
+    await fetchMutation(api.users.create, {
+      clerkId: id,
+      email: email_addresses[0].email_address,
+      name: `${first_name || ''} ${last_name || ''}`.trim(),
+      avatarUrl: image_url,
+      tokenBalance: 100, // 100 tokens gratis de bienvenida
+    });
+  }
+
+  return new Response('Webhook processed', { status: 200 });
+}
+
+⚠️ FASE 6: MANEJO DE ERRORES {#fase-6}
+6.1 Error Boundary (Frontend)
+typescript// frontend/components/error-boundary.tsx
+"use client";
+
+import { Component, ReactNode } from "react";
+import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+interface Props {
+  children: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+  error: Error | null;
+}
+
+export class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error('Error caught by boundary:', error, errorInfo);
+    
+    // Enviar a Sentry en producción
+    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      // sentry.captureException(error);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <divReintentarClaude aún no tiene la capacidad de ejecutar el código que genera.JContinuartypescript// frontend/components/error-boundary.tsx (continuación)
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-950 p-6">
+          <div className="max-w-md w-full text-center">
+            <AlertTriangle className="w-16 h-16 mx-auto text-red-500 mb-4" />
+            <h2 className="text-2xl font-bold text-slate-200 mb-2">
+              Algo salió mal
+            </h2>
+            <p className="text-slate-400 mb-6">
+              {this.state.error?.message || 'Ha ocurrido un error inesperado'}
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button
+                onClick={() => window.location.href = '/'}
+                variant="outline"
+              >
+                Ir al inicio
+              </Button>
+              <Button
+                onClick={() => this.setState({ hasError: false, error: null })}
+              >
+                Intentar de nuevo
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+6.2 Manejo de Errores de API (Backend)
+python# backend/app/core/exceptions.py
+from fastapi import HTTPException, status
+
+class AutocreaException(HTTPException):
+    """Clase base para excepciones personalizadas"""
+    def __init__(self, detail: str, status_code: int = 500):
+        super().__init__(status_code=status_code, detail=detail)
+
+class InsufficientTokensException(AutocreaException):
+    def __init__(self, required: int, available: int):
+        super().__init__(
+            detail=f"Insufficient tokens. Required: {required}, Available: {available}",
+            status_code=status.HTTP_402_PAYMENT_REQUIRED
+        )
+
+class ProjectNotFoundException(AutocreaException):
+    def __init__(self, project_id: str):
+        super().__init__(
+            detail=f"Project {project_id} not found",
+            status_code=status.HTTP_404_NOT_FOUND
+        )
+
+class JoxCoderUnavailableException(AutocreaException):
+    def __init__(self):
+        super().__init__(
+            detail="JoxCoder is temporarily unavailable. Please try again later.",
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+        )
+
+class RateLimitExceededException(AutocreaException):
+    def __init__(self):
+        super().__init__(
+            detail="Rate limit exceeded. Please wait before trying again.",
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS
+        )
+6.3 Rate Limiting
+python# backend/app/core/rate_limit.py
+from fastapi import Request, HTTPException
+from redis import asyncio as aioredis
+from app.core.config import settings
+import time
+
+class RateLimiter:
+    def __init__(self):
+        self.redis = aioredis.from_url(settings.REDIS_URL, decode_responses=True)
+    
+    async def check_rate_limit(
+        self,
+        key: str,
+        max_requests: int = 10,
+        window_seconds: int = 60
+    ) -> bool:
+        """
+        Verifica si el usuario ha excedido el límite de requests
+        
+        Args:
+            key: Identificador único (user_id, IP, etc.)
+            max_requests: Máximo de requests permitidos
+            window_seconds: Ventana de tiempo en segundos
+        
+        Returns:
+            True si está dentro del límite, False si lo excedió
+        """
+        current_time = int(time.time())
+        window_key = f"rate_limit:{key}:{current_time // window_seconds}"
+        
+        # Incrementar contador
+        pipe = self.redis.pipeline()
+        pipe.incr(window_key)
+        pipe.expire(window_key, window_seconds)
+        results = await pipe.execute()
+        
+        request_count = results[0]
+        
+        if request_count > max_requests:
+            raise HTTPException(
+                status_code=429,
+                detail=f"Rate limit exceeded. Max {max_requests} requests per {window_seconds}s"
+            )
+        
+        return True
+
+rate_limiter = RateLimiter()
+
+# Dependency para usar en endpoints
+async def rate_limit_dependency(request: Request):
+    user_id = request.state.user.get("id") if hasattr(request.state, "user") else "anonymous"
+    await rate_limiter.check_rate_limit(user_id, max_requests=10, window_seconds=60)
+6.4 Logging Estructurado
+python# backend/app/core/logger.py
+import logging
+import json
+from datetime import datetime
+from typing import Any, Dict
+
+class StructuredLogger:
+    def __init__(self, name: str):
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(logging.INFO)
+        
+        # Handler para consola
+        handler = logging.StreamHandler()
+        handler.setFormatter(self.JSONFormatter())
+        self.logger.addHandler(handler)
+    
+    class JSONFormatter(logging.Formatter):
+        def format(self, record: logging.LogRecord) -> str:
+            log_data = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "level": record.levelname,
+                "logger": record.name,
+                "message": record.getMessage(),
+            }
+            
+            # Agregar extra fields si existen
+            if hasattr(record, "extra"):
+                log_data.update(record.extra)
+            
+            # Agregar exception info si existe
+            if record.exc_info:
+                log_data["exception"] = self.formatException(record.exc_info)
+            
+            return json.dumps(log_data)
+    
+    def info(self, message: str, **kwargs: Any):
+        self.logger.info(message, extra=kwargs)
+    
+    def error(self, message: str, **kwargs: Any):
+        self.logger.error(message, extra=kwargs)
+    
+    def warning(self, message: str, **kwargs: Any):
+        self.logger.warning(message, extra=kwargs)
+    
+    def debug(self, message: str, **kwargs: Any):
+        self.logger.debug(message, extra=kwargs)
+
+logger = StructuredLogger("autocrea")
+
+🧪 FASE 7: TESTING & DEPLOYMENT {#fase-7}
+7.1 Tests Unitarios (Backend)
+python# backend/tests/test_joxcoder.py
+import pytest
+from app.core.joxcoder import JoxCoderClient
+
+@pytest.mark.asyncio
+async def test_joxcoder_generate():
+    client = JoxCoderClient()
+    
+    result = await client.generate(
+        prompt="Create a simple REST API endpoint",
+        role="backend",
+        max_tokens=500
+    )
+    
+    assert result is not None
+    assert len(result) > 0
+    assert "def" in result or "function" in result
+
+@pytest.mark.asyncio
+async def test_joxcoder_with_fallback():
+    client = JoxCoderClient()
+    
+    # Este test verifica que el fallback funcione si JoxCoder falla
+    result = await client.generate_with_fallback(
+        prompt="Write a hello world function",
+        role="backend",
+        fallback_model="openai"  # Solo si OPENAI_API_KEY está configurada
+    )
+    
+    assert result is not None
+python# backend/tests/test_code_generator.py
+import pytest
+from app.services.code_generator import CodeGenerationOrchestrator
+
+@pytest.mark.asyncio
+async def test_full_app_generation():
+    orchestrator = CodeGenerationOrchestrator()
+    
+    progress_steps = []
+    
+    async def track_progress(message: str):
+        progress_steps.append(message)
+    
+    results = await orchestrator.generate_full_app(
+        user_prompt="Create a simple todo app",
+        project_id="test_project_123",
+        on_progress=track_progress
+    )
+    
+    # Verificar que todos los pasos se completaron
+    assert "architecture" in results
+    assert "backend" in results
+    assert "frontend" in results
+    assert "devops" in results
+    assert "security_audit" in results
+    
+    # Verificar que se llamó el callback de progreso
+    assert len(progress_steps) > 0
+7.2 Tests E2E (Frontend)
+typescript// frontend/tests/e2e/generation.spec.ts
+import { test, expect } from '@playwright/test';
+
+test.describe('Code Generation Flow', () => {
+  test('should generate a full application', async ({ page }) => {
+    // Login
+    await page.goto('/login');
+    await page.fill('input[name="email"]', 'test@example.com');
+    await page.fill('input[name="password"]', 'testpassword');
+    await page.click('button[type="submit"]');
+    
+    // Navegar a chat
+    await page.goto('/chat');
+    
+    // Llenar formulario
+    await page.fill('input[name="project_name"]', 'test-app');
+    await page.fill('textarea', 'Create a simple blog with posts and comments');
+    
+    // Generar
+    await page.click('button:has-text("Generar Aplicación")');
+    
+    // Esperar a que aparezca el primer step
+    await page.waitForSelector('text=Diseñando arquitectura', { timeout: 10000 });
+    
+    // Verificar que el progreso avanza
+    await page.waitForSelector('text=Generando backend', { timeout: 30000 });
+    
+    // Verificar que se muestra código al final
+    await page.waitForSelector('[role="tablist"]', { timeout: 60000 });
+    
+    // Verificar que hay archivos
+    const tabs = await page.locator('[role="tab"]').count();
+    expect(tabs).toBeGreaterThan(0);
+  });
+  
+  test('should show error for insufficient tokens', async ({ page }) => {
+    // Setup: usuario con 0 tokens
+    await page.goto('/chat');
+    
+    await page.fill('input[name="project_name"]', 'test-app');
+    await page.fill('textarea', 'Create an app');
+    await page.click('button:has-text("Generar Aplicación")');
+    
+    // Verificar que aparece el error
+    await page.waitForSelector('text=Insufficient tokens', { timeout: 5000 });
+  });
+});
+7.3 CI/CD con GitHub Actions
+yaml# .github/workflows/frontend.yml
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'frontend/**'
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+      
+      - name: Run linter
+        working-directory: ./frontend
+        run: npm run lint
+      
+      - name: Run type check
+        working-directory: ./frontend
+        run: npm run type-check
+      
+      - name: Build
+        working-directory: ./frontend
+        run: npm run build
+        env:
+          NEXT_PUBLIC_CONVEX_URL: ${{ secrets.CONVEX_URL }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+  
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          vercel-args: '--prod'
+yaml# .github/workflows/backend.yml
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio pytest-cov
+      
+      - name: Run tests
+        working-directory: ./backend
+        run: pytest --cov=app --cov-report=xml
+        env:
+          REDIS_URL: redis://localhost:6379
+          JOXCODER_API_KEY: ${{ secrets.JOXCODER_API_KEY }}
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./backend/coverage.xml
+  
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Deploy to Railway
+        uses: bervProject/railway-deploy@main
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+          service: autocrea-backend
+7.4 Docker para Desarrollo Local
+dockerfile# backend/Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY . .
+
+# Expose port
+EXPOSE 8000
+
+# Run application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+dockerfile# frontend/Dockerfile
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy source
+COPY . .
+
+# Build
+RUN npm run build
+
+# Production image
+FROM node:18-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+
+# Copy built assets
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]
+yaml# docker-compose.yml
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=development
+      - REDIS_URL=redis://redis:6379
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - redis
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --reload
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    env_file:
+      - ./frontend/.env.local
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+  
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
+
+📚 DOCUMENTACIÓN {#documentacion}
+7.5 README Completo
+markdown# 🚀 AUTOCREA V2.0
+
+Agente autónomo de desarrollo full-stack powered by JoxCoder.
+
+## ✨ Características
+
+- 🤖 **Generación autónoma**: De idea a aplicación completa
+- 🧠 **JoxCoder integrado**: Modelo propio sin dependencias obligatorias
+- 🎨 **Preview en tiempo real**: Ve tu app generándose
+- 🔐 **Sistema de autenticación**: Clerk con MFA
+- 💳 **Pagos con Stripe**: Free trial + suscripciones
+- 🚀 **Deploy automático**: Integración con Vercel/Railway
+- 🔒 **Security audits**: Análisis automático de vulnerabilidades
+
+## 🏗️ Arquitectura
+```
+Frontend (Next.js 14) ↔ Backend (FastAPI) ↔ JoxCoder (Hugging Face)
+                ↓
+         Convex (Database)
+                ↓
+      Stripe (Payments) + Clerk (Auth)
+```
+
+## 🚦 Inicio Rápido
+
+### Prerequisitos
+
+- Node.js 18+
+- Python 3.11+
+- Docker (opcional)
+- Cuenta en Convex, Clerk, Stripe
+
+### Instalación
+
+1. **Clonar repositorio**
+```bash
+git clone https://github.com/tu-usuario/autocrea-v2.git
+cd autocrea-v2
+```
+
+2. **Configurar variables de entorno**
+```bash
+# Frontend
+cp frontend/.env.example frontend/.env.local
+# Editar frontend/.env.local con tus keys
+
+# Backend
+cp backend/.env.example backend/.env
+# Editar backend/.env con tus keys
+```
+
+3. **Instalar dependencias**
+```bash
+# Frontend
+cd frontend && npm install
+
+# Backend
+cd ../backend && python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+4. **Iniciar servicios**
+
+**Opción A: Docker (recomendado)**
+```bash
+docker-compose up
+```
+
+**Opción B: Manual**
+```bash
+# Terminal 1: Backend
+cd backend
+uvicorn app.main:app --reload
+
+# Terminal 2: Frontend
+cd frontend
+npm run dev
+
+# Terminal 3: Redis (si no usas Docker)
+redis-server
+```
+
+5. **Abrir en navegador**
+```
+http://localhost:3000
+```
+
+## 🔑 Variables de Entorno Requeridas
+
+### Frontend (.env.local)
+```env
+NEXT_PUBLIC_CONVEX_URL=https://...
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+### Backend (.env)
+```env
+JOXCODER_API_URL=https://api-inference.huggingface.co/models/...
+JOXCODER_API_KEY=hf_...
+JWT_SECRET=your-secret-key
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+REDIS_URL=redis://localhost:6379
+```
+
+## 📖 Uso
+
+1. **Registrarse**: Crea una cuenta (100 tokens gratis)
+2. **Ir a Chat**: Navega a `/chat`
+3. **Describir app**: "Crear e-commerce con Stripe y admin panel"
+4. **Generar**: Presiona "Generar Aplicación"
+5. **Descargar**: Descarga el código cuando esté listo
+
+## 🧪 Testing
+```bash
+# Frontend
+cd frontend
+npm run test
+npm run test:e2e
+
+# Backend
+cd backend
+pytest
+pytest --cov=app
+```
+
+## 🚀 Deployment
+
+### Frontend (Vercel)
+```bash
+cd frontend
+vercel --prod
+```
+
+### Backend (Railway)
+```bash
+cd backend
+railway up
+```
+
+## 📊 Monitoreo
+
+- **Logs**: Axiom (frontend/backend)
+- **Errors**: Sentry
+- **Performance**: Vercel Analytics
+
+## 🤝 Contribuir
+
+Ver [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+## 📄 Licencia
+
+MIT License - ver [LICENSE](./LICENSE)
+
+## 🆘 Soporte
+
+- 📧 Email: support@joxai.com
+- 💬 Discord: [discord.gg/joxai](https://discord.gg/joxai)
+- 📚 Docs: [docs.joxai.com](https://docs.joxai.com)
+7.6 Guía de Troubleshooting
+markdown# 🔧 TROUBLESHOOTING
+
+## Problemas Comunes
+
+### JoxCoder no responde
+
+**Síntomas:**
+- Error 503 en generación
+- Timeout después de 2 minutos
+
+**Solución:**
+1. Verificar que `JOXCODER_API_KEY` esté configurada
+2. Comprobar quota en Hugging Face
+3. Intentar con modelo de fallback:
+```python
+# En backend/.env
+OPENAI_API_KEY=sk-...  # Como fallback
+```
+
+### Frontend no conecta con Backend
+
+**Síntomas:**
+- CORS errors en consola
+- 404 en requests API
+
+**Solución:**
+1. Verificar que `NEXT_PUBLIC_API_URL` apunte al backend correcto
+2. Revisar ALLOWED_ORIGINS en backend:
+```python
+# backend/app/core/config.py
+ALLOWED_ORIGINS = ["http://localhost:3000", "https://tu-dominio.com"]
+```
+
+### Convex connection issues
+
+**Síntomas:**
+- "Failed to fetch" en queries
+- Authentication errors
+
+**Solución:**
+1. Verificar `NEXT_PUBLIC_CONVEX_URL`
+2. Ejecutar:
+```bash
+cd frontend
+npx convex dev
+```
+3. Verificar que Convex esté deployed:
+```bash
+npx convex deploy
+```
+
+### Insufficient tokens error
+
+**Síntomas:**
+- Error 402 al generar
+- "Insufficient tokens" message
+
+**Solución:**
+1. Verificar balance en UI
+2. Para testing, aumentar tokens manualmente:
+```typescript
+// En Convex dashboard
+await ctx.db.patch(userId, { tokenBalance: 1000 })
+```
+
+### Build errors
+
+**Frontend:**
+```bash
+# Limpiar caché
+rm -rf .next node_modules
+npm install
+npm run build
+```
+
+**Backend:**
+```bash
+# Reinstalar deps
+rm -rf venv
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Logs
+
+**Ver logs de backend:**
+```bash
+tail -f logs/autocrea.log
+```
+
+**Ver logs de Convex:**
+```bash
+npx convex logs
+```
+
+**Ver logs de Vercel:**
+```bash
+vercel logs
+```
+
+## Performance Issues
+
+Si la generación es muy lenta:
+
+1. **Reducir max_tokens:**
+```python
+# backend/app/core/joxcoder.py
+max_tokens=1024  # En vez de 2048
+```
+
+2. **Usar modelo más pequeño (temporalmente):**
+```python
+# Cambiar a JoxCoder-7B si existe
+JOXCODER_API_URL=.../joxcoder-7b-v1
+```
+
+3. **Habilitar streaming:**
+```python
+# En desarrollo
+async for chunk in client.generate_stream(...):
+    yield chunk
+```
+
+## Database Issues
+
+**Reset Convex database:**
+```bash
+npx convex data clear
+npx convex data import --table users users.jsonl
+```
+
+**Backup Convex data:**
+```bash
+npx convex data export
+```
+
+## Contacto
+
+Si ninguna solución funciona:
+- Abrir issue en GitHub
+- Email: dev@joxai.com
+- Discord: discord.gg/joxai
+```
+
+---
+
+## ✅ CHECKLIST FINAL {#checklist}
+
+### Antes de Enviar a Replit:
+
+#### Backend
+- [ ] JoxCoderClient implementado con fallbacks opcionales
+- [ ] CodeGenerationOrchestrator con 5 agentes (architect, backend, frontend, devops, security)
+- [ ] Endpoints de generación con autenticación
+- [ ] Rate limiting con Redis
+- [ ] Manejo de errores robusto
+- [ ] Logging estructurado
+- [ ] Tests unitarios pasando
+- [ ] Dockerfile funcional
+
+#### Frontend
+- [ ] Página de chat con preview en tiempo real
+- [ ] Integración con Clerk (auth)
+- [ ] Integración con Convex (database)
+- [ ] Monaco editor para código
+- [ ] Generación de archivos individuales
+- [ ] Download de proyectos como ZIP
+- [ ] Error boundaries
+- [ ] Tests E2E configurados
+
+#### DevOps
+- [ ] Docker Compose para desarrollo local
+- [ ] CI/CD con GitHub Actions
+- [ ] Variables de entorno documentadas
+- [ ] Scripts de deployment
+- [ ] Health checks
+- [ ] Monitoring con Sentry
+
+#### Documentación
+- [ ] README completo con Quick Start
+- [ ] Guía de troubleshooting
+- [ ] Documentación de API
+- [ ] Ejemplos de uso
+- [ ] Guía de contribución
+
+### Instrucciones Finales para Replit:
+```
+REPLIT: Lee este prompt COMPLETO antes de empezar.
+
+OBJETIVOS:
+1. Crear AUTOCREA V2.0 exactamente como se especifica
+2. CORREGIR todos los errores que encuentres
+3. NO dejar ningún TODO o placeholder
+4. PROBAR cada componente antes de continuar
+
+ORDEN DE EJECUCIÓN:
+1. Setup inicial (dependencias, .env)
+2. Configurar Convex schema
+3. Implementar JoxCoderClient (backend)
+4. Implementar CodeGenerationOrchestrator
+5. Crear endpoints de API
+6. Implementar frontend con chat UI
+7. Integrar Clerk para auth
+8. Configurar Stripe webhooks
+9. Agregar tests
+10. Crear documentación
+
+REGLAS CRÍTICAS:
+- Si algo falla, DEBUGEAR hasta que funcione
+- NO usar APIs pagas sin confirmación (OpenAI/Anthropic son opcionales)
+- TODOS los errores deben ser manejados
+- El código debe estar listo para producción
+
+VERIFICACIÓN FINAL:
+- [ ] El usuario puede registrarse y recibir 100 tokens
+- [ ] El usuario puede generar una app desde el chat
+- [ ] Se muestran los steps en tiempo real
+- [ ] El código generado se puede descargar
+- [ ] No hay errores en consola
+- [ ] Los tests pasan
+
+¿Alguna duda? Pregúntame antes de empezar.
+
+🎉 FIN DEL PROMPT
+Versión: 2.0
+Fecha: Octubre 2025
+Modelo: JoxCoder Integration
+Stack: Next.js 14 + FastAPI + Convex + Clerk + Stripe
