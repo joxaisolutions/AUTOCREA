@@ -2,7 +2,9 @@
 
 ## Overview
 
-AUTOCREA is an autonomous full-stack development platform powered by JoxCoder (a proprietary LLM model). The application enables users to generate complete applications from natural language descriptions, with real-time preview and multi-role AI agents (Architect, Developer, DevOps, Tester, Security Auditor). The platform operates on a freemium model with a token-based system, offering 100 free tokens on signup and paid subscription plans via Stripe.
+AUTOCREA V2.0 is a complete autonomous full-stack development platform powered by JoxCoder (proprietary LLM model). The application enables users to generate complete applications from natural language descriptions, with real-time preview and multi-role AI agents.
+
+**Current Status:** ✅ Frontend Complete (Demo Mode)
 
 **Core Value Proposition:**
 - 100% autonomous app generation from idea to deployment
@@ -11,134 +13,278 @@ AUTOCREA is an autonomous full-stack development platform powered by JoxCoder (a
 - Real-time code preview and generation steps visualization
 - Automated Git operations (commits, branches, deployments)
 
+## Recent Changes (October 15, 2025)
+
+### Completed ✅
+1. **Landing Page**
+   - Beautiful hero section with gradient design
+   - Features showcase (6 key features)
+   - Pricing section (Free Trial, Basic $29, Pro $99)
+   - Fully responsive design
+   - Framer Motion animations
+
+2. **Route Structure**
+   - Public routes: `/` (landing)
+   - Auth routes: `/login`, `/register` (demo mode - Clerk integration pending)
+   - Dashboard routes: `/chat`, `/projects`, `/settings`
+
+3. **Dashboard**
+   - Sidebar navigation
+   - Token balance display
+   - User profile (demo mode)
+   - Responsive layout
+
+4. **Chat Interface**
+   - Project name and description inputs
+   - Quick example templates
+   - Real-time preview panel
+   - Generation simulation (demo)
+   - Token cost estimation
+
+5. **UI Components**
+   - Custom Button component with variants
+   - Card components (shadcn/ui style)
+   - Consistent dark theme with cyan/blue accents
+   - Tailwind CSS integration
+
+6. **Settings & Projects Pages**
+   - Settings page with API key management UI
+   - Projects page with empty state
+   - Subscription management UI
+
+### Pending Integrations 🔄
+1. **Clerk Authentication** - Requires valid API keys in `.env.local`
+2. **Convex Database** - Schema defined, needs deployment setup
+3. **Stripe Payments** - Integration pending
+4. **FastAPI Backend** - Code generation service (to be built)
+5. **JoxCoder Integration** - Primary AI model connection
+
 ## User Preferences
 
-Preferred communication style: Simple, everyday language.
+- **Communication Style:** Simple, everyday language
+- **Design:** Dark theme, gradient accents (cyan/blue)
+- **Framework:** Next.js 14 with App Router
 
 ## System Architecture
 
 ### Frontend Architecture
 
 **Framework:** Next.js 14 with App Router
-- **TypeScript** for type safety across the application
-- **React 18** with client-side interactivity for real-time updates
-- **Tailwind CSS** for utility-first styling with custom gradient themes
-- **Dark mode design system** with slate color palette and cyan/blue accent colors
+- **TypeScript** for type safety
+- **React 18** for UI rendering
+- **Tailwind CSS** for styling
+- **Framer Motion** for animations
+- **Lucide React** for icons
+
+**Route Structure:**
+```
+app/
+├── (auth)/
+│   ├── login/          # Login page (demo mode)
+│   └── register/       # Register page (demo mode)
+├── (dashboard)/
+│   ├── layout.tsx      # Dashboard layout with sidebar
+│   ├── chat/           # Main chat interface
+│   ├── projects/       # Project management
+│   └── settings/       # Settings & API keys
+├── layout.tsx          # Root layout
+└── page.tsx            # Landing page
+```
 
 **Key Design Patterns:**
-- Client-side state management using React hooks (useState, useEffect, useRef)
-- Real-time polling mechanism for generation status updates
-- Component-based architecture separating concerns (CodePreview, GenerationSteps)
-- Progressive enhancement with loading states and optimistic UI updates
+- Client-side components with 'use client' directive
+- Server components for static content
+- Route groups for layout organization
+- Shared UI components in `/components/ui/`
 
-**Routing Structure:**
-- Public routes: `/` (landing), `/pricing`, `/about`
-- Protected routes: `/dashboard/*`, `/chat` (authentication required)
-- Auth routes: `/login`, `/signup` (Clerk integration)
+### Backend Architecture (To Be Built)
 
-### Backend Architecture
+**API Layer:** FastAPI (Python)
+- JoxCoder model integration
+- Code generation pipeline
+- Multi-role agent orchestration
 
-**API Layer:** FastAPI (Python-based REST API)
-- Handles JoxCoder model integration and inference
-- Manages code generation pipeline and multi-role agent orchestration
-- Processes generation requests and streams responses
+**Database:** Convex (real-time)
+- User management
+- Project metadata
+- Token balances
+- Generation history
 
-**Database Solution:** Convex (real-time database)
-- **Rationale:** Chosen for built-in real-time subscriptions, eliminating need for custom WebSocket infrastructure
-- Stores user data, project metadata, generation history, and token balances
-- Provides reactive queries that auto-update UI on data changes
+**Planned Data Models:**
+- **Users:** Clerk ID, token balance, subscription status
+- **Projects:** Name, description, status, generated code
+- **Generations:** Steps log, tokens used, model info
 
-**Data Models:**
-- **Users:** Clerk ID, token balance, subscription status, API key storage (optional)
-- **Projects:** Name, description, status, owner reference, Git metadata
-- **Generations:** Steps log, code outputs, timestamps, status tracking
-
-**Why Convex over traditional databases:**
-- Real-time reactivity out-of-the-box (critical for live generation updates)
-- Serverless deployment model aligns with project scalability needs
-- Built-in TypeScript client with type safety
-- Eliminates need for separate WebSocket or polling infrastructure
-
-### Authentication & Authorization
+### Authentication & Authorization (Pending Setup)
 
 **Provider:** Clerk
-- Handles user registration, login, session management
-- JWT-based authentication with middleware protection
-- Social auth support (GitHub, Google) for developer audience
+- Install status: ✅ Package installed
+- Configuration: ⚠️ Needs API keys
+- Middleware: Created but disabled (missing keys)
 
-**Middleware Configuration:**
-- Public routes whitelist for marketing pages and webhooks
-- API route protection with token validation
-- Automatic redirect to login for protected resources
+**To Enable:**
+1. Get Clerk API keys from https://clerk.dev
+2. Add to `.env.local`:
+   ```
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
+   CLERK_SECRET_KEY=sk_...
+   ```
+3. Rename `middleware.ts.bak` to `middleware.ts`
+4. Update auth pages to use Clerk components
 
-### Payment Processing
+### Payment Processing (Planned)
 
 **Provider:** Stripe
-- Subscription-based billing (monthly/annual plans)
-- Token purchase system for pay-as-you-go users
-- Webhook handling for subscription events and payment confirmations
-- Free tier: 100 tokens on signup (no credit card required)
+- Subscription plans: Free Trial, Basic ($29), Pro ($99)
+- Token purchase system
+- Webhook handling for events
 
 ### AI/ML Core
 
-**Primary Model:** JoxCoder (Proprietary LLM)
-- Custom-trained model for code generation
-- No external API dependencies (fully self-hosted capability)
-- Multi-role agent system: Architect → Developer → DevOps → Tester → Security
+**Primary Model:** JoxCoder (Proprietary)
+- Hugging Face Inference API
+- No external API dependencies
+- Multi-role agent system
 
 **Optional External APIs:**
-- User can provide their own API keys for GPT-4, Claude, Gemini
-- Fallback/enhancement layer for specific use cases
-- Stored securely in user preferences, never shared
+- User-provided keys for GPT-4, Claude, Gemini
+- Stored securely in user preferences
 
-## External Dependencies
+## Tech Stack
 
-### Core Services
+**Frontend:**
+- Next.js 14.2.33
+- React 18.3.1
+- TypeScript 5.9.3
+- Tailwind CSS 3.4.0
+- Framer Motion (latest)
+- Lucide React (latest)
+- @clerk/nextjs (latest)
 
-**Clerk (Authentication)**
-- User management and session handling
-- Social OAuth providers integration
-- Webhook endpoints for user lifecycle events
+**Build Tools:**
+- Vite (not used, Next.js has built-in bundler)
+- PostCSS for Tailwind
+- ESLint for linting
 
-**Convex (Database & Real-time)**
-- Primary data store for all application data
-- Real-time subscriptions for live UI updates
-- Serverless functions for backend logic
-- API endpoints: User queries, project mutations, generation tracking
+## Environment Setup
 
-**Stripe (Payments)**
-- Subscription management (tiered plans)
-- Token purchases and balance tracking
-- Webhook integration for payment events
-- Customer portal for subscription management
+**Required Environment Variables:**
+```bash
+# JoxCoder (Primary - Add when ready)
+JOXCODER_API_URL=https://api-inference.huggingface.co/models/...
+JOXCODER_API_KEY=hf_...
 
-### Development Tools
+# Clerk (Required for auth)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
+CLERK_SECRET_KEY=sk_...
 
-**Styling & UI:**
-- Tailwind CSS v3.4 - Utility-first CSS framework
-- Autoprefixer & PostCSS - CSS processing pipeline
-- Lucide React - Icon library (consistent design system)
+# Convex (Required for database)
+NEXT_PUBLIC_CONVEX_URL=https://...convex.cloud
+CONVEX_DEPLOY_KEY=prod:...
 
-**Build & Development:**
-- Vite 7.1 - Fast development server and build tool
-- Next.js 14.2 - React framework with App Router
-- TypeScript 5.9 - Static type checking
+# Stripe (Required for payments)
+STRIPE_SECRET_KEY=sk_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 
-### Optional Integrations
+# Optional External APIs
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+```
 
-**LLM APIs (User-Configured):**
-- OpenAI GPT-4 (user provides API key)
-- Anthropic Claude (user provides API key)
-- Google Gemini (user provides API key)
+## Development Workflow
 
-**Git & Deployment:**
-- GitHub API (for repository creation and commits)
-- Vercel/Railway (deployment targets)
-- Automated CI/CD pipeline integration
+**Running Locally:**
+```bash
+npm run dev          # Runs on port 5000
+npm run build        # Production build
+npm run start        # Production server
+```
 
-### Infrastructure Assumptions
+**Deployment:**
+- Target: Vercel (autoscale)
+- Build command: `npm run build`
+- Start command: `npm run start`
+- Port: 5000 (configured in package.json)
 
-**Hosting:** Designed for serverless deployment (Vercel, Railway, or similar)
-**JoxCoder Deployment:** Requires separate model hosting infrastructure (GPU-enabled servers)
-**Database:** Convex cloud-hosted (no self-managed database required)
-**File Storage:** May require S3/Cloudflare R2 for generated project artifacts (to be added)
+## Next Steps
+
+1. **Get API Keys:**
+   - Sign up for Clerk → Add auth keys
+   - Set up Convex → Add database URL
+   - Configure Stripe → Add payment keys
+   - Get JoxCoder access → Add model API key
+
+2. **Backend Development:**
+   - Create FastAPI service
+   - Implement JoxCoder client
+   - Build multi-role agent system
+   - Set up code generation pipeline
+
+3. **Database Setup:**
+   - Deploy Convex schema
+   - Create mutation/query functions
+   - Implement real-time subscriptions
+
+4. **Integration:**
+   - Connect frontend to backend API
+   - Implement actual code generation
+   - Add real-time preview with Monaco Editor
+   - Set up Git automation
+
+5. **Testing & Deployment:**
+   - End-to-end testing
+   - Performance optimization
+   - Deploy to production
+   - Monitor and iterate
+
+## Known Issues
+
+1. **Clerk Not Active:** Demo mode enabled - need to add API keys
+2. **LSP Warnings:** Type imports for UI components (non-blocking)
+3. **Mock Data:** Chat interface uses simulated generation (backend pending)
+
+## File Structure
+
+```
+autocrea-v2/
+├── app/                     # Next.js 14 app directory
+│   ├── (auth)/             # Auth routes (login, register)
+│   ├── (dashboard)/        # Protected dashboard routes
+│   ├── globals.css         # Global styles
+│   ├── layout.tsx          # Root layout
+│   └── page.tsx            # Landing page
+├── components/
+│   ├── ui/                 # Reusable UI components
+│   │   ├── button.tsx
+│   │   └── card.tsx
+│   ├── chat/              # Chat components (to be added)
+│   └── landing/           # Landing components (to be added)
+├── lib/
+│   └── utils.ts           # Utility functions
+├── public/                 # Static assets
+├── .env.example           # Environment variables template
+├── .env.local             # Local env (gitignored)
+├── .gitignore             # Git ignore rules
+├── middleware.ts.bak      # Clerk middleware (disabled)
+├── next.config.js         # Next.js configuration
+├── package.json           # Dependencies
+├── postcss.config.js      # PostCSS config
+├── README.md              # Project documentation
+├── replit.md              # This file
+├── tailwind.config.js     # Tailwind configuration
+└── tsconfig.json          # TypeScript configuration
+```
+
+## Resources
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Clerk Documentation](https://clerk.dev/docs)
+- [Convex Documentation](https://docs.convex.dev)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [Framer Motion](https://www.framer.com/motion/)
+
+---
+
+**Last Updated:** October 15, 2025
+**Status:** Frontend Complete, Backend Pending
+**Next Milestone:** API Integration

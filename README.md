@@ -1,134 +1,196 @@
-# AUTOCREA V2.0
+# AUTOCREA V2.0 🚀
 
-The most powerful AI-powered chatbot to build powerful applications autonomously using **JoxCoder** - our proprietary LLM model.
+The most powerful autonomous development platform powered by JoxCoder - our proprietary AI model.
 
-## 🚀 Features
+## Overview
 
-- **100% Autonomous Development**: From idea to full application without manual coding
-- **JoxCoder AI Model**: Proprietary code generation model optimized for app development
-- **Multi-Role AI Agents**: Architect, Developer, DevOps, Tester, and Security Auditor
-- **Real-Time Preview**: Watch your application being built step by step
-- **Token-Based System**: 100 free tokens on signup, paid plans available
-- **Optional External APIs**: Integrate your own OpenAI, Claude, or Gemini API keys
+AUTOCREA V2.0 is an autonomous full-stack development agent that creates complete applications from natural language descriptions. Built with Next.js 14, it features:
 
-## 🏗️ Tech Stack
+- ✅ **100% Autonomous Development** - From idea to deployed app
+- ✅ **JoxCoder AI Model** - Our proprietary LLM trained specifically for code generation
+- ✅ **Multi-Role Agents** - Architect, Backend Dev, Frontend Dev, DevOps, Security Auditor
+- ✅ **Real-time Preview** - Watch your app being built step by step
+- ✅ **Free Trial** - 100 tokens free on signup
+- ✅ **Optional External APIs** - Connect GPT-4, Claude, or Gemini if desired
+
+## Tech Stack
 
 ### Frontend
-- **Next.js 14** with App Router
-- **TypeScript** for type safety
-- **Tailwind CSS** for styling
-- **Lucide React** for icons
-- **React 18** for UI components
+- **Next.js 14** (App Router)
+- **TypeScript**
+- **Tailwind CSS**
+- **Framer Motion** (animations)
+- **Lucide React** (icons)
+- **shadcn/ui** components
 
-### Planned Integrations
-- **Convex** - Real-time database
-- **Clerk** - Authentication
-- **Stripe** - Payment processing
-- **FastAPI** - Backend API
-- **JoxCoder** - AI code generation
+### Backend (To be added)
+- **FastAPI** (Python)
+- **Convex** (Database)
+- **Clerk** (Authentication)
+- **Stripe** (Payments)
 
-## 🛠️ Getting Started
+### AI/ML
+- **JoxCoder** - Primary model (Hugging Face)
+- **Optional**: OpenAI, Anthropic, Google Gemini
+
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+ installed
-- npm or yarn package manager
+- Node.js 18+ 
+- npm or yarn
 
 ### Installation
 
-1. Clone the repository
 ```bash
-git clone https://github.com/joxaisolutions/AUTOCREA.git
-cd AUTOCREA
-```
-
-2. Install dependencies
-```bash
+# Install dependencies
 npm install
-```
 
-3. Set up environment variables
-```bash
-cp .env.example .env.local
-```
-
-Then edit `.env.local` with your API keys and configuration.
-
-### Development
-
-Run the development server:
-
-```bash
+# Run development server
 npm run dev
+
+# Build for production
+npm run build
+npm run start
 ```
 
-Open [http://localhost:5000](http://localhost:5000) in your browser.
+The app will run on `http://localhost:5000`
 
-### Production Build
+## Environment Variables
+
+Create a `.env.local` file based on `.env.example`:
 
 ```bash
-npm run build
-npm start
+# JoxCoder (Primary AI Model)
+JOXCODER_API_URL=https://api-inference.huggingface.co/models/your-org/joxcoder
+JOXCODER_API_KEY=hf_your_key
+
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+
+# Optional: External AI APIs
+OPENAI_API_KEY=sk-... # Optional
+ANTHROPIC_API_KEY=sk-ant-... # Optional
+
+# Convex Database
+NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
+CONVEX_DEPLOY_KEY=prod:...
+
+# Stripe Payments
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
-## 📋 Environment Variables
-
-See `.env.example` for all required environment variables. Key variables include:
-
-- `JOXCODER_API_KEY` - Your JoxCoder AI model API key
-- `NEXT_PUBLIC_CONVEX_URL` - Convex database URL (when implemented)
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk authentication (when implemented)
-- `STRIPE_SECRET_KEY` - Stripe payment processing (when implemented)
-
-## 🎯 Current Status
-
-**✅ Phase 1 Complete**: Basic UI and chat interface
-- Dark theme with gradient design
-- Project input form
-- Real-time preview panel
-- Token balance display
-- Quick example prompts
-
-**🚧 Coming Soon**:
-- JoxCoder AI integration
-- Convex real-time database
-- Clerk authentication
-- Stripe payment processing
-- FastAPI backend
-- Code generation pipeline
-- Git automation
-- One-click deployment
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 autocrea-v2/
 ├── app/
-│   ├── globals.css          # Global styles with Tailwind
-│   ├── layout.tsx            # Root layout
-│   └── page.tsx              # Main chat interface
-├── components/               # React components (to be added)
-├── lib/                     # Utility functions (to be added)
-├── public/                  # Static assets
-├── .env.example             # Environment variables template
-├── next.config.js           # Next.js configuration
-├── tailwind.config.js       # Tailwind CSS configuration
-└── tsconfig.json            # TypeScript configuration
+│   ├── (auth)/              # Authentication routes
+│   │   ├── login/
+│   │   └── register/
+│   ├── (dashboard)/         # Protected dashboard routes
+│   │   ├── chat/           # Main chat interface
+│   │   ├── projects/       # Project management
+│   │   └── settings/       # User settings
+│   ├── layout.tsx
+│   └── page.tsx            # Landing page
+├── components/
+│   ├── ui/                 # UI components
+│   ├── chat/              # Chat-specific components
+│   └── landing/           # Landing page components
+├── lib/
+│   └── utils.ts           # Utility functions
+└── public/                # Static assets
 ```
 
-## 🤝 Contributing
+## Features
 
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+### Landing Page
+- Hero section with gradient design
+- Feature highlights
+- Pricing plans (Free Trial, Basic, Pro)
+- Responsive design
 
-## 📄 License
+### Chat Interface
+- Project name and description input
+- Quick example templates
+- Real-time generation preview
+- Token balance display
+- Generation steps visualization
 
-ISC
+### Dashboard
+- Sidebar navigation
+- Projects management
+- Settings and API key configuration
+- Token balance tracking
 
-## 🔗 Links
+## Roadmap
 
-- [Website](https://autocrea.joxai.com) (coming soon)
-- [Documentation](./docs) (coming soon)
-- [API Reference](./docs/API.md) (coming soon)
+- [ ] Backend FastAPI integration
+- [ ] Convex database setup
+- [ ] Clerk authentication (keys needed)
+- [ ] Stripe payment integration
+- [ ] JoxCoder model integration
+- [ ] Code editor with Monaco
+- [ ] Git integration
+- [ ] Deployment automation
+
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+### Adding Integrations
+
+1. **Clerk Authentication**: Add your Clerk API keys to `.env.local`
+2. **Convex Database**: Set up Convex project and add deployment URL
+3. **Stripe Payments**: Configure Stripe keys and webhook endpoints
+4. **JoxCoder**: Add your Hugging Face API key for the JoxCoder model
+
+## Architecture
+
+```
+┌─────────────────────────────────────────┐
+│         AUTOCREA V2.0 Frontend          │
+│           (Next.js 14)                  │
+└──────────────┬──────────────────────────┘
+               │
+    ┌──────────┼──────────┬───────────┐
+    │          │          │           │
+    ▼          ▼          ▼           ▼
+┌────────┐ ┌────────┐ ┌──────┐  ┌─────────┐
+│FastAPI │ │ Convex │ │Clerk │  │ Stripe  │
+│Backend │ │Database│ │ Auth │  │Payments │
+└────┬───┘ └────────┘ └──────┘  └─────────┘
+     │
+     ▼
+┌──────────────────────────────────────┐
+│         JoxCoder AI Model            │
+│   + Optional External APIs           │
+└──────────────────────────────────────┘
+```
+
+## Contributing
+
+This is a proprietary project. For questions or support, please contact the AUTOCREA team.
+
+## License
+
+© 2025 AUTOCREA V2.0 - All Rights Reserved
+
+## Support
+
+For support or questions:
+- 📧 Email: support@autocrea.com
+- 📚 Documentation: Coming soon
+- 💬 Community: Discord (link coming soon)
 
 ---
 
-**AUTOCREA V2.0** - Powered by JoxCoder • De idea a aplicación en minutos
+Built with ❤️ by the AUTOCREA Team
+Powered by JoxCoder - Our proprietary AI model

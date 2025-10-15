@@ -1,5 +1,4 @@
-import { UserButton } from "@clerk/nextjs"
-import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban } from "lucide-react"
+import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban, User } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -34,19 +33,15 @@ export default function DashboardLayout({
               </div>
             </div>
             
-            <Link href="/pricing">
+            <Link href="/">
               <Button variant="outline" size="sm">
                 Comprar Tokens
               </Button>
             </Link>
             
-            <UserButton 
-              appearance={{
-                elements: {
-                  avatarBox: "w-10 h-10"
-                }
-              }}
-            />
+            <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
+              <User className="w-5 h-5 text-slate-300" />
+            </div>
           </div>
         </div>
       </header>
