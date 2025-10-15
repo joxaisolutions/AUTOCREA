@@ -1,218 +1,287 @@
 'use client'
 
-import { useState } from 'react'
-import { Send, Sparkles, Code2, Rocket, Github, Zap } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowRight, Code2, Sparkles, Zap, Shield, GitBranch, Rocket, Check } from "lucide-react"
+import { motion } from "framer-motion"
+import Link from "next/link"
 
-export default function Home() {
-  const [prompt, setPrompt] = useState('')
-  const [projectName, setProjectName] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([])
-
-  const handleGenerate = async () => {
-    if (!prompt.trim() || !projectName.trim()) return
-    
-    setIsGenerating(true)
-    setMessages(prev => [...prev, {
-      role: 'user',
-      content: `Proyecto: ${projectName}\n\n${prompt}`
-    }])
-    
-    setTimeout(() => {
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: `🚀 Generando "${projectName}"...\n\n✅ Arquitectura diseñada\n✅ Backend configurado\n✅ Frontend creado\n\n¡Tu aplicación está lista! (Demo mode - JoxCoder integration pending)`
-      }])
-      setIsGenerating(false)
-      setPrompt('')
-      setProjectName('')
-    }, 2000)
-  }
-
+export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Header */}
-      <header className="border-b border-slate-800 backdrop-blur-sm bg-slate-950/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+      {/* Navigation */}
+      <nav className="border-b border-slate-800 backdrop-blur-sm bg-slate-950/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <Code2 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                   AUTOCREA
                 </h1>
                 <p className="text-xs text-slate-400">V2.0 con JoxCoder</p>
               </div>
             </div>
+            
             <div className="flex items-center gap-4">
-              <div className="px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-yellow-400" />
-                  <span className="text-sm font-semibold text-slate-200">100 tokens</span>
-                </div>
-              </div>
-              <button className="px-4 py-2 bg-cyan-500/10 border border-cyan-500/50 rounded-lg text-cyan-400 text-sm font-medium hover:bg-cyan-500/20 transition-colors">
-                Get Tokens
-              </button>
+              <Link href="/login">
+                <Button variant="ghost" size="sm">Iniciar Sesión</Button>
+              </Link>
+              <Link href="/register">
+                <Button size="sm">
+                  Comenzar Gratis
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left: Input Panel */}
-          <div className="space-y-6">
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-              <h2 className="text-xl font-semibold text-slate-200 mb-4 flex items-center gap-2">
-                <Rocket className="w-5 h-5 text-cyan-400" />
-                Describe tu aplicación
-              </h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-slate-400 mb-2 block">
-                    Nombre del proyecto
-                  </label>
-                  <input
-                    type="text"
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    placeholder="mi-super-app"
-                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-lg text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                    disabled={isGenerating}
-                  />
-                </div>
+      {/* Hero Section */}
+      <section className="pt-20 pb-32 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <span className="text-sm text-cyan-400 font-medium">100 tokens gratis al registrarte</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                De Idea a Aplicación
+              </span>
+              <br />
+              <span className="text-slate-200">en Minutos</span>
+            </h1>
+            
+            <p className="text-xl text-slate-400 mb-12 max-w-3xl mx-auto">
+              AUTOCREA V2.0 utiliza <span className="text-cyan-400 font-semibold">JoxCoder</span>, nuestro modelo IA propietario,
+              para crear aplicaciones completas de forma autónoma. Arquitectura, backend, frontend, DevOps y seguridad, todo automático.
+            </p>
+            
+            <div className="flex items-center justify-center gap-4">
+              <Link href="/register">
+                <Button size="lg" className="text-lg">
+                  <Rocket className="mr-2 w-5 h-5" />
+                  Crear Mi Primera App
+                </Button>
+              </Link>
+              <Link href="#features">
+                <Button size="lg" variant="outline" className="text-lg">
+                  Ver Características
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
-                <div>
-                  <label className="text-sm text-slate-400 mb-2 block">
-                    Descripción completa
-                  </label>
-                  <textarea
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Ejemplo: Crear una plataforma de e-commerce con carrito de compras, pagos con Stripe, panel de administración y sistema de reviews..."
-                    rows={8}
-                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-lg text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent resize-none"
-                    disabled={isGenerating}
-                  />
-                </div>
+      {/* Features Section */}
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-slate-200 mb-4">
+              ¿Por qué AUTOCREA?
+            </h2>
+            <p className="text-xl text-slate-400">
+              La plataforma más completa para desarrollo autónomo
+            </p>
+          </div>
 
-                <div className="space-y-2">
-                  <p className="text-xs text-slate-500">Ejemplos rápidos:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      'Landing page con formulario',
-                      'Blog con autenticación',
-                      'Dashboard con gráficos',
-                      'API REST completa'
-                    ].map((example) => (
-                      <button
-                        key={example}
-                        onClick={() => setPrompt(example)}
-                        className="text-xs px-3 py-1.5 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-full text-slate-300 transition-colors"
-                        disabled={isGenerating}
-                      >
-                        {example}
-                      </button>
-                    ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Zap,
+                title: "JoxCoder Propio",
+                description: "Modelo IA entrenado específicamente para generación de código. No dependes de APIs externas.",
+                color: "text-yellow-400"
+              },
+              {
+                icon: Code2,
+                title: "100% Autónomo",
+                description: "De la idea al código completo sin intervención. Arquitectura, desarrollo, testing y deployment.",
+                color: "text-cyan-400"
+              },
+              {
+                icon: GitBranch,
+                title: "Multi-Rol IA",
+                description: "5 agentes especializados: Arquitecto, Backend, Frontend, DevOps y Security Auditor.",
+                color: "text-purple-400"
+              },
+              {
+                icon: Rocket,
+                title: "Preview en Tiempo Real",
+                description: "Ve cómo se construye tu app paso a paso con vista previa del código en vivo.",
+                color: "text-blue-400"
+              },
+              {
+                icon: Shield,
+                title: "Auditoría de Seguridad",
+                description: "Cada app generada pasa por análisis de vulnerabilidades y mejores prácticas.",
+                color: "text-green-400"
+              },
+              {
+                icon: Sparkles,
+                title: "APIs Opcionales",
+                description: "Conecta GPT-4, Claude o Gemini como complemento si lo deseas (no obligatorio).",
+                color: "text-pink-400"
+              }
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full hover:border-slate-600 transition-colors">
+                  <CardHeader>
+                    <feature.icon className={`w-12 h-12 ${feature.color} mb-4`} />
+                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                    <CardDescription className="text-base">
+                      {feature.description}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-slate-200 mb-4">
+              Planes Transparentes
+            </h2>
+            <p className="text-xl text-slate-400">
+              Comienza gratis, escala cuando lo necesites
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Free Trial",
+                price: "$0",
+                description: "Perfecto para probar",
+                features: [
+                  "100 tokens gratis",
+                  "2-3 proyectos completos",
+                  "Modelo JoxCoder",
+                  "Preview en tiempo real",
+                  "Soporte comunitario"
+                ]
+              },
+              {
+                name: "Basic",
+                price: "$29",
+                description: "Para desarrolladores",
+                features: [
+                  "1,000 tokens/mes",
+                  "~20 proyectos/mes",
+                  "Modelo JoxCoder",
+                  "APIs externas opcionales",
+                  "Git automático",
+                  "Soporte prioritario"
+                ],
+                popular: true
+              },
+              {
+                name: "Pro",
+                price: "$99",
+                description: "Para equipos",
+                features: [
+                  "5,000 tokens/mes",
+                  "~100 proyectos/mes",
+                  "Modelo JoxCoder",
+                  "Todas las APIs",
+                  "Deploy automático",
+                  "Soporte dedicado",
+                  "Análisis avanzado"
+                ]
+              }
+            ].map((plan, i) => (
+              <Card key={i} className={plan.popular ? "border-cyan-500 relative" : ""}>
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full text-sm font-semibold">
+                    Más Popular
                   </div>
-                </div>
-
-                <button
-                  onClick={handleGenerate}
-                  disabled={isGenerating || !prompt.trim() || !projectName.trim()}
-                  className="w-full px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold rounded-lg transition-all transform hover:scale-[1.02] disabled:scale-100 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {isGenerating ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Generando...
-                    </>
-                  ) : (
-                    <>
-                      <Rocket className="w-5 h-5" />
-                      Generar Aplicación
-                    </>
-                  )}
-                </button>
-
-                <p className="text-xs text-slate-500 text-center">
-                  Costo estimado: 50 tokens • ~2-3 minutos
-                </p>
-              </div>
-            </div>
-
-            {/* Features */}
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { icon: Zap, title: 'JoxCoder AI', desc: 'Modelo propio optimizado' },
-                { icon: Github, title: 'Git Automático', desc: 'Commits y branches' },
-                { icon: Rocket, title: 'Deploy Directo', desc: 'A producción en 1 clic' },
-                { icon: Code2, title: 'Multi-Framework', desc: 'React, Vue, Python...' }
-              ].map((feature) => (
-                <div key={feature.title} className="bg-slate-800/30 border border-slate-700/50 rounded-lg p-4">
-                  <feature.icon className="w-6 h-6 text-cyan-400 mb-2" />
-                  <h3 className="text-sm font-semibold text-slate-200 mb-1">{feature.title}</h3>
-                  <p className="text-xs text-slate-500">{feature.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right: Messages/Preview */}
-          <div className="space-y-6">
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 min-h-[600px] flex flex-col">
-              <h2 className="text-xl font-semibold text-slate-200 mb-4 flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-green-400" />
-                Preview en Tiempo Real
-              </h2>
-
-              {messages.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center">
-                  <Code2 className="w-16 h-16 text-slate-600 mb-4" />
-                  <p className="text-slate-400 text-lg font-medium mb-2">
-                    Comienza a crear
-                  </p>
-                  <p className="text-slate-500 text-sm max-w-md">
-                    Describe tu aplicación en el panel izquierdo y observa cómo AUTOCREA la construye paso a paso
-                  </p>
-                </div>
-              ) : (
-                <div className="flex-1 overflow-y-auto space-y-4">
-                  {messages.map((msg, idx) => (
-                    <div
-                      key={idx}
-                      className={`p-4 rounded-lg ${
-                        msg.role === 'user'
-                          ? 'bg-cyan-500/10 border border-cyan-500/30'
-                          : 'bg-slate-700/50 border border-slate-600'
-                      }`}
+                )}
+                <CardHeader>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <CardDescription>{plan.description}</CardDescription>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold text-slate-200">{plan.price}</span>
+                    <span className="text-slate-400">/mes</span>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, j) => (
+                      <li key={j} className="flex items-center gap-2">
+                        <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-slate-300">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/register" className="block mt-8">
+                    <Button 
+                      variant={plan.popular ? "default" : "outline"}
+                      className="w-full"
                     >
-                      <div className="text-xs text-slate-400 mb-2">
-                        {msg.role === 'user' ? 'Tú' : 'AUTOCREA'}
-                      </div>
-                      <div className="text-sm text-slate-200 whitespace-pre-line">
-                        {msg.content}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                      Comenzar Ahora
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
-      </main>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <Card className="p-12 border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-blue-500/10">
+              <h2 className="text-4xl font-bold text-slate-200 mb-6">
+                ¿Listo para crear tu próxima aplicación?
+              </h2>
+              <p className="text-xl text-slate-400 mb-8">
+                Únete a miles de desarrolladores que ya están construyendo con AUTOCREA
+              </p>
+              <Link href="/register">
+                <Button size="lg" className="text-lg">
+                  <Sparkles className="mr-2 w-5 h-5" />
+                  Obtener 100 Tokens Gratis
+                </Button>
+              </Link>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-sm text-slate-500">
-            AUTOCREA V2.0 • Powered by JoxCoder • De idea a aplicación en minutos
-          </p>
+      <footer className="border-t border-slate-800 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center text-slate-500">
+          <p className="mb-4">© 2025 AUTOCREA V2.0 • Powered by JoxCoder</p>
+          <p className="text-sm">De idea a aplicación completa en minutos</p>
         </div>
       </footer>
     </div>
