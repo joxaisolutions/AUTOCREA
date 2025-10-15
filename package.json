@@ -4,7 +4,10 @@
   "description": "The most powerful chatbot to build powerful apps.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev -p 5000 -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start -p 5000 -H 0.0.0.0",
+    "lint": "next lint"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +17,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitejs/plugin-react": "^5.0.4",
+    "lucide-react": "^0.545.0",
     "next": "^14.2.33",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -23,6 +27,6 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.14"
+    "tailwindcss": "^3.4.18"
   }
 }
