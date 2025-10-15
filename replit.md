@@ -4,7 +4,7 @@
 
 AUTOCREA V2.0 is a complete autonomous full-stack development platform powered by JoxCoder (proprietary LLM model). The application enables users to generate complete applications from natural language descriptions, with real-time preview and multi-role AI agents.
 
-**Current Status:** ✅ Frontend Complete (Demo Mode)
+**Current Status:** ✅ Frontend & Infrastructure Complete (Ready for JoxCoder Integration)
 
 **Core Value Proposition:**
 - 100% autonomous app generation from idea to deployment
@@ -16,54 +16,105 @@ AUTOCREA V2.0 is a complete autonomous full-stack development platform powered b
 ## Recent Changes (October 15, 2025)
 
 ### Completed ✅
+
+#### Frontend (Complete)
 1. **Landing Page**
    - Beautiful hero section with gradient design
    - Features showcase (6 key features)
    - Pricing section (Free Trial, Basic $29, Pro $99)
-   - Fully responsive design
-   - Framer Motion animations
+   - Fully responsive design with Framer Motion animations
 
-2. **Route Structure**
-   - Public routes: `/` (landing)
-   - Auth routes: `/login`, `/register` (demo mode - Clerk integration pending)
-   - Dashboard routes: `/chat`, `/projects`, `/settings`
+2. **Authentication Pages**
+   - Login and Register pages (demo mode)
+   - Ready for Clerk integration
+   - Clean UI matching dark theme
 
-3. **Dashboard**
-   - Sidebar navigation
+3. **Dashboard Layout**
+   - Sidebar navigation with route indicators
    - Token balance display
-   - User profile (demo mode)
-   - Responsive layout
+   - User profile section
+   - Fully responsive layout
 
-4. **Chat Interface**
+4. **Enhanced Chat Interface**
    - Project name and description inputs
    - Quick example templates
-   - Real-time preview panel
-   - Generation simulation (demo)
-   - Token cost estimation
+   - Real-time generation simulation with multi-agent workflow
+   - Monaco Editor integration for code preview
+   - Generation progress tracking with elapsed time
+   - Token cost estimation and tracking
+   - Copy and download generated code
 
-5. **UI Components**
-   - Custom Button component with variants
-   - Card components (shadcn/ui style)
-   - Consistent dark theme with cyan/blue accents
-   - Tailwind CSS integration
+5. **Projects Page**
+   - Demo projects grid with status indicators
+   - Project cards showing framework, tokens used, creation date
+   - "Create New Project" card
+   - Quick actions (View Code, External Link)
+   - Status badges (Completed, Generating, Failed)
 
-6. **Settings & Projects Pages**
-   - Settings page with API key management UI
-   - Projects page with empty state
-   - Subscription management UI
+6. **Settings Page**
+   - Optional external API keys (OpenAI, Anthropic, Google Gemini)
+   - Password visibility toggle for security
+   - User profile management (demo mode)
+   - Subscription plans display (Free, Basic $29, Pro $99)
+   - Token balance and usage tracking
+
+#### Backend Infrastructure (Complete - Ready for Integration)
+
+7. **Convex Database Schema**
+   - `users`: User management with token balances and subscriptions
+   - `projects`: Project metadata and generated code storage
+   - `generations`: Generation tracking with status and steps
+   - `generationSteps`: Detailed multi-agent step tracking
+   - `apiKeys`: Secure encrypted API key storage
+   - `tokenTransactions`: Complete token usage history
+   - Comprehensive indexes for efficient querying
+
+8. **Convex Functions**
+   - User creation with signup bonus
+   - Token balance management
+   - Project CRUD operations
+   - Generation tracking and status updates
+   - Step-by-step generation logging
+
+9. **API Routes**
+   - `/api/generate`: Project generation endpoint
+   - `/api/joxcoder`: JoxCoder model integration endpoint
+   - Ready for production implementation
+
+10. **JoxCoder Client Library**
+    - Multi-agent architecture (Architect, Backend, Frontend, DevOps, Security)
+    - Streaming support for real-time updates
+    - Token usage tracking
+    - Context-aware prompt building
+    - Error handling and retries
+
+11. **State Management (Zustand)**
+    - Global chat state management
+    - Generation progress tracking
+    - Step-by-step status updates
+    - Token counting and estimation
+    - Error state handling
+
+12. **UI Components**
+    - **CodeEditor**: Monaco Editor with syntax highlighting, copy, download
+    - **GenerationSteps**: Visual multi-agent workflow display
+    - **GenerationProgress**: Real-time progress with tokens and time tracking
+    - **Progress**: Radix UI progress bar with gradient
+    - **Button, Card**: Consistent shadcn/ui components
 
 ### Pending Integrations 🔄
-1. **Clerk Authentication** - Requires valid API keys in `.env.local`
-2. **Convex Database** - Schema defined, needs deployment setup
-3. **Stripe Payments** - Integration pending
-4. **FastAPI Backend** - Code generation service (to be built)
-5. **JoxCoder Integration** - Primary AI model connection
+1. **JoxCoder Model** - API training in progress, infrastructure ready
+2. **Clerk Authentication** - Requires API keys in `.env.local`
+3. **Convex Database** - Schema ready, needs deployment and connection
+4. **Stripe Payments** - Integration pending
+5. **FastAPI Backend** - Optional external API integration layer
 
 ## User Preferences
 
 - **Communication Style:** Simple, everyday language
 - **Design:** Dark theme, gradient accents (cyan/blue)
 - **Framework:** Next.js 14 with App Router
+- **Language:** Spanish UI throughout
 
 ## System Architecture
 
@@ -75,80 +126,109 @@ AUTOCREA V2.0 is a complete autonomous full-stack development platform powered b
 - **Tailwind CSS** for styling
 - **Framer Motion** for animations
 - **Lucide React** for icons
+- **Monaco Editor** for code display
+- **Zustand** for state management
 
 **Route Structure:**
 ```
 app/
 ├── (auth)/
-│   ├── login/          # Login page (demo mode)
-│   └── register/       # Register page (demo mode)
+│   ├── login/              # Login page (demo mode)
+│   └── register/           # Register page (demo mode)
 ├── (dashboard)/
-│   ├── layout.tsx      # Dashboard layout with sidebar
-│   ├── chat/           # Main chat interface
-│   ├── projects/       # Project management
-│   └── settings/       # Settings & API keys
-├── layout.tsx          # Root layout
-└── page.tsx            # Landing page
+│   ├── layout.tsx          # Dashboard layout with sidebar
+│   ├── chat/               # Enhanced chat with Monaco Editor
+│   ├── projects/           # Project management with demo data
+│   └── settings/           # Settings with API keys & subscriptions
+├── api/
+│   ├── generate/           # Generation API endpoint
+│   └── joxcoder/           # JoxCoder integration endpoint
+├── layout.tsx              # Root layout
+└── page.tsx                # Landing page
 ```
 
-**Key Design Patterns:**
-- Client-side components with 'use client' directive
-- Server components for static content
-- Route groups for layout organization
-- Shared UI components in `/components/ui/`
+**Component Structure:**
+```
+components/
+├── ui/                     # Base shadcn/ui components
+│   ├── button.tsx
+│   ├── card.tsx
+│   └── progress.tsx
+├── chat/
+│   └── code-editor.tsx    # Monaco Editor wrapper
+└── generation/
+    ├── generation-steps.tsx    # Multi-agent step visualization
+    └── generation-progress.tsx # Progress tracking component
+```
 
-### Backend Architecture (To Be Built)
+### Backend Architecture
 
-**API Layer:** FastAPI (Python)
-- JoxCoder model integration
-- Code generation pipeline
-- Multi-role agent orchestration
+**Convex Database:**
+- Real-time subscriptions ready
+- Complete schema with 6 tables
+- Optimized indexes for performance
+- Secure API key encryption support
 
-**Database:** Convex (real-time)
-- User management
-- Project metadata
-- Token balances
-- Generation history
+**JoxCoder Integration:**
+- Multi-agent workflow: 5 specialized AI roles
+- Context-aware prompt generation
+- Token estimation and tracking
+- Streaming response support (ready)
 
-**Planned Data Models:**
-- **Users:** Clerk ID, token balance, subscription status
-- **Projects:** Name, description, status, generated code
-- **Generations:** Steps log, tokens used, model info
+**API Layer:**
+- Next.js API routes for serverless functions
+- Ready for JoxCoder Hugging Face integration
+- Optional external API support (OpenAI, Claude, Gemini)
 
-### Authentication & Authorization (Pending Setup)
+### State Management
+
+**Zustand Store:**
+```typescript
+- projectName, projectDescription
+- isGenerating, currentStep, totalSteps
+- steps: GenerationStep[]
+- generatedCode, tokensUsed, estimatedTokens
+- error handling
+```
+
+### Authentication & Authorization
 
 **Provider:** Clerk
 - Install status: ✅ Package installed
 - Configuration: ⚠️ Needs API keys
-- Middleware: Created but disabled (missing keys)
+- Middleware: Disabled (awaiting keys)
 
 **To Enable:**
 1. Get Clerk API keys from https://clerk.dev
-2. Add to `.env.local`:
-   ```
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
-   CLERK_SECRET_KEY=sk_...
-   ```
-3. Rename `middleware.ts.bak` to `middleware.ts`
+2. Add to `.env.local`
+3. Restore from `middleware.ts.bak`
 4. Update auth pages to use Clerk components
 
-### Payment Processing (Planned)
+### Payment Processing
 
 **Provider:** Stripe
-- Subscription plans: Free Trial, Basic ($29), Pro ($99)
-- Token purchase system
-- Webhook handling for events
+- Subscription plans ready: Free Trial, Basic ($29), Pro ($99)
+- Token purchase system UI complete
+- Webhook handling (pending implementation)
 
 ### AI/ML Core
 
 **Primary Model:** JoxCoder (Proprietary)
-- Hugging Face Inference API
-- No external API dependencies
-- Multi-role agent system
+- Hugging Face Inference API integration ready
+- Multi-role agent system implemented
+- No external dependencies required
+
+**Multi-Agent Roles:**
+1. **Architect**: System design and technology selection
+2. **Backend**: API and database implementation
+3. **Frontend**: UI/UX development
+4. **DevOps**: Deployment and infrastructure
+5. **Security**: Code auditing and best practices
 
 **Optional External APIs:**
 - User-provided keys for GPT-4, Claude, Gemini
-- Stored securely in user preferences
+- Secure encrypted storage in Convex
+- UI for management in Settings page
 
 ## Tech Stack
 
@@ -159,22 +239,29 @@ app/
 - Tailwind CSS 3.4.0
 - Framer Motion (latest)
 - Lucide React (latest)
+- @monaco-editor/react (latest)
+- @radix-ui/react-progress (latest)
+- Zustand (latest)
 - @clerk/nextjs (latest)
 
+**Backend:**
+- Convex (latest) - Database
+- Next.js API Routes - Serverless functions
+
 **Build Tools:**
-- Vite (not used, Next.js has built-in bundler)
 - PostCSS for Tailwind
 - ESLint for linting
+- TypeScript compiler
 
 ## Environment Setup
 
 **Required Environment Variables:**
 ```bash
 # JoxCoder (Primary - Add when ready)
-JOXCODER_API_URL=https://api-inference.huggingface.co/models/...
+JOXCODER_API_URL=https://api-inference.huggingface.co/models/your-org/joxcoder
 JOXCODER_API_KEY=hf_...
 
-# Clerk (Required for auth)
+# Clerk (Required for real auth)
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
 CLERK_SECRET_KEY=sk_...
 
@@ -186,9 +273,10 @@ CONVEX_DEPLOY_KEY=prod:...
 STRIPE_SECRET_KEY=sk_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
-# Optional External APIs
+# Optional External APIs (Stored in Convex when user provides)
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_AI_API_KEY=AI...
 ```
 
 ## Development Workflow
@@ -200,91 +288,124 @@ npm run build        # Production build
 npm run start        # Production server
 ```
 
+**Convex Development:**
+```bash
+npx convex dev       # Start Convex development server
+npx convex deploy    # Deploy schema to production
+```
+
 **Deployment:**
 - Target: Vercel (autoscale)
 - Build command: `npm run build`
 - Start command: `npm run start`
 - Port: 5000 (configured in package.json)
 
-## Next Steps
+## Next Steps (When JoxCoder is Ready)
 
-1. **Get API Keys:**
-   - Sign up for Clerk → Add auth keys
-   - Set up Convex → Add database URL
-   - Configure Stripe → Add payment keys
-   - Get JoxCoder access → Add model API key
+1. **JoxCoder Integration:**
+   - Add Hugging Face API credentials
+   - Test multi-agent workflow
+   - Implement streaming responses
+   - Add error handling and retries
 
-2. **Backend Development:**
-   - Create FastAPI service
-   - Implement JoxCoder client
-   - Build multi-role agent system
-   - Set up code generation pipeline
-
-3. **Database Setup:**
+2. **Convex Setup:**
    - Deploy Convex schema
-   - Create mutation/query functions
-   - Implement real-time subscriptions
+   - Connect to Next.js app
+   - Test real-time subscriptions
+   - Implement token transactions
 
-4. **Integration:**
-   - Connect frontend to backend API
-   - Implement actual code generation
-   - Add real-time preview with Monaco Editor
-   - Set up Git automation
+3. **Clerk Authentication:**
+   - Add API keys
+   - Enable middleware
+   - Update auth pages
+   - Test user flows
 
-5. **Testing & Deployment:**
-   - End-to-end testing
+4. **Stripe Integration:**
+   - Set up Stripe account
+   - Configure webhook endpoints
+   - Implement payment flows
+   - Test subscriptions
+
+5. **Testing & Polish:**
+   - End-to-end generation testing
+   - Error handling improvements
    - Performance optimization
-   - Deploy to production
-   - Monitor and iterate
-
-## Known Issues
-
-1. **Clerk Not Active:** Demo mode enabled - need to add API keys
-2. **LSP Warnings:** Type imports for UI components (non-blocking)
-3. **Mock Data:** Chat interface uses simulated generation (backend pending)
+   - User feedback integration
 
 ## File Structure
 
 ```
 autocrea-v2/
-├── app/                     # Next.js 14 app directory
-│   ├── (auth)/             # Auth routes (login, register)
-│   ├── (dashboard)/        # Protected dashboard routes
-│   ├── globals.css         # Global styles
-│   ├── layout.tsx          # Root layout
-│   └── page.tsx            # Landing page
+├── app/                        # Next.js 14 app directory
+│   ├── (auth)/                # Auth routes
+│   │   ├── login/
+│   │   └── register/
+│   ├── (dashboard)/           # Protected routes
+│   │   ├── chat/             # Enhanced with Monaco Editor
+│   │   ├── projects/         # Project management
+│   │   ├── settings/         # Settings & API keys
+│   │   └── layout.tsx
+│   ├── api/                   # API routes
+│   │   ├── generate/
+│   │   └── joxcoder/
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
 ├── components/
-│   ├── ui/                 # Reusable UI components
+│   ├── ui/                    # Base UI components
 │   │   ├── button.tsx
-│   │   └── card.tsx
-│   ├── chat/              # Chat components (to be added)
-│   └── landing/           # Landing components (to be added)
+│   │   ├── card.tsx
+│   │   └── progress.tsx
+│   ├── chat/
+│   │   └── code-editor.tsx   # Monaco Editor integration
+│   └── generation/
+│       ├── generation-steps.tsx
+│       └── generation-progress.tsx
+├── convex/                     # Convex database
+│   ├── schema.ts              # Database schema
+│   ├── users.ts               # User functions
+│   ├── projects.ts            # Project functions
+│   ├── generations.ts         # Generation functions
+│   └── tsconfig.json
 ├── lib/
-│   └── utils.ts           # Utility functions
-├── public/                 # Static assets
-├── .env.example           # Environment variables template
-├── .env.local             # Local env (gitignored)
-├── .gitignore             # Git ignore rules
-├── middleware.ts.bak      # Clerk middleware (disabled)
-├── next.config.js         # Next.js configuration
-├── package.json           # Dependencies
-├── postcss.config.js      # PostCSS config
-├── README.md              # Project documentation
-├── replit.md              # This file
-├── tailwind.config.js     # Tailwind configuration
-└── tsconfig.json          # TypeScript configuration
+│   ├── api/
+│   │   └── joxcoder-client.ts # JoxCoder client library
+│   ├── stores/
+│   │   └── chat-store.ts      # Zustand state management
+│   └── utils.ts
+├── public/
+├── .env.example
+├── .env.local                  # Local env (gitignored)
+├── .gitignore
+├── middleware.ts.bak           # Clerk middleware (disabled)
+├── next.config.js
+├── package.json
+├── postcss.config.js
+├── README.md
+├── replit.md                   # This file
+├── tailwind.config.js
+└── tsconfig.json
 ```
+
+## Known Issues
+
+1. **Clerk Not Active:** Demo mode - need API keys
+2. **Convex Not Connected:** Schema ready - needs deployment
+3. **JoxCoder Training:** Model in progress - infrastructure ready
+4. **LSP Warnings:** Convex type generation pending (non-blocking)
 
 ## Resources
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Clerk Documentation](https://clerk.dev/docs)
 - [Convex Documentation](https://docs.convex.dev)
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [Framer Motion](https://www.framer.com/motion/)
+- [Zustand](https://zustand-demo.pmnd.rs/)
 
 ---
 
 **Last Updated:** October 15, 2025
-**Status:** Frontend Complete, Backend Pending
-**Next Milestone:** API Integration
+**Status:** Infrastructure Complete - Ready for JoxCoder Integration
+**Next Milestone:** JoxCoder Model Integration & Convex Deployment
