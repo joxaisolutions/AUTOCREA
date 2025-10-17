@@ -76,8 +76,17 @@ The app will run on `http://localhost:5000`
 
 Create a `.env.local` file (see `.env.example` for complete list):
 
+**OPTION 1: Relevance AI (Recommended - 2 min setup)**
 ```bash
-# JoxCoder V2.0 Hybrid System (Primary AI)
+# Your custom Relevance AI agent
+RELEVANCE_AI_REGION=bcbe5a
+RELEVANCE_AI_PROJECT_ID=72d29230-c441-4e89-81c2-1342f3968ad9
+RELEVANCE_AI_API_KEY=your_api_key_here
+RELEVANCE_AI_AGENT_ID=ee9406f5-59a3-4b2b-bac3-71a2cc03fbc7
+```
+
+**OPTION 2: JoxCoder V2.0 Hybrid (Advanced - requires training)**
+```bash
 # DeepSeek-Coder-33B (Architecture, Blockchain, DevOps, Security)
 JOXCODER_DEEPSEEK_API_URL=https://api-inference.huggingface.co/models/your-username/joxcoder-deepseek-33b
 JOXCODER_DEEPSEEK_API_KEY=hf_your_key_here
@@ -85,21 +94,22 @@ JOXCODER_DEEPSEEK_API_KEY=hf_your_key_here
 # CodeLlama-34B (Frontend, Backend, Python/JS, Debugging)
 JOXCODER_CODELLAMA_API_URL=https://api-inference.huggingface.co/models/your-username/joxcoder-codellama-34b
 JOXCODER_CODELLAMA_API_KEY=hf_your_key_here
+```
 
-# Optional: Clerk Authentication
+**Optional Services:**
+```bash
+# Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 
-# Optional: Convex Database
+# Convex Database
 NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 CONVEX_DEPLOY_KEY=prod:...
-
-# Optional: Stripe Payments
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
-📖 **See `JOXCODER_INTEGRATION.md` for complete setup guide**
+📖 **Setup Guides:**
+- **Relevance AI**: See `RELEVANCE_AI_SETUP.md` (Quick start - 2 minutes)
+- **JoxCoder Hybrid**: See `JOXCODER_INTEGRATION.md` (Advanced - ~12 hours training)
 
 ## 📁 Project Structure
 
