@@ -1,7 +1,4 @@
 {
   "/page": "app/page.js",
-  "/(auth)/register/page": "app/(auth)/register/page.js",
-  "/(dashboard)/chat/page": "app/(dashboard)/chat/page.js",
-  "/(dashboard)/projects/page": "app/(dashboard)/projects/page.js",
-  "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js"
+  "/(auth)/register/page": "app/(auth)/register/page.js"
 }
