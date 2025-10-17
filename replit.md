@@ -2,7 +2,13 @@
 
 ## Overview
 
-AUTOCREA V2.0 is an autonomous full-stack development platform designed to generate applications from idea to deployment. It leverages the **JoxCoder V2.0 Hybrid System**, which intelligently routes tasks between specialized AI models (DeepSeek-Coder-33B for architecture/DevOps/security and CodeLlama-34B for frontend/backend). The platform aims for 100% autonomous app generation, offers real-time code preview, visualizes generation steps, and automates Git operations. Users can also integrate their own API keys for other AI models.
+AUTOCREA V2.0 is an autonomous full-stack development platform designed to generate applications from idea to deployment. It supports multiple AI providers:
+
+**Primary AI Options:**
+- **Relevance AI** (Recommended): Custom trained agent with 2-minute setup
+- **JoxCoder V2.0 Hybrid**: DeepSeek-Coder-33B + CodeLlama-34B with smart routing (requires training)
+
+The platform aims for 100% autonomous app generation, offers real-time code preview, visualizes generation steps, and automates Git operations. Users can also integrate their own API keys for other AI models (OpenAI, Anthropic, Google).
 
 ## User Preferences
 
@@ -35,10 +41,16 @@ The application features a dark theme with cyan/blue gradient accents. The user 
 
 ## External Dependencies
 
-- **Convex**: Real-time database for storing application data.
-- **Clerk**: Authentication provider (pending API key integration).
-- **Stripe**: Payment processing for subscriptions and token purchases (pending integration).
-- **Hugging Face Inference API**: Used for hosting and integrating the JoxCoder Hybrid System models (DeepSeek-Coder-33B and CodeLlama-34B).
-- **OpenAI API**: Optional integration for GPT-4 (user-provided API keys).
-- **Anthropic API**: Optional integration for Claude (user-provided API keys).
-- **Google AI API**: Optional integration for Gemini (user-provided API keys).
+**AI Providers (Choose One):**
+- **Relevance AI** (Recommended): Custom agent API for code generation (pre-configured agent ID available)
+- **Hugging Face Inference API**: For JoxCoder Hybrid System (DeepSeek-Coder-33B + CodeLlama-34B)
+
+**Infrastructure:**
+- **Convex**: Real-time database for storing application data
+- **Clerk**: Authentication provider (pending API key integration)
+- **Stripe**: Payment processing for subscriptions and token purchases (pending integration)
+
+**Optional External AI:**
+- **OpenAI API**: Optional integration for GPT-4 (user-provided API keys)
+- **Anthropic API**: Optional integration for Claude (user-provided API keys)
+- **Google AI API**: Optional integration for Gemini (user-provided API keys)
