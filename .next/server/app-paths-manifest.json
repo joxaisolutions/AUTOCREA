@@ -1,8 +1,6 @@
 {
   "/page": "app/page.js",
-  "/api/config-status/route": "app/api/config-status/route.js",
-  "/(auth)/sign-in/[[...sign-in]]/page": "app/(auth)/sign-in/[[...sign-in]]/page.js",
-  "/api/generate-with-ai/route": "app/api/generate-with-ai/route.js",
   "/(dashboard)/chat/page": "app/(dashboard)/chat/page.js",
-  "/(dashboard)/projects/page": "app/(dashboard)/projects/page.js"
+  "/(dashboard)/projects/page": "app/(dashboard)/projects/page.js",
+  "/(dashboard)/joxcoder/page": "app/(dashboard)/joxcoder/page.js"
 }

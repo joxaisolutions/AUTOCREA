@@ -1,0 +1,192 @@
+# 🚀 Guía de Instalación: JoxCoder en AUTOCREA
+
+## Paso 1: Exportar JoxCoder de Relevance AI
+
+### Obtener Credenciales API
+
+1. **Ir a Relevance AI Dashboard**
+   - Abre tu dashboard en https://relevance.ai
+
+2. **Navega a Settings → API Keys**
+   - Copia tu **API Key**
+   - Anótala, la necesitarás en el `.env`
+
+3. **Obtener Agent ID**
+   - Ve a tu agente JoxCoder
+   - En la URL verás algo como: `relevance.ai/agents/agent_xxxxx`
+   - Copia el ID del agente (la parte `agent_xxxxx`)
+   
+4. **Exportar configuración (opcional)**
+   - Haz clic en el botón "Export agent"
+   - Guarda el archivo JSON como respaldo
+
+---
+
+## Paso 2: Configurar Variables de Entorno en Replit
+
+### Agregar al archivo `.env`
+
+```bash
+# JoxCoder - Relevance AI Integration
+RELEVANCE_API_KEY=tu_api_key_aqui
+RELEVANCE_AGENT_ID=agent_tu_id_aqui
+RELEVANCE_PROJECT_ID=tu_project_id_aqui
+RELEVANCE_BASE_URL=https://api-bcbe99.stack.tryrelevance.com/latest
+
+# Opcional: Para analytics de uso
+JOXCODER_ANALYTICS_ENABLED=true
+```
+
+### En Replit:
+
+1. Ve a **Tools** → **Secrets**
+2. Agrega cada variable con su valor
+3. O edita el archivo `.env` directamente
+
+---
+
+## Paso 3: Instalar Archivos en tu Proyecto
+
+### Estructura de archivos:
+
+```
+autocrea/
+├── lib/
+│   └── joxcoder/
+│       └── relevance-client.ts       ← Copia el primer artifact aquí
+├── app/
+│   ├── api/
+│   │   └── joxcoder/
+│   │       └── chat/
+│   │           └── route.ts          ← Copia el tercer artifact aquí
+│   └── dashboard/
+│       └── joxcoder/
+│           └── page.tsx              ← Crea esta página (ver abajo)
+└── components/
+    └── joxcoder/
+        └── JoxCoderChat.tsx          ← Copia el segundo artifact aquí
+```
+
+---
+
+## Paso 4: Crear la Tabla en Supabase (Opcional)
+
+Si quieres guardar el historial de conversaciones:
+
+```sql
+-- Crear tabla para historial de JoxCoder
+CREATE TABLE joxcoder_conversations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  conversation_id TEXT NOT NULL,
+  message TEXT NOT NULL,
+  response TEXT NOT NULL,
+  tokens_used INTEGER,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Índices para mejor performance
+CREATE INDEX idx_joxcoder_user_id ON joxcoder_conversations(user_id);
+CREATE INDEX idx_joxcoder_conversation_id ON joxcoder_conversations(conversation_id);
+CREATE INDEX idx_joxcoder_created_at ON joxcoder_conversations(created_at DESC);
+
+-- RLS (Row Level Security)
+ALTER TABLE joxcoder_conversations ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own conversations"
+  ON joxcoder_conversations FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own conversations"
+  ON joxcoder_conversations FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+```
+
+---
+
+## Paso 5: Crear la Página del Dashboard
+
+Crea el archivo `app/dashboard/joxcoder/page.tsx`:
+
+```typescript
+import JoxCoderChat from '@/components/joxcoder/JoxCoderChat';
+
+export default function JoxCoderPage() {
+  return (
+    <div className="container mx-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">
+          JoxCoder Assistant
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Tu asistente de desarrollo especializado en el stack de AUTOCREA
+        </p>
+      </div>
+      
+      <JoxCoderChat />
+    </div>
+  );
+}
+```
+
+---
+
+## Paso 6: Agregar al Menú de Navegación
+
+En tu componente de navegación (ej: `Sidebar.tsx`), agrega:
+
+```typescript
+{
+  name: 'JoxCoder',
+  href: '/dashboard/joxcoder',
+  icon: CodeIcon, // o el ícono que prefieras
+}
+```
+
+---
+
+## Paso 7: Instalar Dependencias (si es necesario)
+
+```bash
+npm install lucide-react
+```
+
+O si usas otro gestor de paquetes:
+```bash
+yarn add lucide-react
+pnpm add lucide-react
+```
+
+---
+
+## Paso 8: Probar la Integración
+
+### Test básico desde la consola de Replit:
+
+```typescript
+// Test en la Shell de Replit
+import { JoxCoderClient } from './lib/joxcoder/relevance-client';
+
+const client = new JoxCoderClient({
+  apiKey: process.env.RELEVANCE_API_KEY!,
+  agentId: process.env.RELEVANCE_AGENT_ID!,
+});
+
+const response = await client.chat('Hola JoxCoder, ¿estás funcionando?');
+console.log(response);
+```
+
+### Test desde el navegador:
+
+1. Inicia tu servidor de desarrollo
+2. Navega a `/dashboard/joxcoder`
+3. Envía un mensaje de prueba
+4. Verifica que recibas respuesta
+
+---
+
+## Paso 9: Troubleshooting
+
+### Error: "API Key inválida"
+- Verifica que copiaste la API Key completa
+- As

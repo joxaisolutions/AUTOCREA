@@ -1,0 +1,201 @@
+// scripts/test-joxcoder.ts
+
+/**
+ * Script de testing para verificar la integración de JoxCoder
+ * 
+ * Uso:
+ * 1. Asegúrate de tener las variables de entorno configuradas
+ * 2. Ejecuta: npx tsx scripts/test-joxcoder.ts
+ * 3. O en Replit: node --loader ts-node/esm scripts/test-joxcoder.ts
+ */
+
+import { JoxCoderClient } from '../lib/joxcoder/relevance-client';
+
+// Colores para la consola
+const colors = {
+  reset: '\x1b[0m',
+  green: '\x1b[32m',
+  red: '\x1b[31m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  cyan: '\x1b[36m',
+};
+
+function log(message: string, color: keyof typeof colors = 'reset') {
+  console.log(`${colors[color]}${message}${colors.reset}`);
+}
+
+function logSection(title: string) {
+  console.log('\n' + '='.repeat(50));
+  log(title, 'cyan');
+  console.log('='.repeat(50) + '\n');
+}
+
+// Tests
+async function runTests() {
+  logSection('🚀 Iniciando Tests de JoxCoder');
+
+  // Test 1: Verificar variables de entorno
+  logSection('Test 1: Variables de Entorno');
+  const apiKey = process.env.RELEVANCE_API_KEY;
+  const agentId = process.env.RELEVANCE_AGENT_ID;
+
+  if (!apiKey) {
+    log('❌ RELEVANCE_API_KEY no encontrada', 'red');
+    log('   Agrega esta variable a tu .env o Replit Secrets', 'yellow');
+    return;
+  } else {
+    log('✅ RELEVANCE_API_KEY encontrada', 'green');
+    log(`   Valor: ${apiKey.substring(0, 10)}...`, 'blue');
+  }
+
+  if (!agentId) {
+    log('❌ RELEVANCE_AGENT_ID no encontrado', 'red');
+    log('   Agrega esta variable a tu .env o Replit Secrets', 'yellow');
+    return;
+  } else {
+    log('✅ RELEVANCE_AGENT_ID encontrado', 'green');
+    log(`   Valor: ${agentId}`, 'blue');
+  }
+
+  // Test 2: Crear cliente
+  logSection('Test 2: Creación del Cliente');
+  let client: JoxCoderClient;
+  
+  try {
+    client = new JoxCoderClient({
+      apiKey,
+      agentId,
+    });
+    log('✅ Cliente JoxCoder creado exitosamente', 'green');
+  } catch (error) {
+    log('❌ Error al crear cliente', 'red');
+    console.error(error);
+    return;
+  }
+
+  // Test 3: Mensaje simple
+  logSection('Test 3: Envío de Mensaje Simple');
+  log('Enviando: "Hola, ¿puedes confirmar que estás funcionando?"', 'blue');
+  
+  try {
+    const startTime = Date.now();
+    const response = await client.chat('Hola, ¿puedes confirmar que estás funcionando?');
+    const duration = Date.now() - startTime;
+
+    if (response.success) {
+      log('✅ Respuesta recibida exitosamente', 'green');
+      log(`   Tiempo de respuesta: ${duration}ms`, 'blue');
+      log(`   Conversación ID: ${response.conversationId}`, 'blue');
+      log(`   Tokens usados: ${response.tokensUsed || 'N/A'}`, 'blue');
+      log('\n📝 Respuesta de JoxCoder:', 'cyan');
+      console.log(response.response);
+    } else {
+      log('❌ Error en la respuesta', 'red');
+      log(`   Error: ${response.error}`, 'yellow');
+    }
+  } catch (error) {
+    log('❌ Error al enviar mensaje', 'red');
+    console.error(error);
+  }
+
+  // Test 4: Análisis de código
+  logSection('Test 4: Análisis de Código');
+  
+  const testCode = `
+function calculateTotal(items) {
+  let total = 0;
+  for (let i = 0; i < items.length; i++) {
+    total += items[i].price * items[i].quantity;
+  }
+  return total;
+}
+  `.trim();
+
+  log('Enviando código para análisis...', 'blue');
+  
+  try {
+    const startTime = Date.now();
+    const response = await client.analyzeCode(
+      testCode,
+      'calculate-total.js',
+      '¿Cómo puedo optimizar esta función usando métodos modernos de JavaScript?'
+    );
+    const duration = Date.now() - startTime;
+
+    if (response.success) {
+      log('✅ Análisis completado', 'green');
+      log(`   Tiempo de respuesta: ${duration}ms`, 'blue');
+      log('\n📝 Sugerencias de JoxCoder:', 'cyan');
+      console.log(response.response);
+    } else {
+      log('❌ Error en el análisis', 'red');
+      log(`   Error: ${response.error}`, 'yellow');
+    }
+  } catch (error) {
+    log('❌ Error al analizar código', 'red');
+    console.error(error);
+  }
+
+  // Test 5: Generación de código
+  logSection('Test 5: Generación de Código');
+  
+  log('Solicitando generación de componente React...', 'blue');
+  
+  try {
+    const startTime = Date.now();
+    const response = await client.generateCode(
+      'Un componente de tarjeta de producto con imagen, título, precio y botón de comprar',
+      [
+        'Usar TypeScript',
+        'Estilos con Tailwind CSS',
+        'Props tipadas',
+        'Responsive design'
+      ]
+    );
+    const duration = Date.now() - startTime;
+
+    if (response.success) {
+      log('✅ Código generado', 'green');
+      log(`   Tiempo de respuesta: ${duration}ms`, 'blue');
+      log('\n📝 Código generado por JoxCoder:', 'cyan');
+      console.log(response.response);
+    } else {
+      log('❌ Error en la generación', 'red');
+      log(`   Error: ${response.error}`, 'yellow');
+    }
+  } catch (error) {
+    log('❌ Error al generar código', 'red');
+    console.error(error);
+  }
+
+  // Test 6: Historial de conversación
+  logSection('Test 6: Historial de Conversación');
+  
+  const history = client.getConversationHistory();
+  log(`✅ Historial contiene ${history.length} mensajes`, 'green');
+  
+  history.forEach((msg, index) => {
+    const icon = msg.role === 'user' ? '👤' : '🤖';
+    log(`${icon} Mensaje ${index + 1} [${msg.role}]:`, 'blue');
+    console.log(`   ${msg.content.substring(0, 100)}${msg.content.length > 100 ? '...' : ''}`);
+  });
+
+  // Resumen final
+  logSection('📊 Resumen de Tests');
+  log('Todos los tests completados', 'green');
+  log('\n✨ JoxCoder está correctamente integrado y funcionando', 'cyan');
+  log('\nPróximos pasos:', 'yellow');
+  log('1. Integra el componente UI en tu dashboard', 'reset');
+  log('2. Configura el API route en Next.js', 'reset');
+  log('3. Crea la tabla de Supabase para historial', 'reset');
+  log('4. Agrega el link en tu navegación', 'reset');
+  log('\n¡Listo para usar JoxCoder en AUTOCREA! 🎉', 'green');
+}
+
+// Ejecutar tests
+runTests().catch(error => {
+  log('\n❌ Error fatal en los tests:', 'red');
+  console.error(error);
+  process.exit(1);
+});

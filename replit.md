@@ -9,6 +9,7 @@ AUTOCREA V2.0 es una plataforma autónoma de desarrollo full-stack que genera ap
 **Características Implementadas:**
 - ✅ Autenticación completa con Clerk (sign-up, sign-in, protected routes)
 - ✅ Generación de código real con Relevance AI (5 agentes especializados)
+- ✅ JoxCoder Assistant - Chat interactivo con IA especializada en desarrollo
 - ✅ Sistema de tokens funcionando (UI completa, backend pendiente Convex)
 - ✅ Página de configuración con planes de suscripción (Stripe UI lista)
 - ✅ Branding completo "Powered by JoxAI" en toda la app

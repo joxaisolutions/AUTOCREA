@@ -1,4 +1,4 @@
-import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban } from "lucide-react"
+import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban, Bot } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { UserButton } from "@clerk/nextjs"
@@ -65,6 +65,15 @@ export default function DashboardLayout({
               <Button variant="ghost" className="w-full justify-start gap-3">
                 <FolderKanban className="w-5 h-5" />
                 Proyectos
+              </Button>
+            </Link>
+            <Link href="/joxcoder">
+              <Button variant="ghost" className="w-full justify-start gap-3">
+                <Bot className="w-5 h-5 text-cyan-400" />
+                <span className="flex items-center gap-2">
+                  JoxCoder
+                  <Sparkles className="w-3 h-3 text-cyan-400" />
+                </span>
               </Button>
             </Link>
             <Link href="/settings">
