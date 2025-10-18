@@ -130,10 +130,9 @@ Proyecto: ${prompt}`,
 
 export async function POST(request: NextRequest) {
   try {
-    const authResult = await auth();
-    const userId = authResult.userId;
+    const { userId, isAuthenticated } = await auth();
     
-    if (!userId) {
+    if (!isAuthenticated || !userId) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }

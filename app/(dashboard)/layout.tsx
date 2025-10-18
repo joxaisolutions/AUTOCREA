@@ -67,15 +67,6 @@ export default function DashboardLayout({
                 Proyectos
               </Button>
             </Link>
-            <Link href="/joxcoder">
-              <Button variant="ghost" className="w-full justify-start gap-3">
-                <Bot className="w-5 h-5 text-cyan-400" />
-                <span className="flex items-center gap-2">
-                  JoxCoder
-                  <Sparkles className="w-3 h-3 text-cyan-400" />
-                </span>
-              </Button>
-            </Link>
             <Link href="/settings">
               <Button variant="ghost" className="w-full justify-start gap-3">
                 <Settings className="w-5 h-5" />
