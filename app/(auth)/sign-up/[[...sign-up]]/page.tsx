@@ -15,12 +15,25 @@ export default function SignUpPage() {
         </div>
         <SignUp 
           appearance={{
+            baseTheme: undefined,
+            variables: {
+              colorPrimary: "#06b6d4",
+              colorBackground: "#0f172a",
+              colorInputBackground: "#1e293b",
+              colorInputText: "#f1f5f9",
+              colorText: "#f1f5f9",
+              colorTextSecondary: "#94a3b8",
+              colorDanger: "#ef4444",
+              borderRadius: "0.5rem",
+            },
             elements: {
               rootBox: "mx-auto",
-              card: "bg-slate-900 border border-slate-800",
+              card: "shadow-xl",
+              formButtonPrimary: "bg-cyan-500 hover:bg-cyan-600 text-white",
+              footerActionLink: "text-cyan-400 hover:text-cyan-300",
             }
           }}
-          redirectUrl="/chat"
+          fallbackRedirectUrl="/chat"
         />
       </div>
     </div>
