@@ -44,114 +44,56 @@ export default function ChatPage() {
     return () => clearInterval(interval)
   }, [isGenerating])
 
-  const simulateGeneration = async () => {
+  const generateWithAI = async () => {
     if (!projectName.trim() || !projectDescription.trim()) return
     
     setGenerating(true)
-    setEstimatedTokens(Math.ceil(projectDescription.length / 4) * 10)
+    setEstimatedTokens(Math.ceil(projectDescription.length / 4) * 50)
     
-    const agentSteps: Array<{
-      role: GenerationStep['role']
-      name: string
-      duration: number
-    }> = [
-      { role: 'architect', name: 'Diseñando arquitectura del sistema', duration: 3000 },
-      { role: 'backend', name: 'Generando API y modelos de datos', duration: 4000 },
-      { role: 'frontend', name: 'Creando interfaz de usuario', duration: 3500 },
-      { role: 'devops', name: 'Configurando deployment y CI/CD', duration: 2500 },
-      { role: 'security', name: 'Auditando seguridad del código', duration: 2000 },
-    ]
-
-    let totalTokens = 0
-
-    for (let i = 0; i < agentSteps.length; i++) {
-      const step = agentSteps[i]
-      const stepId = `step-${Date.now()}-${i}`
-      
-      addStep({
-        id: stepId,
-        role: step.role,
-        name: step.name,
-        status: 'pending',
+    try {
+      const response = await fetch('/api/generate-with-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          projectName,
+          projectDescription,
+        }),
       })
 
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      updateStep(stepId, {
-        status: 'in_progress',
-        startedAt: Date.now(),
-      })
-
-      await new Promise(resolve => setTimeout(resolve, step.duration))
-
-      const stepTokens = Math.floor(Math.random() * 30) + 20
-      totalTokens += stepTokens
-
-      updateStep(stepId, {
-        status: 'completed',
-        completedAt: Date.now(),
-        tokensUsed: stepTokens,
-        output: `✅ ${step.name} completado exitosamente`,
-      })
-
-      setTokensUsed(totalTokens)
-    }
-
-    const demoCode = `// ${projectName}
-// Generado por AUTOCREA V2.0 con JoxCoder
-
-import { useState, useEffect } from 'react'
-import { Card, Button } from '@/components/ui'
-
-export default function App() {
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch('/api/data')
-        const result = await response.json()
-        setData(result)
-      } catch (error) {
-        console.error('Error:', error)
-      } finally {
-        setLoading(false)
+      if (!response.ok) {
+        throw new Error('Generation failed')
       }
+
+      const data = await response.json()
+
+      // Add steps as they come
+      if (data.steps) {
+        for (const step of data.steps) {
+          const stepId = `step-${Date.now()}-${step.role}`
+          
+          addStep({
+            id: stepId,
+            role: step.role,
+            name: step.name,
+            status: 'completed',
+            output: step.output,
+            tokensUsed: step.tokensUsed,
+          })
+
+          setTokensUsed(data.totalTokens)
+        }
+      }
+
+      setGeneratedCode(data.generatedCode)
+      setShowCode(true)
+    } catch (error) {
+      console.error('Generation error:', error)
+      alert('Error al generar. Por favor intenta de nuevo.')
+    } finally {
+      setGenerating(false)
     }
-    fetchData()
-  }, [])
-
-  if (loading) {
-    return <div>Cargando...</div>
-  }
-
-  return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-4xl font-bold mb-6">
-        ${projectName}
-      </h1>
-      <p className="text-slate-400 mb-8">
-        ${projectDescription}
-      </p>
-      <div className="grid gap-4">
-        {data.map((item) => (
-          <Card key={item.id}>
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </Card>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Nota: Este es código de demostración
-// La generación completa estará disponible cuando JoxCoder esté entrenado`
-
-    setGeneratedCode(demoCode)
-    setShowCode(true)
-    setGenerating(false)
   }
 
   const handleReset = () => {
@@ -224,19 +166,19 @@ export default function App() {
 
               <div className="flex gap-2">
                 <Button
-                  onClick={simulateGeneration}
+                  onClick={generateWithAI}
                   disabled={isGenerating || !projectDescription.trim() || !projectName.trim()}
                   className="flex-1"
                 >
                   {isGenerating ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Generando...
+                      Generando con IA...
                     </>
                   ) : (
                     <>
                       <Rocket className="w-5 h-5 mr-2" />
-                      Generar Aplicación
+                      Generar con Relevance AI
                     </>
                   )}
                 </Button>

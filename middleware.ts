@@ -7,11 +7,7 @@ const isPublicRoute = createRouteMatcher([
   '/api/config-status',
 ])
 
-export default clerkMiddleware((auth, request) => {
-  if (!isPublicRoute(request)) {
-    auth().protect()
-  }
-})
+export default clerkMiddleware()
 
 export const config = {
   matcher: [

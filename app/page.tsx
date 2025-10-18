@@ -21,7 +21,7 @@ export default function LandingPage() {
                 <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                   AUTOCREA
                 </h1>
-                <p className="text-xs text-slate-400">V2.0 con JoxCoder</p>
+                <p className="text-xs text-slate-400">Powered by JoxAI</p>
               </div>
             </div>
             
@@ -282,7 +282,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-slate-800 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center text-slate-500">
-          <p className="mb-4">© 2025 AUTOCREA V2.0 • Powered by JoxCoder</p>
+          <p className="mb-4">© 2025 AUTOCREA V2.0 • Powered by JoxAI</p>
           <p className="text-sm">De idea a aplicación completa en minutos</p>
         </div>
       </footer>
