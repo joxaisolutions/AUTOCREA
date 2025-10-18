@@ -1,14 +1,33 @@
-# AUTOCREA V2.0
+# AUTOCREA V2.0 - MVP Funcional
 
 ## Overview
 
-AUTOCREA V2.0 is an autonomous full-stack development platform designed to generate applications from idea to deployment. It supports multiple AI providers:
+AUTOCREA V2.0 es una plataforma autónoma de desarrollo full-stack que genera aplicaciones completas desde la idea hasta el deployment. 
 
-**Primary AI Options:**
-- **Relevance AI** (Recommended): Custom trained agent with 2-minute setup
-- **JoxCoder V2.0 Hybrid**: DeepSeek-Coder-33B + CodeLlama-34B with smart routing (requires training)
+**Estado Actual: MVP FUNCIONAL** ✅
 
-The platform aims for 100% autonomous app generation, offers real-time code preview, visualizes generation steps, and automates Git operations. Users can also integrate their own API keys for other AI models (OpenAI, Anthropic, Google).
+**Características Implementadas:**
+- ✅ Autenticación completa con Clerk (sign-up, sign-in, protected routes)
+- ✅ Generación de código real con Relevance AI (5 agentes especializados)
+- ✅ Sistema de tokens funcionando (UI completa, backend pendiente Convex)
+- ✅ Página de configuración con planes de suscripción (Stripe UI lista)
+- ✅ Branding completo "Powered by JoxAI" en toda la app
+- ✅ UI/UX completamente en español
+- ✅ Tema oscuro con gradientes cyan/blue
+
+**Integraciones Configuradas:**
+- **Relevance AI**: Región bcbe5a, Proyecto 72d29230, Agente ee9406f5 (ACTIVO)
+- **Clerk**: Autenticación configurada y funcionando (ACTIVO)
+- **Stripe**: Blueprint listo, pendiente configuración de API keys
+
+**Próximos Pasos (Para plataforma completa):**
+1. Configurar Convex para persistencia de tokens real
+2. Integrar Stripe para pagos reales
+3. Agregar Monaco Editor para edición de código
+4. Implementar File Explorer en creation room
+5. Agregar Live Preview del código generado
+6. Implementar Terminal integrado
+7. Automatizar operaciones Git
 
 ## User Preferences
 
@@ -16,6 +35,7 @@ The platform aims for 100% autonomous app generation, offers real-time code prev
 - **Design:** Dark theme, gradient accents (cyan/blue)
 - **Framework:** Next.js 14 with App Router
 - **Language:** Spanish UI throughout
+- **Branding:** "Powered by JoxAI" visible en toda la aplicación
 
 ## System Architecture
 
@@ -41,16 +61,25 @@ The application features a dark theme with cyan/blue gradient accents. The user 
 
 ## External Dependencies
 
-**AI Providers (Choose One):**
-- **Relevance AI** (Recommended): Custom agent API for code generation (pre-configured agent ID available)
-- **Hugging Face Inference API**: For JoxCoder Hybrid System (DeepSeek-Coder-33B + CodeLlama-34B)
+**AI Providers:**
+- ✅ **Relevance AI** (ACTIVO): Agent ee9406f5 en región bcbe5a, generación real de código
+- ⏳ **JoxCoder Hybrid System**: DeepSeek-Coder-33B + CodeLlama-34B (para implementar después)
 
 **Infrastructure:**
-- **Convex**: Real-time database for storing application data
-- **Clerk**: Authentication provider (pending API key integration)
-- **Stripe**: Payment processing for subscriptions and token purchases (pending integration)
+- ✅ **Clerk** (ACTIVO): Autenticación completamente funcional
+- ⏳ **Convex**: Esquema definido, pendiente configuración del proyecto
+- ⏳ **Stripe**: Blueprint integrado, pendiente API keys
 
 **Optional External AI:**
-- **OpenAI API**: Optional integration for GPT-4 (user-provided API keys)
-- **Anthropic API**: Optional integration for Claude (user-provided API keys)
-- **Google AI API**: Optional integration for Gemini (user-provided API keys)
+- **OpenAI API**: Opcional, UI lista en settings
+- **Anthropic API**: Opcional, UI lista en settings
+- **Google AI API**: Opcional, UI lista en settings
+
+## Flujo Actual (MVP)
+
+1. **Landing Page** → Usuario ve features y planes
+2. **Sign Up** → Registro con Clerk (recibe 100 tokens gratis)
+3. **Dashboard/Chat** → Usuario describe su proyecto
+4. **AI Generation** → 5 agentes especializados generan código con Relevance AI
+5. **Results** → Usuario ve el código generado y puede descargarlo
+6. **Settings** → Usuario puede ver tokens y planes (pagos próximamente)
