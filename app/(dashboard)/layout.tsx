@@ -1,6 +1,7 @@
-import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban, User } from "lucide-react"
+import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { UserButton } from "@clerk/nextjs"
 
 export default function DashboardLayout({
   children,
@@ -33,15 +34,19 @@ export default function DashboardLayout({
               </div>
             </div>
             
-            <Link href="/">
+            <Link href="/settings">
               <Button variant="outline" size="sm">
                 Comprar Tokens
               </Button>
             </Link>
             
-            <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-slate-300" />
-            </div>
+            <UserButton 
+              appearance={{
+                elements: {
+                  avatarBox: "w-10 h-10"
+                }
+              }}
+            />
           </div>
         </div>
       </header>

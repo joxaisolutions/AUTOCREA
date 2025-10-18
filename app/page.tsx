@@ -26,10 +26,10 @@ export default function LandingPage() {
             </div>
             
             <div className="flex items-center gap-4">
-              <Link href="/login">
+              <Link href="/sign-in">
                 <Button variant="ghost" size="sm">Iniciar Sesión</Button>
               </Link>
-              <Link href="/register">
+              <Link href="/sign-up">
                 <Button size="sm">
                   Comenzar Gratis
                   <ArrowRight className="ml-2 w-4 h-4" />
@@ -63,12 +63,14 @@ export default function LandingPage() {
             </h1>
             
             <p className="text-xl text-slate-400 mb-12 max-w-3xl mx-auto">
-              AUTOCREA V2.0 utiliza <span className="text-cyan-400 font-semibold">JoxCoder</span>, nuestro modelo IA propietario,
-              para crear aplicaciones completas de forma autónoma. Arquitectura, backend, frontend, DevOps y seguridad, todo automático.
+              AUTOCREA V2.0 utiliza IA avanzada para crear aplicaciones completas de forma autónoma. 
+              Arquitectura, backend, frontend, DevOps y seguridad, todo automático.
+              <br />
+              <span className="text-sm text-slate-500 mt-2 block">Creado por <span className="text-cyan-400 font-semibold">JoxAI</span></span>
             </p>
             
             <div className="flex items-center justify-center gap-4">
-              <Link href="/register">
+              <Link href="/sign-up">
                 <Button size="lg" className="text-lg">
                   <Rocket className="mr-2 w-5 h-5" />
                   Crear Mi Primera App
@@ -235,7 +237,7 @@ export default function LandingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/register" className="block mt-8">
+                  <Link href="/sign-up" className="block mt-8">
                     <Button 
                       variant={plan.popular ? "default" : "outline"}
                       className="w-full"
@@ -266,7 +268,7 @@ export default function LandingPage() {
               <p className="text-xl text-slate-400 mb-8">
                 Únete a miles de desarrolladores que ya están construyendo con AUTOCREA
               </p>
-              <Link href="/register">
+              <Link href="/sign-up">
                 <Button size="lg" className="text-lg">
                   <Sparkles className="mr-2 w-5 h-5" />
                   Obtener 100 Tokens Gratis

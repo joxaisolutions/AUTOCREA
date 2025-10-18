@@ -1,12 +1,19 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AUTOCREA V2.0 - Build Powerful Apps with AI',
-  description: 'The most powerful autonomous development platform powered by JoxCoder',
+  title: 'AUTOCREA V2.0 - Powered by JoxAI',
+  description: 'Plataforma autónoma de desarrollo con IA. De idea a aplicación completa en minutos. Creado por JoxAI.',
+  keywords: 'AI, desarrollo, automatización, JoxAI, AUTOCREA, código, generación',
+  openGraph: {
+    title: 'AUTOCREA V2.0 - Powered by JoxAI',
+    description: 'De idea a aplicación completa en minutos con IA',
+    images: ['/autocrea-hero.png'],
+  },
 }
 
 export default function RootLayout({
@@ -15,8 +22,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="es">
+        <body className={inter.className}>{children}</body>
+      </html>
+    </ClerkProvider>
   )
 }
