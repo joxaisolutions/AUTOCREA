@@ -2,6 +2,7 @@
   "/page": "app/page.js",
   "/(auth)/sign-up/[[...sign-up]]/page": "app/(auth)/sign-up/[[...sign-up]]/page.js",
   "/(auth)/sign-in/[[...sign-in]]/page": "app/(auth)/sign-in/[[...sign-in]]/page.js",
+  "/api/generate-with-ai/route": "app/api/generate-with-ai/route.js",
   "/(dashboard)/chat/page": "app/(dashboard)/chat/page.js",
   "/(dashboard)/projects/page": "app/(dashboard)/projects/page.js",
   "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js"
