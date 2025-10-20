@@ -46,7 +46,15 @@ Páginas principales:
 
 **API Routes (Next.js)**:
 - `/api/joxcoder/generate` - Generación de código con JoxCoder AI
-- Más endpoints a implementar: `/analyze-code`, `/refactor-code`
+- `/api/repository/connect` - Conectar GitHub/GitLab
+- `/api/repository/list` - Listar repositorios
+- `/api/repository/commit` - Crear commits automáticos
+- `/api/repository/pull-request` - Crear pull requests
+- `/api/terminal/execute` - Ejecutar comandos shell
+- `/api/files/save` - Guardar archivos
+- `/api/files/load` - Cargar archivos
+- `/api/files/delete` - Eliminar archivos
+- `/api/files/export` - Exportar proyecto como ZIP
 
 **Database (Convex)** - Pendiente configuración:
 - `users` - Información de usuarios y planes
@@ -142,33 +150,52 @@ app/
 │   ├── sign-in/
 │   └── sign-up/
 ├── (dashboard)/
-│   ├── chat/          # Interfaz principal de generación (3 columnas: roles, files, code)
-│   ├── repository/    # GitHub/GitLab integration & commits
-│   ├── console/       # Terminal web interactiva
+│   ├── chat/          # Interfaz principal de generación (3 columnas)
+│   ├── repository/    # GitHub/GitLab integration (FUNCIONAL)
+│   ├── console/       # Terminal web interactiva (FUNCIONAL)
 │   ├── preview/       # App preview con responsive modes
 │   ├── settings/      # Planes y configuración
 │   ├── projects/      # Proyectos generados
-│   └── layout.tsx     # Dashboard layout con sidebar actualizado
+│   └── layout.tsx     # Dashboard layout
 ├── api/
-│   └── joxcoder/
-│       └── generate/  # Endpoint de generación
+│   ├── joxcoder/
+│   │   └── generate/  # Endpoint de generación
+│   ├── repository/
+│   │   ├── connect/   # Conectar GitHub/GitLab
+│   │   ├── list/      # Listar repos
+│   │   ├── commit/    # Crear commits
+│   │   └── pull-request/ # Crear PRs
+│   ├── terminal/
+│   │   └── execute/   # Ejecutar comandos
+│   └── files/
+│       ├── save/      # Guardar archivos
+│       ├── load/      # Cargar archivos
+│       ├── delete/    # Eliminar archivos
+│       └── export/    # Exportar como ZIP
 └── layout.tsx         # Root layout
 
 components/
 ├── chat/
-│   ├── code-editor.tsx      # Monaco editor para código
-│   └── file-explorer.tsx    # Árbol de archivos generados
-└── console/
-    └── web-terminal.tsx     # Terminal placeholder (xterm.js pendiente)
+│   ├── code-editor.tsx      # Monaco editor
+│   └── file-explorer.tsx    # Árbol de archivos
+├── console/
+│   └── web-terminal.tsx     # Terminal funcional
+└── ui/
+    ├── button.tsx
+    ├── card.tsx
+    ├── input.tsx            # Nuevo
+    └── progress.tsx
 
 lib/
 ├── joxcoder/
 │   ├── client.ts      # Cliente JoxCoder AI
-│   ├── types.ts       # Tipos y límites por plan
+│   ├── types.ts       # Tipos y límites
 │   └── role-prompts.ts # Prompts especializados
-└── stores/
-    ├── chat-store.ts  # Estado global del chat
-    └── file-store.ts  # Estado global de archivos (Zustand)
+├── stores/
+│   ├── chat-store.ts  # Estado del chat
+│   └── file-store.ts  # Estado de archivos
+└── utils/
+    └── file-system.ts # Utilidades de archivos
 ```
 
 ## Environment Variables
@@ -186,15 +213,31 @@ CLERK_SECRET_KEY=sk_...
 # CONVEX_DEPLOYMENT=...
 ```
 
-## Próximos Pasos
+## Próximos Pasos Sugeridos
 
+### Prioridad Alta
 1. **Modelo JoxCoder AI** - Integrar cuando esté entrenado (6-7h)
-2. **Convex Setup** - Activar database para persistencia
-3. **Stripe Integration** - Conectar pagos reales
-4. **Usage Tracking** - Implementar conteo de generaciones real
-5. **Rate Limiting** - Enforcement de límites por plan
-6. **Repository Analysis** - Agregar capacidad de analizar repos Git
-7. **Code Refactoring** - Endpoint para modificar código existente
+2. **GitHub OAuth** - Implementar OAuth real en lugar de tokens manuales
+3. **Convex Setup** - Activar database para persistencia de proyectos
+4. **Stripe Integration** - Conectar pagos reales para suscripciones
+
+### Funcionalidades Adicionales Recomendadas
+5. **Code Templates** - Templates predefinidos por lenguaje y framework
+6. **Project Sharing** - Compartir proyectos con otros usuarios
+7. **Version History** - Historial de versiones con rollback
+8. **Code Search** - Búsqueda inteligente en código generado
+9. **AI Chat Assistant** - Chat para preguntas sobre el código
+10. **Code Review** - Review automático con sugerencias
+11. **Testing Generator** - Generar tests automáticamente
+12. **Documentation Generator** - Generar README y docs
+13. **Deployment Integration** - Vercel, Netlify, Railway
+14. **Collaboration** - Edición colaborativa en tiempo real
+15. **Code Snippets Library** - Biblioteca de snippets reutilizables
+16. **Analytics Dashboard** - Métricas de uso y estadísticas
+17. **API Access** - API REST para integración externa
+18. **Webhooks** - Notificaciones de eventos (commits, PRs)
+19. **Custom Themes** - Personalización de colores y tema
+20. **Mobile App** - Versión móvil con React Native
 
 ## Recent Changes (Latest Session)
 
@@ -212,7 +255,7 @@ CLERK_SECRET_KEY=sk_...
 9. ✅ Eliminados archivos Convex obsoletos que causaban errores de build
 10. ✅ Build de producción funcionando correctamente (npm run build ✓)
 
-**Sesión 2 - Nuevas Herramientas:**
+**Sesión 2 - Nuevas Herramientas (UI):**
 1. ✅ **Sidebar Actualizado** - Agregadas 3 nuevas opciones: Repository, Console, Preview
 2. ✅ **Página /repository** - Integración GitHub/GitLab con:
    - Conexión de repositorios (OAuth pendiente)
@@ -242,6 +285,41 @@ CLERK_SECRET_KEY=sk_...
    - Centro (15%): FileExplorer con archivos generados
    - Derecha (55%): CodeEditor con archivo seleccionado
 8. ✅ **Integración Automática** - Los archivos generados se agregan automáticamente al FileExplorer
+
+**Sesión 3 - Backend Completo:**
+1. ✅ **GitHub/GitLab API Integration** - Backend completo para repositorios:
+   - `/api/repository/connect` - Conectar con GitHub/GitLab usando tokens
+   - `/api/repository/list` - Listar repositorios del usuario
+   - `/api/repository/commit` - Crear commits automáticos con archivos generados
+   - `/api/repository/pull-request` - Crear PRs automáticos
+   - Soporte para GitHub y GitLab
+   - Validación de tokens y autenticación con Clerk
+2. ✅ **Terminal Backend Real** - Ejecución de comandos:
+   - `/api/terminal/execute` - Ejecutar comandos shell (npm, git, ls, etc.)
+   - Whitelist de comandos por seguridad
+   - Timeout de 30 segundos
+   - Captura de stdout y stderr
+3. ✅ **File Management API** - Persistencia de archivos:
+   - `/api/files/save` - Guardar proyectos en filesystem
+   - `/api/files/load` - Cargar proyectos existentes
+   - `/api/files/delete` - Eliminar archivos
+   - `/api/files/export` - Exportar proyecto como ZIP
+   - Organización por usuario y proyecto
+4. ✅ **Utilidades de Archivos** - `lib/utils/file-system.ts`:
+   - Detección automática de lenguajes
+   - Iconos por tipo de archivo
+   - Creación de árboles de archivos
+   - Generación de estructura de proyecto
+5. ✅ **Frontend Actualizado** - Conexión con backend real:
+   - Página /repository usa APIs reales de GitHub/GitLab
+   - Terminal interactivo con ejecución real de comandos
+   - Historial de comandos y navegación (↑/↓)
+   - Auto-scroll y manejo de errores
+6. ✅ **Dependencias Instaladas**:
+   - @octokit/rest - GitHub API
+   - fs-extra - File system operations
+   - archiver - ZIP generation
+   - Input component agregado
 
 ## Notes
 
