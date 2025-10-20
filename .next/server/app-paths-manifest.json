@@ -1,7 +1,8 @@
 {
-  "/(dashboard)/chat/page": "app/(dashboard)/chat/page.js",
   "/(dashboard)/repository/page": "app/(dashboard)/repository/page.js",
+  "/(dashboard)/chat/page": "app/(dashboard)/chat/page.js",
   "/(dashboard)/settings/page": "app/(dashboard)/settings/page.js",
   "/(dashboard)/preview/page": "app/(dashboard)/preview/page.js",
-  "/(dashboard)/console/page": "app/(dashboard)/console/page.js"
+  "/(dashboard)/console/page": "app/(dashboard)/console/page.js",
+  "/(dashboard)/projects/page": "app/(dashboard)/projects/page.js"
 }
