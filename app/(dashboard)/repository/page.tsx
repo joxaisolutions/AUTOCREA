@@ -3,31 +3,175 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { GitBranch, GitCommit, GitPullRequest, Github, GitlabIcon as GitLab, Plus, RefreshCw, Upload } from 'lucide-react'
+import { useFileStore } from '@/lib/stores/file-store'
 
 export default function RepositoryPage() {
-  const [connectedRepo, setConnectedRepo] = useState<string | null>(null)
+  const [connectedRepo, setConnectedRepo] = useState<any>(null)
+  const [repos, setRepos] = useState<any[]>([])
   const [commits, setCommits] = useState<any[]>([])
   const [isConnecting, setIsConnecting] = useState(false)
+  const [platform, setPlatform] = useState<'github' | 'gitlab'>('github')
+  const [token, setToken] = useState('')
+  const [selectedRepo, setSelectedRepo] = useState<any>(null)
+  const [showTokenInput, setShowTokenInput] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const connectGitHub = async () => {
+  const { files } = useFileStore()
+
+  const connectPlatform = async (selectedPlatform: 'github' | 'gitlab') => {
+    setPlatform(selectedPlatform)
+    setShowTokenInput(true)
+  }
+
+  const connectWithToken = async () => {
+    if (!token) {
+      alert('Por favor ingresa tu token de acceso')
+      return
+    }
+
     setIsConnecting(true)
-    // TODO: Implementar conexión real con GitHub OAuth
-    setTimeout(() => {
-      setConnectedRepo('github.com/usuario/autocrea-project')
+    
+    try {
+      const response = await fetch('/api/repository/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform, token })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setConnectedRepo(data)
+        setShowTokenInput(false)
+        loadRepositories()
+      } else {
+        alert(data.error || 'Error al conectar')
+      }
+    } catch (error) {
+      console.error('Connection error:', error)
+      alert('Error al conectar con la plataforma')
+    } finally {
       setIsConnecting(false)
-    }, 1500)
+    }
+  }
+
+  const loadRepositories = async () => {
+    if (!connectedRepo) return
+
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/repository/list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ platform, token })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setRepos(data.repos)
+      }
+    } catch (error) {
+      console.error('Load repos error:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const createCommit = async () => {
-    // TODO: Implementar commit basado en generaciones
-    const newCommit = {
-      id: Date.now(),
-      message: 'feat: código generado por JoxCoder AI',
-      files: 3,
-      date: new Date().toLocaleString()
+    if (!selectedRepo || files.length === 0) {
+      alert('Selecciona un repositorio y genera código primero')
+      return
     }
-    setCommits([newCommit, ...commits])
+
+    setIsLoading(true)
+
+    try {
+      const formattedFiles = files.map(file => ({
+        path: file.name,
+        content: file.content
+      }))
+
+      const [owner, repo] = selectedRepo.fullName.split('/')
+
+      const response = await fetch('/api/repository/commit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform,
+          token,
+          owner,
+          repo,
+          files: formattedFiles,
+          message: `feat: código generado por JoxCoder AI\n\n🤖 Generado automáticamente por AUTOCREA\n- ${files.length} archivos creados/actualizados`
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        const newCommit = {
+          id: data.commitSha,
+          message: 'feat: código generado por JoxCoder AI',
+          files: files.length,
+          date: new Date().toLocaleString(),
+          url: data.commitUrl
+        }
+        setCommits([newCommit, ...commits])
+        alert('✅ Commit creado exitosamente!')
+      } else {
+        alert(data.error || 'Error al crear commit')
+      }
+    } catch (error) {
+      console.error('Commit error:', error)
+      alert('Error al crear commit')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const createPullRequest = async () => {
+    if (!selectedRepo) {
+      alert('Selecciona un repositorio primero')
+      return
+    }
+
+    const [owner, repo] = selectedRepo.fullName.split('/')
+
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/repository/pull-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform,
+          token,
+          owner,
+          repo,
+          title: 'feat: Código generado por JoxCoder AI',
+          body: `🤖 Pull request generado automáticamente por AUTOCREA\n\n**Archivos incluidos:** ${files.length}\n**Generado con:** JoxCoder AI`,
+          head: 'autocrea-generated',
+          base: selectedRepo.defaultBranch || 'main'
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        alert(`✅ Pull Request #${data.prNumber} creado exitosamente!`)
+        window.open(data.prUrl, '_blank')
+      } else {
+        alert(data.error || 'Error al crear pull request')
+      }
+    } catch (error) {
+      console.error('PR error:', error)
+      alert('Error al crear pull request')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -57,22 +201,63 @@ export default function RepositoryPage() {
           <CardContent className="space-y-4">
             {!connectedRepo ? (
               <div className="space-y-3">
-                <Button 
-                  onClick={connectGitHub}
-                  disabled={isConnecting}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
-                >
-                  <Github className="w-5 h-5 mr-2" />
-                  {isConnecting ? 'Conectando...' : 'Conectar GitHub'}
-                </Button>
-                
-                <Button 
-                  variant="outline"
-                  className="w-full border-slate-700 hover:bg-slate-800"
-                >
-                  <GitLab className="w-5 h-5 mr-2" />
-                  Conectar GitLab
-                </Button>
+                {!showTokenInput ? (
+                  <>
+                    <Button 
+                      onClick={() => connectPlatform('github')}
+                      className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
+                    >
+                      <Github className="w-5 h-5 mr-2" />
+                      Conectar GitHub
+                    </Button>
+                    
+                    <Button 
+                      onClick={() => connectPlatform('gitlab')}
+                      variant="outline"
+                      className="w-full border-slate-700 hover:bg-slate-800"
+                    >
+                      <GitLab className="w-5 h-5 mr-2" />
+                      Conectar GitLab
+                    </Button>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm text-slate-400 mb-2 block">
+                        Token de acceso de {platform === 'github' ? 'GitHub' : 'GitLab'}
+                      </label>
+                      <Input
+                        type="password"
+                        placeholder="ghp_xxxxxxxxxxxx"
+                        value={token}
+                        onChange={(e) => setToken(e.target.value)}
+                        className="bg-slate-800/50 border-slate-700"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">
+                        {platform === 'github' 
+                          ? 'Crea un token en Settings → Developer settings → Personal access tokens'
+                          : 'Crea un token en Settings → Access Tokens'
+                        }
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={connectWithToken}
+                        disabled={isConnecting}
+                        className="flex-1 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50"
+                      >
+                        {isConnecting ? 'Conectando...' : 'Conectar'}
+                      </Button>
+                      <Button 
+                        onClick={() => setShowTokenInput(false)}
+                        variant="outline"
+                        className="border-slate-700"
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
                   <p className="text-sm text-blue-300">
@@ -88,21 +273,44 @@ export default function RepositoryPage() {
               <div className="space-y-4">
                 <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
                   <div className="flex items-center gap-2 text-green-400 mb-2">
-                    <Github className="w-5 h-5" />
-                    <span className="font-semibold">Conectado</span>
+                    {platform === 'github' ? <Github className="w-5 h-5" /> : <GitLab className="w-5 h-5" />}
+                    <span className="font-semibold">Conectado - {connectedRepo.username}</span>
                   </div>
-                  <p className="text-sm text-slate-300">{connectedRepo}</p>
+                  <p className="text-sm text-slate-300">{connectedRepo.repos} repositorios disponibles</p>
                 </div>
+
+                {repos.length > 0 && (
+                  <div>
+                    <label className="text-sm text-slate-400 mb-2 block">Seleccionar Repositorio</label>
+                    <select 
+                      className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-2 text-sm"
+                      onChange={(e) => {
+                        const repo = repos.find(r => r.id === parseInt(e.target.value))
+                        setSelectedRepo(repo)
+                      }}
+                    >
+                      <option value="">Selecciona un repositorio</option>
+                      {repos.map((repo) => (
+                        <option key={repo.id} value={repo.id}>
+                          {repo.fullName} {repo.private ? '🔒' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-2">
                   <Button 
                     onClick={createCommit}
+                    disabled={isLoading || !selectedRepo || files.length === 0}
                     className="bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50"
                   >
                     <Upload className="w-4 h-4 mr-2" />
-                    Commit
+                    Commit ({files.length})
                   </Button>
                   <Button 
+                    onClick={createPullRequest}
+                    disabled={isLoading || !selectedRepo}
                     variant="outline"
                     className="border-slate-700"
                   >
@@ -113,7 +321,12 @@ export default function RepositoryPage() {
 
                 <Button 
                   variant="outline"
-                  onClick={() => setConnectedRepo(null)}
+                  onClick={() => {
+                    setConnectedRepo(null)
+                    setSelectedRepo(null)
+                    setRepos([])
+                    setToken('')
+                  }}
                   className="w-full border-slate-700"
                 >
                   Desconectar
@@ -161,13 +374,16 @@ export default function RepositoryPage() {
                           {commit.files} archivos • {commit.date}
                         </p>
                       </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="text-cyan-400 hover:text-cyan-300"
-                      >
-                        Ver
-                      </Button>
+                      {commit.url && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => window.open(commit.url, '_blank')}
+                          className="text-cyan-400 hover:text-cyan-300"
+                        >
+                          Ver
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}

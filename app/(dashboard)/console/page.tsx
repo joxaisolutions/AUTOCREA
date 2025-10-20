@@ -100,16 +100,60 @@ export default function ConsolePage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <Button variant="outline" size="sm" className="border-slate-700 text-xs">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-slate-700 text-xs"
+              onClick={() => {
+                const input = document.querySelector('input[placeholder*="comando"]') as HTMLInputElement
+                if (input) {
+                  input.value = 'npm install'
+                  input.focus()
+                }
+              }}
+            >
               npm install
             </Button>
-            <Button variant="outline" size="sm" className="border-slate-700 text-xs">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-slate-700 text-xs"
+              onClick={() => {
+                const input = document.querySelector('input[placeholder*="comando"]') as HTMLInputElement
+                if (input) {
+                  input.value = 'npm run dev'
+                  input.focus()
+                }
+              }}
+            >
               npm run dev
             </Button>
-            <Button variant="outline" size="sm" className="border-slate-700 text-xs">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-slate-700 text-xs"
+              onClick={() => {
+                const input = document.querySelector('input[placeholder*="comando"]') as HTMLInputElement
+                if (input) {
+                  input.value = 'git status'
+                  input.focus()
+                }
+              }}
+            >
               git status
             </Button>
-            <Button variant="outline" size="sm" className="border-slate-700 text-xs">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="border-slate-700 text-xs"
+              onClick={() => {
+                const input = document.querySelector('input[placeholder*="comando"]') as HTMLInputElement
+                if (input) {
+                  input.value = 'npm run build'
+                  input.focus()
+                }
+              }}
+            >
               npm run build
             </Button>
           </div>
