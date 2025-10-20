@@ -1,4 +1,4 @@
-import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban, Bot } from "lucide-react"
+import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban, GitBranch, Terminal, Monitor } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { UserButton } from "@clerk/nextjs"
@@ -54,25 +54,53 @@ export default function DashboardLayout({
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         <aside className="w-64 border-r border-slate-800 bg-slate-950/30 p-4">
-          <nav className="space-y-2">
+          <nav className="space-y-1">
             <Link href="/chat">
-              <Button variant="ghost" className="w-full justify-start gap-3">
+              <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-cyan-500/10 hover:text-cyan-400">
                 <LayoutDashboard className="w-5 h-5" />
                 Chat
               </Button>
             </Link>
             <Link href="/projects">
-              <Button variant="ghost" className="w-full justify-start gap-3">
+              <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-cyan-500/10 hover:text-cyan-400">
                 <FolderKanban className="w-5 h-5" />
                 Proyectos
               </Button>
             </Link>
-            <Link href="/settings">
-              <Button variant="ghost" className="w-full justify-start gap-3">
-                <Settings className="w-5 h-5" />
-                Configuración
-              </Button>
-            </Link>
+            
+            <div className="my-4 border-t border-slate-800 pt-4">
+              <p className="text-xs text-slate-500 font-semibold mb-2 px-3">HERRAMIENTAS</p>
+              
+              <Link href="/repository">
+                <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-cyan-500/10 hover:text-cyan-400">
+                  <GitBranch className="w-5 h-5" />
+                  GitHub / GitLab
+                </Button>
+              </Link>
+              
+              <Link href="/console">
+                <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-cyan-500/10 hover:text-cyan-400">
+                  <Terminal className="w-5 h-5" />
+                  Consola
+                </Button>
+              </Link>
+              
+              <Link href="/preview">
+                <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-cyan-500/10 hover:text-cyan-400">
+                  <Monitor className="w-5 h-5" />
+                  Preview App
+                </Button>
+              </Link>
+            </div>
+            
+            <div className="my-4 border-t border-slate-800 pt-4">
+              <Link href="/settings">
+                <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-cyan-500/10 hover:text-cyan-400">
+                  <Settings className="w-5 h-5" />
+                  Configuración
+                </Button>
+              </Link>
+            </div>
           </nav>
         </aside>
 
