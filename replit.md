@@ -190,6 +190,8 @@ CLERK_SECRET_KEY=sk_...
 6. ✅ Sistema de límites por plan (generaciones, roles, lenguajes)
 7. ✅ Nuevo endpoint `/api/joxcoder/generate`
 8. ✅ UI completamente en español con tema cyan/blue
+9. ✅ Eliminados archivos Convex obsoletos que causaban errores de build
+10. ✅ Build de producción funcionando correctamente (npm run build ✓)
 
 ## Notes
 
