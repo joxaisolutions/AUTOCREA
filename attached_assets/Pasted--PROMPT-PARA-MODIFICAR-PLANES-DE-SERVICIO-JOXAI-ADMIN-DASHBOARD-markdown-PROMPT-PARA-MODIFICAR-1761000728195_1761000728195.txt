@@ -1,0 +1,294 @@
+🚀 PROMPT PARA MODIFICAR PLANES DE SERVICIO - JOXAI ADMIN DASHBOARD
+markdown
+# PROMPT PARA MODIFICAR PLANES DE AUTOCREA - JOXAI ADMIN DASHBOARD
+
+## 🎯 CONTEXTO ESTRATÉGICO
+**AUTOCREA** ahora integra **JoxCoder AI** - un modelo de IA multi-rol que genera código profesional. Los planes de servicio deben reflejar el VALOR PREMIUM de esta tecnología. JoxCoder no es un ChatGPT cualquiera, es un ingeniero de software AI especializado.
+
+## 💎 POSICIONAMIENTO EN EL MERCADO
+- **Competencia:** Replit Ghostwriter ($20-50/mes), GitHub Copilot ($10-19/mes), CodeWhisperer
+- **Nuestro diferencial:** Modelo ESPECIALIZADO en creación de apps completas 0→100
+- **Target:** Desarrolladores, startups, empresas que quieren acelerar desarrollo 10x
+
+## 📊 ESTRUCTURA DE PLANES PREMIUM
+
+### 🟢 PLAN STARTER - "AUTOCREA ESSENTIAL"
+```yaml
+Precio: $29/mes o $290/año (20% descuento)
+Límites:
+  - Repositorios activos: 3
+  - Generaciones de código/mes: 100
+  - Roles disponibles: 4 (Fullstack, Frontend, Backend, QA)
+  - Lenguajes: JavaScript, Python, HTML/CSS
+  - Soporte: Comunidad + Docs
+  - Máx. duración generación: 30 segundos
+  - Commits automáticos: ✓ (límite 50/mes)
+  - Análisis de repositorio: Básico
+Características:
+  - Acceso a JoxCoder AI básico
+  - Generación de componentes individuales
+  - Fix de bugs simples
+  - 3 plantillas de proyectos
+🔵 PLAN PROFESSIONAL - "AUTOCREA PRO" (RECOMENDADO)
+yaml
+Precio: $79/mes o $790/año (20% descuento)
+Límites:
+  - Repositorios activos: 15
+  - Generaciones de código/mes: 500
+  - Roles disponibles: 8 (Todos excepto Pentester y ML Engineer)
+  - Lenguajes: Todos los principales + TypeScript
+  - Soporte: Prioritario (24h)
+  - Máx. duración generación: 60 segundos
+  - Commits automáticos: ✓ (ilimitados)
+  - Análisis de repositorio: Avanzado
+Características:
+  - Acceso completo a JoxCoder AI
+  - Generación de apps completas
+  - Refactorización de código
+  - Integración CI/CD automática
+  - 15+ plantillas de proyectos
+  - Analytics de código
+  - Export de proyectos
+🟣 PLAN ENTERPRISE - "AUTOCREA ENTERPRISE"
+yaml
+Precio: $199/mes o $1990/año (20% descuento)
+Límites:
+  - Repositorios activos: Ilimitados
+  - Generaciones de código/mes: 2000
+  - Roles disponibles: 12 (TODOS incluyendo Pentester y ML Engineer)
+  - Lenguajes: Todos + lenguajes enterprise (Java, C#, Go)
+  - Soporte: Dedicado (12h)
+  - Máx. duración generación: 120 segundos
+  - Commits automáticos: ✓ (ilimitados)
+  - Análisis de repositorio: Enterprise
+Características:
+  - Todo lo del Pro PLUS:
+  - Modelos especializados por industria
+  - Pentesting automático
+  - Optimización de performance
+  - Auditoría de seguridad
+  - SLAs de disponibilidad
+  - Onboarding personalizado
+  - API access (1000 req/mes)
+⚡ PLAN CUSTOM - "AUTOCREA SCALE"
+yaml
+Precio: Personalizado (desde $499/mes)
+Para: Empresas con necesidades específicas
+Características:
+  - Modelos fine-tuned para tu stack
+  - Integración con herramientas internas
+  - Límites personalizados
+  - Soporte 24/7
+  - White-label opcional
+  - On-premise deployment disponible
+🎨 MÉTRICAS DE USO PARA EL DASHBOARD
+📈 WIDGETS PRINCIPALES EN JOXAI ADMIN:
+javascript
+// Métricas clave para mostrar
+const joxcoderMetrics = {
+  usage: {
+    total_generations: "2.1K",
+    success_rate: "94%",
+    avg_generation_time: "23s",
+    most_used_roles: ["Fullstack", "Frontend", "Backend"],
+    top_languages: ["JavaScript", "Python", "TypeScript"]
+  },
+  revenue: {
+    mrr: "$8,450",
+    arr: "$101,400",
+    plan_distribution: {
+      starter: "45%",
+      professional: "35%", 
+      enterprise: "15%",
+      custom: "5%"
+    },
+    churn_rate: "2.3%",
+    ltv: "$1,240"
+  },
+  user_engagement: {
+    active_users: "284",
+    generations_per_user: "7.4",
+    favorite_features: ["Code Generation", "Bug Fixing", "App Scaffolding"]
+  }
+}
+🔧 MODIFICACIONES EN JOXAI ADMIN DASHBOARD
+1. NUEVA SECCIÓN: "AUTOCREA ANALYTICS"
+text
+📍 Sidebar: Añadir item "AUTOCREA" con submenú:
+   - Dashboard Overview
+   - Usage Analytics  
+   - Revenue Metrics
+   - User Management
+   - Plan Settings
+2. PÁGINA DE PLANES ACTUALIZADA:
+vue
+<template>
+  <div class="pricing-plans">
+    <!-- Header con valor propuesta -->
+    <value-proposition 
+      title="De 10x a 100x tu velocidad de desarrollo"
+      subtitle="JoxCoder AI escribe código como un equipo senior completo"
+    />
+    
+    <!-- Grid de planes -->
+    <div class="plans-grid">
+      <plan-card 
+        v-for="plan in plans"
+        :key="plan.id"
+        :plan="plan"
+        :highlighted="plan.recommended"
+      />
+    </div>
+    
+    <!-- Comparativa de características -->
+    <features-comparison :plans="plans" />
+    
+    <!-- Casos de éxito -->
+    <success-stories />
+  </div>
+</template>
+3. PANEL DE USO EN TIEMPO REAL:
+javascript
+// Componente para mostrar uso actual
+const UsageMeter = {
+  props: ['plan', 'currentUsage'],
+  computed: {
+    usagePercentage() {
+      return (this.currentUsage / this.plan.limits.generations) * 100
+    },
+    remainingGenerations() {
+      return this.plan.limits.generations - this.currentUsage
+    }
+  },
+  template: `
+    <div class="usage-meter">
+      <h4>Generaciones este mes</h4>
+      <progress-bar :value="usagePercentage" :max="100" />
+      <p>{{ currentUsage }} / {{ plan.limits.generations }} usadas</p>
+      <p v-if="remainingGenerations < 50" class="warning">
+        ⚠️ Te quedan {{ remainingGenerations }} generaciones
+      </p>
+    </div>
+  `
+}
+💰 ESTRATEGIA DE PRECIOS Y UPSELES
+🎯 FUNNEL DE CONVERSIÓN:
+text
+Gratis (14 días) → Starter ($29) → Pro ($79) → Enterprise ($199)
+🔄 MECANISMOS DE UPSEL:
+yaml
+Upsell Triggers:
+  - 80% de límite de generaciones alcanzado
+  - Intento de usar rol premium (Pentester/ML)
+  - Intento de usar lenguaje enterprise
+  - 5+ repositorios en uso
+
+Upsell Messages:
+  - "¿Necesitas más potencia? Upgrade to Pro para generaciones ilimitadas"
+  - "Esta feature requiere Plan Enterprise. ¡Potencia tu desarrollo!"
+  - "Has alcanzado el 80% de tu límite. Considera upgrade para continuar"
+🏆 PROGRAMAS ESPECIALES:
+yaml
+Startup Program:
+  - 40% descuento para startups verificadas
+  - Requisito: < 2 años, < $1M funding
+  - Duración: 12 meses
+
+Education Program:
+  - 60% descuento para estudiantes y educadores
+  - Verificación con email .edu
+  - Duración: 24 meses
+
+Open Source Program:
+  - 100% gratuito para proyectos open source
+  - Requisito: Repo público, licencia OSI-approved
+  - Límites: Plan Professional
+📱 COPYWRITING Y POSICIONAMIENTO
+🎪 HEADLINES Y VALUE PROPS:
+text
+Principal: "Tu equipo de ingenieros AI - Desde $29/mes"
+
+Beneficios:
+- "Genera apps completas en minutos, no semanas"
+- "12 roles especializados: desde Frontend hasta Pentesting"
+- "Código production-ready desde el día 1"
+- "Reduce costos de desarrollo hasta 80%"
+- "Calidad de código consistente y escalable"
+
+Social Proof:
+- "Empresas que confían en AUTOCREA: [Logos]"
+- "Desarrolladores ahorran 15+ horas semanales"
+- "4.8/5 ⭐️ en reviews de desarrolladores"
+🔐 GESTIÓN DE LÍMITES Y FAIR USE
+⚖️ POLÍTICA DE USO JUSTO:
+javascript
+// Lógica de rate limiting
+const rateLimiting = {
+  free_trial: {
+    generations_per_day: 10,
+    max_duration: 30,
+    roles_available: 3
+  },
+  starter: {
+    generations_per_hour: 20,
+    concurrent_generations: 2,
+    max_tokens_per_generation: 2048
+  },
+  professional: {
+    generations_per_hour: 50,
+    concurrent_generations: 5, 
+    max_tokens_per_generation: 4096
+  },
+  enterprise: {
+    generations_per_hour: 200,
+    concurrent_generations: 20,
+    max_tokens_per_generation: 8192
+  }
+}
+📊 REPORTING Y ANALYTICS
+📋 REPORTES AUTOMÁTICOS:
+yaml
+Daily Reports:
+  - Total generaciones por plan
+  - Ingresos del día
+  - Usuarios activos
+  - Features más usadas
+
+Weekly Insights:
+  - Tendencias de uso
+  - Plan upgrades/downgrades
+  - Churn prediction
+  - Revenue forecast
+
+Monthly Business Review:
+  - MRR growth
+  - Customer acquisition cost
+  - Lifetime value
+  - Feature adoption rates
+🚀 ROADMAP DE LANZAMIENTO
+📅 FASE 1 (Inmediato):
+Integrar nuevos planes en JoxAI Admin
+
+Actualizar página de precios
+
+Configurar métricas de uso
+
+Implementar sistema de billing
+
+📅 FASE 2 (Semanas 2-3):
+Programas especiales (Startup, Education)
+
+Dashboard de analytics avanzado
+
+Sistema de notificaciones de upsell
+
+Email marketing para conversión
+
+📅 FASE 3 (Mes 2):
+Plan Custom/Enterprise features
+
+API management para partners
+
+White-label solutions
+
+International pricing

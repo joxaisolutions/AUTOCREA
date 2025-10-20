@@ -1,7 +1,1 @@
-{
-  "/page": "app/page.js",
-  "/api/config-status/route": "app/api/config-status/route.js",
-  "/(auth)/sign-up/[[...sign-up]]/page": "app/(auth)/sign-up/[[...sign-up]]/page.js",
-  "/api/generate-with-ai/route": "app/api/generate-with-ai/route.js",
-  "/(dashboard)/chat/page": "app/(dashboard)/chat/page.js"
-}
+{}
