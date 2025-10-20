@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { GitBranch, GitCommit, GitPullRequest, Github, GitlabIcon as GitLab, Plus, RefreshCw, Upload } from 'lucide-react'
 

@@ -15,6 +15,11 @@
 - ✅ **UI Moderna** - Interfaz completamente rediseñada en español con tema dark cyan/blue
 - ✅ **Tracking de Uso** - Dashboard de generaciones con progress bar y métricas
 - ✅ **Branding JoxAI** - "Powered by JoxAI" en toda la aplicación
+- ✅ **GitHub/GitLab Integration** - Página de gestión de repositorios y commits automáticos
+- ✅ **Consola Web** - Terminal interactiva para ejecutar comandos
+- ✅ **App Preview** - Vista previa de aplicación con responsive modes (desktop/tablet/mobile)
+- ✅ **File Explorer** - Sidebar con archivos generados, navegación y selección
+- ✅ **File Management** - Sistema de estado global con Zustand para gestión de archivos
 
 **Integraciones Activas:**
 - **Clerk**: Autenticación completa (ACTIVO)
@@ -29,9 +34,12 @@
 **Next.js 14 (App Router)** + **TypeScript** + **React 18** + **Tailwind CSS**
 
 Páginas principales:
-- `/chat` - Interfaz principal con selector de 12 roles técnicos
-- `/settings` - Gestión de planes y métricas de uso
+- `/chat` - Interfaz principal con selector de 12 roles técnicos + FileExplorer + CodeEditor (layout 3 columnas)
+- `/repository` - Gestión de repositorios GitHub/GitLab, commits automáticos, pull requests
+- `/console` - Terminal web interactiva para ejecutar comandos npm, git, etc
+- `/preview` - Vista previa de aplicación con modos responsive (desktop/tablet/mobile)
 - `/projects` - Gestión de proyectos generados
+- `/settings` - Gestión de planes y métricas de uso
 - `/sign-in`, `/sign-up` - Autenticación con Clerk
 
 ### Backend Architecture
@@ -134,14 +142,24 @@ app/
 │   ├── sign-in/
 │   └── sign-up/
 ├── (dashboard)/
-│   ├── chat/          # Interfaz principal de generación
+│   ├── chat/          # Interfaz principal de generación (3 columnas: roles, files, code)
+│   ├── repository/    # GitHub/GitLab integration & commits
+│   ├── console/       # Terminal web interactiva
+│   ├── preview/       # App preview con responsive modes
 │   ├── settings/      # Planes y configuración
 │   ├── projects/      # Proyectos generados
-│   └── layout.tsx     # Dashboard layout
+│   └── layout.tsx     # Dashboard layout con sidebar actualizado
 ├── api/
 │   └── joxcoder/
 │       └── generate/  # Endpoint de generación
 └── layout.tsx         # Root layout
+
+components/
+├── chat/
+│   ├── code-editor.tsx      # Monaco editor para código
+│   └── file-explorer.tsx    # Árbol de archivos generados
+└── console/
+    └── web-terminal.tsx     # Terminal placeholder (xterm.js pendiente)
 
 lib/
 ├── joxcoder/
@@ -149,7 +167,8 @@ lib/
 │   ├── types.ts       # Tipos y límites por plan
 │   └── role-prompts.ts # Prompts especializados
 └── stores/
-    └── chat-store.ts  # Estado global
+    ├── chat-store.ts  # Estado global del chat
+    └── file-store.ts  # Estado global de archivos (Zustand)
 ```
 
 ## Environment Variables
@@ -181,7 +200,7 @@ CLERK_SECRET_KEY=sk_...
 
 **Fecha:** 20/10/2025
 
-**Cambios Principales:**
+**Sesión 1 - Infraestructura Base:**
 1. ✅ Eliminado Relevance AI - No es necesario
 2. ✅ Creada infraestructura completa para JoxCoder AI
 3. ✅ Implementados 12 roles técnicos con prompts especializados
@@ -192,6 +211,37 @@ CLERK_SECRET_KEY=sk_...
 8. ✅ UI completamente en español con tema cyan/blue
 9. ✅ Eliminados archivos Convex obsoletos que causaban errores de build
 10. ✅ Build de producción funcionando correctamente (npm run build ✓)
+
+**Sesión 2 - Nuevas Herramientas:**
+1. ✅ **Sidebar Actualizado** - Agregadas 3 nuevas opciones: Repository, Console, Preview
+2. ✅ **Página /repository** - Integración GitHub/GitLab con:
+   - Conexión de repositorios (OAuth pendiente)
+   - Commits automáticos basados en generaciones
+   - Pull requests inteligentes
+   - Configuración de sincronización
+3. ✅ **Página /console** - Terminal web interactiva con:
+   - Placeholder funcional (xterm.js pendiente de integración completa)
+   - Comandos rápidos (npm, git)
+   - Controles de start/stop
+4. ✅ **Página /preview** - Vista previa de aplicación con:
+   - Modos responsive (desktop/tablet/mobile)
+   - Iframe para visualización
+   - Controles de recarga y compartir
+5. ✅ **FileExplorer Component** - Sidebar de archivos en /chat con:
+   - Árbol de archivos generados
+   - Selección de archivos
+   - Iconos por tipo de archivo
+   - Estadísticas de archivos
+6. ✅ **File Store (Zustand)** - Sistema de gestión de archivos con:
+   - Add/Update/Delete archivos
+   - Selección de archivo activo
+   - Tracking de rol generador
+   - Timestamps
+7. ✅ **Chat Layout Rediseñado** - Nuevo layout de 3 columnas:
+   - Izquierda (30%): Selector de roles + contexto + prompt
+   - Centro (15%): FileExplorer con archivos generados
+   - Derecha (55%): CodeEditor con archivo seleccionado
+8. ✅ **Integración Automática** - Los archivos generados se agregan automáticamente al FileExplorer
 
 ## Notes
 
