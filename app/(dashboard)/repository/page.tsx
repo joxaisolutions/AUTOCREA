@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { GitBranch, GitCommit, GitPullRequest, Github, GitlabIcon as GitLab, Plus, RefreshCw, Upload } from 'lucide-react'
+import { GitBranch, GitCommit, GitPullRequest, Github, GitlabIcon as GitLab, Plus, RefreshCw, Upload, Zap } from 'lucide-react'
 import { useFileStore } from '@/lib/stores/file-store'
+import GitHubConnectButton from '@/components/oauth/github-connect-button'
 
 export default function RepositoryPage() {
   const [connectedRepo, setConnectedRepo] = useState<any>(null)
@@ -186,16 +187,81 @@ export default function RepositoryPage() {
         </p>
       </div>
 
+      {/* GitHub OAuth Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <GitHubConnectButton />
+        
+        <Card className="lg:col-span-2 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-300">
+              <Zap className="h-5 w-5" />
+              OAuth Flow Automático
+            </CardTitle>
+            <CardDescription>La forma más rápida y segura de conectar</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-green-400 text-xs">✓</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-200">Sin tokens manuales</p>
+                    <p className="text-xs text-slate-400">Autenticación automática con un click</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-green-400 text-xs">✓</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-200">Más seguro</p>
+                    <p className="text-xs text-slate-400">Tokens manejados automáticamente</p>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-green-400 text-xs">✓</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-200">Acceso completo</p>
+                    <p className="text-xs text-slate-400">Repositorios, commits, PRs automáticos</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-green-400 text-xs">✓</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-200">Configuración fácil</p>
+                    <p className="text-xs text-slate-400">Listo en menos de 1 minuto</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-slate-950/50 rounded p-3 mt-4">
+              <p className="text-xs text-slate-400">
+                💡 <span className="text-slate-300 font-medium">Recomendado:</span> Usa el OAuth Flow para una experiencia más rápida y segura. Si prefieres tokens manuales, la opción tradicional sigue disponible abajo.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Conectar Repositorio */}
+        {/* Conectar Repositorio (Manual) */}
         <Card className="bg-slate-900/50 border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GitBranch className="w-5 h-5 text-cyan-400" />
-              Conectar Repositorio
+              Conectar Repositorio (Manual)
             </CardTitle>
             <CardDescription className="text-slate-400">
-              Vincula tu repositorio de GitHub o GitLab
+              Método tradicional con tokens de acceso personal
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
