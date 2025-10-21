@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2, Code2, Sparkles, Rocket, Save } from 'lucide-react'
 import { CodeEditor } from "@/components/chat/code-editor"
 import { FileExplorer } from "@/components/chat/file-explorer"
+import TemplateSelector from "@/components/templates/template-selector"
 import { useFileStore } from "@/lib/stores/file-store"
 import { TechnicalRole } from '@/lib/joxcoder/types'
 import { ROLE_PROMPTS } from '@/lib/joxcoder/role-prompts'
@@ -219,23 +220,27 @@ export default function ChatPage() {
               className="flex-1 px-3 py-2 text-sm bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none resize-none font-mono"
             />
 
-            <Button
-              onClick={handleGenerate}
-              disabled={isGenerating || !prompt.trim()}
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Generando...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Generar Código
-                </>
-              )}
-            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                onClick={handleGenerate}
+                disabled={isGenerating || !prompt.trim()}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Generando...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Generar
+                  </>
+                )}
+              </Button>
+              
+              <TemplateSelector />
+            </div>
 
             {explanation && (
               <div className="p-2 rounded-lg bg-blue-500/10 border border-blue-500/30">
