@@ -3,6 +3,40 @@ import { auth } from '@clerk/nextjs/server'
 import fs from 'fs-extra'
 import path from 'path'
 
+// Pegar justo después de los imports
+const readDirectory = async (dir: string, baseDir: string = dir): Promise<any[]> => {
+  const items = await fs.readdir(dir, { withFileTypes: true })
+  const files: any[] = []
+
+  for (const item of items) {
+    const fullPath = path.join(dir, item.name)
+    const relativePath = path.relative(baseDir, fullPath)
+
+    if (item.isDirectory()) {
+      const subFiles = await readDirectory(fullPath, baseDir)
+      files.push({
+        id: relativePath,
+        name: item.name,
+        type: 'folder',
+        children: subFiles,
+      })
+    } else {
+      const content = await fs.readFile(fullPath, 'utf-8')
+      const ext = path.extname(item.name).substring(1)
+
+      files.push({
+        id: relativePath,
+        name: item.name,
+        type: 'file',
+        content,
+        language: getLanguageFromExtension(ext),
+      })
+    }
+  }
+
+  return files
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth()
