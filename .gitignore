@@ -60,3 +60,6 @@ next-env.d.ts
 # Misc
 .turbo
 *.tgz
+
+# clerk configuration (can include secrets)
+/.clerk/

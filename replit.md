@@ -1,14 +1,23 @@
 # AUTOCREA V2.0 - Plataforma de Desarrollo con JoxCoder AI
 
 ## Overview
-AUTOCREA V2.0 is an autonomous, full-stack development platform powered by JoxCoder AI, a specialized multi-role AI model designed to automatically generate professional code. The project aims to provide a comprehensive development environment with AI assistance, offering features like code generation, repository management, and real-time application preview. It targets various developer needs with specialized AI roles and tiered service plans.
+AUTOCREA V2.0 es una plataforma autónoma de desarrollo full-stack potenciada por JoxCoder AI, un modelo de IA multi-rol especializado que genera código profesional automáticamente. El proyecto es el "núcleo creador" del ecosistema JoxAI, diseñado para transformar ideas en aplicaciones completas listas para producción.
+
+**Estado:** Fase de implementación de mejoras para lanzamiento Q1 2026
+**Dominio objetivo:** autocrea.joxai.org
+**Eslogan:** "De idea a la materialización"
 
 ## User Preferences
 - **Language:** Spanish UI throughout
-- **Theme:** Dark mode with cyan/blue gradients
+- **Theme:** Dark mode with cyan/blue/purple gradients (MANTENER estos colores)
 - **Framework:** Next.js 14 with App Router
 - **Branding:** "Powered by JoxAI" visible en toda la app
-- **Design:** Modern, clean, professional aesthetic
+- **Design:** Modern, glassmorphism, gradientes vibrantes
+- **Paleta de Colores:**
+  - Principal: Cyan (#06b6d4)
+  - Secundario: Blue (#3b82f6)
+  - Acento: Purple (#9333ea)
+  - Fondo: Slate dark (#020617)
 
 ## System Architecture
 

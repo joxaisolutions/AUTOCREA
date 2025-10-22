@@ -1,0 +1,1751 @@
+# PROMPT MAESTRO PARA MEJORAS DE AUTOCREA
+
+## CONTEXTO DEL PROYECTO
+
+Eres un Senior Full-Stack Developer y AI Engineer especializado en Next.js, React, TypeScript, Python, y modelos de IA generativos. Tu misión es implementar mejoras críticas en **AUTOCREA**, una plataforma que genera aplicaciones completas a partir de prompts en lenguaje natural.
+
+**Estado Actual:**
+- Plataforma funcional en fase de testing
+- Modelo: JoxCoder v1 (entrenado, operativo)
+- Stack: Next.js 14, TypeScript, Clerk (auth), Convex (DB), Hugging Face (modelos)
+- Hosting: Netlify
+- Dominio: autocrea.joxai.org
+
+**Objetivo:** Llevar AUTOCREA de fase beta a producto listo para lanzamiento público, optimizando performance, UX, escalabilidad y eliminando todos los errores.
+
+---
+
+## PARTE 1: AUDITORÍA Y CORRECCIÓN DE ERRORES
+
+### Instrucciones:
+
+Analiza el código actual de AUTOCREA y ejecuta las siguientes tareas de corrección:
+
+#### 1.1 ERRORES CRÍTICOS (Prioridad P0)
+
+**Tarea:**
+```
+Identifica y corrige TODOS los errores que puedan causar:
+- Crashes de la aplicación
+- Pérdida de datos del usuario
+- Fallos en generación de código
+- Errores de autenticación/autorización
+- Problemas de pago con Stripe
+- Memory leaks
+- Race conditions en llamadas asíncronas
+
+Para cada error:
+1. Describe el problema específico
+2. Muestra el código problemático
+3. Proporciona la solución correcta
+4. Explica por qué ocurría y cómo lo solucionaste
+5. Agrega tests para prevenir regresión
+```
+
+**Áreas a revisar:**
+- Manejo de errores en llamadas a API de modelos IA
+- Validación de inputs del usuario
+- Manejo de tokens y límites de suscripción
+- Webhooks de Stripe (verificación de firma)
+- Manejo de archivos grandes generados
+- Timeout en generaciones largas
+- Estado de carga y errores en UI
+
+#### 1.2 ERRORES DE PERFORMANCE (Prioridad P1)
+
+**Tarea:**
+```
+Optimiza el rendimiento identificando:
+- Componentes que causan re-renders innecesarios
+- Queries de base de datos ineficientes
+- Llamadas a API no cacheadas
+- Imágenes sin optimizar
+- Bundles de JavaScript muy grandes
+- Waterfall requests (carga secuencial innecesaria)
+- Memory leaks en componentes
+
+Implementa:
+- React.memo donde sea apropiado
+- useMemo y useCallback estratégicamente
+- Code splitting con dynamic imports
+- Lazy loading de componentes pesados
+- Caching inteligente (Redis o en memoria)
+- Image optimization con next/image
+- Bundle analysis y tree-shaking
+```
+
+#### 1.3 ERRORES DE UX (Prioridad P1)
+
+**Tarea:**
+```
+Mejora la experiencia de usuario corrigiendo:
+- Estados de carga ausentes o confusos
+- Mensajes de error poco claros
+- Falta de feedback visual en acciones
+- Formularios sin validación en tiempo real
+- Navegación confusa o poco intuitiva
+- Falta de tooltips/ayuda contextual
+- Mobile responsiveness issues
+- Accesibilidad (a11y) deficiente
+
+Asegura:
+- Loading skeletons en lugar de spinners genéricos
+- Toast notifications consistentes
+- Progress bars para operaciones largas
+- Validación instantánea con mensajes claros
+- Keyboard navigation completa
+- ARIA labels apropiados
+- Contraste de colores WCAG AA mínimo
+```
+
+#### 1.4 ERRORES DE TIPO Y LINTING (Prioridad P2)
+
+**Tarea:**
+```
+Elimina todos los errores de TypeScript y ESLint:
+- Tipado 'any' innecesario
+- Props sin tipos definidos
+- Funciones sin return type
+- Imports no utilizados
+- Variables declaradas pero no usadas
+- Console.logs olvidados en producción
+- Advertencias de Next.js
+
+Configura:
+- Strict mode de TypeScript
+- ESLint con reglas estrictas
+- Prettier para formato consistente
+- Husky + lint-staged para pre-commit hooks
+```
+
+---
+
+## PARTE 2: REESTRUCTURACIÓN PARA PRODUCTIVIDAD
+
+### Instrucciones:
+
+Reorganiza el proyecto siguiendo las mejores prácticas de arquitectura escalable:
+
+#### 2.1 ESTRUCTURA DE CARPETAS OPTIMIZADA
+
+**Implementa esta estructura:**
+
+```
+autocrea/
+├── src/
+│   ├── app/                          # Next.js App Router
+│   │   ├── (auth)/                   # Rutas con auth
+│   │   │   ├── dashboard/
+│   │   │   ├── projects/
+│   │   │   └── settings/
+│   │   ├── (marketing)/              # Rutas públicas
+│   │   │   ├── page.tsx              # Landing
+│   │   │   ├── pricing/
+│   │   │   └── docs/
+│   │   ├── api/                      # API Routes
+│   │   │   ├── generate/
+│   │   │   ├── stripe/
+│   │   │   └── webhooks/
+│   │   ├── layout.tsx
+│   │   └── globals.css
+│   │
+│   ├── components/                   # Componentes React
+│   │   ├── ui/                       # shadcn/ui components
+│   │   ├── features/                 # Feature-specific
+│   │   │   ├── CodeEditor/
+│   │   │   ├── ProjectList/
+│   │   │   └── GenerationPanel/
+│   │   ├── layouts/                  # Layouts reusables
+│   │   └── shared/                   # Componentes comunes
+│   │
+│   ├── lib/                          # Utilities y helpers
+│   │   ├── ai/
+│   │   │   ├── joxcoder.ts           # Cliente modelo IA
+│   │   │   ├── prompt-builder.ts     # Construcción prompts
+│   │   │   └── token-counter.ts
+│   │   ├── db/
+│   │   │   ├── convex.ts             # Cliente Convex
+│   │   │   ├── queries.ts
+│   │   │   └── mutations.ts
+│   │   ├── stripe/
+│   │   │   ├── client.ts
+│   │   │   ├── webhooks.ts
+│   │   │   └── subscriptions.ts
+│   │   ├── utils/
+│   │   │   ├── cn.ts                 # Tailwind merge
+│   │   │   ├── format.ts
+│   │   │   └── validation.ts
+│   │   └── hooks/                    # Custom React hooks
+│   │       ├── useProject.ts
+│   │       ├── useGeneration.ts
+│   │       └── useSubscription.ts
+│   │
+│   ├── types/                        # TypeScript types
+│   │   ├── project.ts
+│   │   ├── generation.ts
+│   │   ├── user.ts
+│   │   └── index.ts
+│   │
+│   ├── config/                       # Configuración
+│   │   ├── site.ts                   # Metadata del sitio
+│   │   ├── plans.ts                  # Planes de suscripción
+│   │   └── constants.ts
+│   │
+│   └── styles/                       # Estilos globales
+│       └── globals.css
+│
+├── convex/                           # Convex backend
+│   ├── schema.ts
+│   ├── projects.ts
+│   ├── users.ts
+│   └── tokens.ts
+│
+├── public/                           # Assets estáticos
+│   ├── images/
+│   ├── logos/
+│   └── favicon.ico
+│
+├── tests/                            # Tests
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── deploy.yml
+│
+├── .env.local                        # Variables de entorno
+├── .env.example
+├── next.config.js
+├── tailwind.config.ts
+├── tsconfig.json
+├── package.json
+└── README.md
+```
+
+**Tarea:**
+```
+Reorganiza el código siguiendo esta estructura.
+Para cada archivo movido:
+1. Actualiza todos los imports
+2. Verifica que no haya imports circulares
+3. Asegura que los path aliases funcionen (@/components, @/lib, etc.)
+4. Mantén la funcionalidad 100% intacta
+```
+
+#### 2.2 SEPARACIÓN DE CONCERNS (Clean Architecture)
+
+**Implementa estas capas:**
+
+```typescript
+// 1. PRESENTATION LAYER (UI Components)
+// components/features/CodeEditor/CodeEditor.tsx
+'use client';
+
+import { useGeneration } from '@/lib/hooks/useGeneration';
+import { CodeDisplay } from './CodeDisplay';
+import { GenerateButton } from './GenerateButton';
+
+export function CodeEditor() {
+  const { generate, isLoading, code } = useGeneration();
+  
+  return (
+    <div>
+      <GenerateButton onClick={generate} loading={isLoading} />
+      {code && <CodeDisplay code={code} />}
+    </div>
+  );
+}
+
+// 2. BUSINESS LOGIC LAYER (Custom Hooks)
+// lib/hooks/useGeneration.ts
+import { useState } from 'react';
+import { generateCode } from '@/lib/ai/generation-service';
+import { trackTokenUsage } from '@/lib/analytics/token-tracker';
+
+export function useGeneration() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [code, setCode] = useState<string | null>(null);
+  
+  const generate = async (prompt: string) => {
+    setIsLoading(true);
+    try {
+      const result = await generateCode(prompt);
+      setCode(result.code);
+      await trackTokenUsage(result.tokensUsed);
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  return { generate, isLoading, code };
+}
+
+// 3. DATA ACCESS LAYER (Services)
+// lib/ai/generation-service.ts
+import { joxcoderClient } from './joxcoder';
+import { db } from '@/lib/db/convex';
+
+export async function generateCode(prompt: string) {
+  // Validar entrada
+  validatePrompt(prompt);
+  
+  // Verificar límites de tokens
+  await checkTokenLimit();
+  
+  // Generar con IA
+  const result = await joxcoderClient.generate({
+    prompt,
+    maxTokens: 5000,
+    temperature: 0.7
+  });
+  
+  // Guardar en DB
+  await db.generations.create({
+    prompt,
+    code: result.code,
+    tokensUsed: result.tokensUsed
+  });
+  
+  return result;
+}
+
+// 4. INFRASTRUCTURE LAYER (External APIs)
+// lib/ai/joxcoder.ts
+import { HfInference } from '@huggingface/inference';
+
+class JoxCoderClient {
+  private client: HfInference;
+  
+  constructor() {
+    this.client = new HfInference(process.env.HF_API_KEY);
+  }
+  
+  async generate(params: GenerationParams): Promise<GenerationResult> {
+    const response = await this.client.textGeneration({
+      model: 'joxai/joxcoder-v1',
+      inputs: params.prompt,
+      parameters: {
+        max_new_tokens: params.maxTokens,
+        temperature: params.temperature
+      }
+    });
+    
+    return {
+      code: response.generated_text,
+      tokensUsed: this.countTokens(response.generated_text)
+    };
+  }
+}
+
+export const joxcoderClient = new JoxCoderClient();
+```
+
+**Tarea:**
+```
+Refactoriza el código para seguir este patrón de capas.
+Beneficios:
+- Testabilidad: Cada capa se puede testear independientemente
+- Mantenibilidad: Cambios en UI no afectan lógica de negocio
+- Escalabilidad: Fácil agregar nuevas features
+- Reusabilidad: Services compartidos entre componentes
+```
+
+#### 2.3 STATE MANAGEMENT OPTIMIZADO
+
+**Implementa gestión de estado escalable:**
+
+```typescript
+// lib/store/use-app-store.ts
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface AppState {
+  // User state
+  user: User | null;
+  setUser: (user: User | null) => void;
+  
+  // Subscription state
+  subscription: Subscription | null;
+  tokensRemaining: number;
+  updateTokens: (used: number) => void;
+  
+  // UI state
+  sidebarOpen: boolean;
+  toggleSidebar: () => void;
+  
+  // Projects state
+  currentProject: Project | null;
+  setCurrentProject: (project: Project | null) => void;
+}
+
+export const useAppStore = create<AppState>()(
+  persist(
+    (set) => ({
+      user: null,
+      setUser: (user) => set({ user }),
+      
+      subscription: null,
+      tokensRemaining: 0,
+      updateTokens: (used) => set((state) => ({
+        tokensRemaining: state.tokensRemaining - used
+      })),
+      
+      sidebarOpen: true,
+      toggleSidebar: () => set((state) => ({
+        sidebarOpen: !state.sidebarOpen
+      })),
+      
+      currentProject: null,
+      setCurrentProject: (project) => set({ currentProject: project })
+    }),
+    {
+      name: 'autocrea-storage',
+      partialize: (state) => ({
+        sidebarOpen: state.sidebarOpen
+      })
+    }
+  )
+);
+
+// Usar en componentes
+function Dashboard() {
+  const { user, tokensRemaining } = useAppStore();
+  
+  return (
+    <div>
+      <h1>Bienvenido {user?.name}</h1>
+      <p>Tokens restantes: {tokensRemaining}</p>
+    </div>
+  );
+}
+```
+
+**Tarea:**
+```
+Implementa Zustand para state management global.
+Migra estado de React Context/useState a Zustand donde sea apropiado.
+Mantén estado local solo para UI efímera (hover, focus, etc.)
+```
+
+#### 2.4 ERROR HANDLING UNIFICADO
+
+**Implementa sistema centralizado de errores:**
+
+```typescript
+// lib/errors/app-error.ts
+export class AppError extends Error {
+  constructor(
+    public code: string,
+    public message: string,
+    public statusCode: number = 500,
+    public isOperational: boolean = true
+  ) {
+    super(message);
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+}
+
+export class ValidationError extends AppError {
+  constructor(message: string) {
+    super('VALIDATION_ERROR', message, 400);
+  }
+}
+
+export class TokenLimitError extends AppError {
+  constructor() {
+    super(
+      'TOKEN_LIMIT_EXCEEDED',
+      'Has excedido tu límite de tokens. Mejora tu plan.',
+      429
+    );
+  }
+}
+
+export class GenerationError extends AppError {
+  constructor(message: string) {
+    super('GENERATION_ERROR', message, 500);
+  }
+}
+
+// lib/errors/error-handler.ts
+import { toast } from 'sonner';
+
+export function handleError(error: unknown) {
+  console.error('Error:', error);
+  
+  if (error instanceof AppError) {
+    // Errores operacionales (esperados)
+    toast.error(error.message, {
+      description: getErrorDescription(error.code),
+      action: getErrorAction(error.code)
+    });
+    
+    // Tracking de errores
+    trackError(error);
+  } else {
+    // Errores inesperados
+    toast.error('Algo salió mal', {
+      description: 'Por favor intenta de nuevo o contacta soporte.'
+    });
+    
+    // Reportar a Sentry
+    captureException(error);
+  }
+}
+
+function getErrorDescription(code: string): string {
+  const descriptions: Record<string, string> = {
+    'TOKEN_LIMIT_EXCEEDED': 'Resetea en 30 días o mejora tu plan ahora',
+    'VALIDATION_ERROR': 'Verifica que todos los campos sean correctos',
+    'GENERATION_ERROR': 'El modelo no pudo procesar tu solicitud'
+  };
+  
+  return descriptions[code] || 'Error desconocido';
+}
+
+function getErrorAction(code: string) {
+  if (code === 'TOKEN_LIMIT_EXCEEDED') {
+    return {
+      label: 'Mejorar Plan',
+      onClick: () => window.location.href = '/pricing'
+    };
+  }
+  return undefined;
+}
+
+// Usar en API routes
+export async function POST(req: Request) {
+  try {
+    const { prompt } = await req.json();
+    
+    if (!prompt) {
+      throw new ValidationError('El prompt es requerido');
+    }
+    
+    const result = await generateCode(prompt);
+    return Response.json(result);
+    
+  } catch (error) {
+    if (error instanceof AppError) {
+      return Response.json(
+        { error: error.message },
+        { status: error.statusCode }
+      );
+    }
+    
+    return Response.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+**Tarea:**
+```
+Implementa clases de error personalizadas.
+Reemplaza todos los try-catch con error handling unificado.
+Agrega toast notifications consistentes.
+Configura Sentry para error tracking en producción.
+```
+
+#### 2.5 TESTING AUTOMATIZADO
+
+**Implementa suite de tests completa:**
+
+```typescript
+// tests/unit/generation-service.test.ts
+import { describe, it, expect, vi } from 'vitest';
+import { generateCode } from '@/lib/ai/generation-service';
+import { TokenLimitError } from '@/lib/errors/app-error';
+
+describe('Generation Service', () => {
+  it('should generate code successfully', async () => {
+    const prompt = 'Create a login page';
+    const result = await generateCode(prompt);
+    
+    expect(result).toHaveProperty('code');
+    expect(result).toHaveProperty('tokensUsed');
+    expect(result.code).toContain('login');
+  });
+  
+  it('should throw TokenLimitError when limit exceeded', async () => {
+    vi.mock('@/lib/db/convex', () => ({
+      db: {
+        users: {
+          getTokenUsage: vi.fn().mockResolvedValue({
+            used: 10000,
+            limit: 10000
+          })
+        }
+      }
+    }));
+    
+    await expect(generateCode('test')).rejects.toThrow(TokenLimitError);
+  });
+});
+
+// tests/integration/api.test.ts
+import { describe, it, expect } from 'vitest';
+
+describe('POST /api/generate', () => {
+  it('should return generated code', async () => {
+    const response = await fetch('http://localhost:3000/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: 'Create a button' })
+    });
+    
+    expect(response.status).toBe(200);
+    const data = await response.json();
+    expect(data).toHaveProperty('code');
+  });
+});
+
+// tests/e2e/generation-flow.spec.ts
+import { test, expect } from '@playwright/test';
+
+test('complete generation flow', async ({ page }) => {
+  // Login
+  await page.goto('/');
+  await page.click('text=Comenzar Gratis');
+  await page.fill('input[type="email"]', 'test@example.com');
+  await page.click('button:has-text("Continuar")');
+  
+  // Generate
+  await page.fill('textarea[placeholder*="Describe"]', 'Create a landing page');
+  await page.click('button:has-text("Generar")');
+  
+  // Verify
+  await expect(page.locator('.code-output')).toBeVisible({ timeout: 30000 });
+  await expect(page.locator('.code-output')).toContainText('export default');
+});
+```
+
+**Tarea:**
+```
+Configura:
+1. Vitest para unit tests
+2. Playwright para E2E tests
+3. React Testing Library para component tests
+
+Escribe tests para:
+- Todos los services críticos (generation, payments, auth)
+- Componentes clave (CodeEditor, ProjectList, Dashboard)
+- Flujos E2E completos (signup → generate → deploy)
+
+Meta: >80% code coverage
+```
+
+#### 2.6 CI/CD PIPELINE
+
+**Implementa deployment automatizado:**
+
+```yaml
+# .github/workflows/ci.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Lint
+        run: npm run lint
+      
+      - name: Type check
+        run: npm run type-check
+      
+      - name: Unit tests
+        run: npm run test:unit
+      
+      - name: Integration tests
+        run: npm run test:integration
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          HF_API_KEY: ${{ secrets.HF_API_KEY }}
+      
+      - name: Build
+        run: npm run build
+      
+      - name: E2E tests
+        run: npm run test:e2e
+        
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Deploy to Netlify
+        uses: netlify/actions/cli@master
+        with:
+          args: deploy --prod
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      
+      - name: Notify team
+        run: |
+          curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
+            -H 'Content-Type: application/json' \
+            -d '{"text":"✅ AUTOCREA deployed to production!"}'
+```
+
+**Tarea:**
+```
+Configura GitHub Actions para:
+1. Ejecutar todos los tests en cada PR
+2. Bloquear merge si tests fallan
+3. Deploy automático a staging en push a develop
+4. Deploy automático a producción en push a main
+5. Notificaciones a Slack/Discord
+
+Beneficios:
+- Detectar bugs antes de llegar a producción
+- Deploys consistentes y sin errores humanos
+- Confianza para iterar rápido
+```
+
+---
+
+## PARTE 3: OPTIMIZACIONES AVANZADAS
+
+### Instrucciones:
+
+Implementa mejoras avanzadas que eleven AUTOCREA a nivel enterprise:
+
+#### 3.1 CACHING INTELIGENTE
+
+```typescript
+// lib/cache/redis-cache.ts
+import { Redis } from '@upstash/redis';
+
+class CacheService {
+  private redis: Redis;
+  
+  constructor() {
+    this.redis = new Redis({
+      url: process.env.UPSTASH_REDIS_URL!,
+      token: process.env.UPSTASH_REDIS_TOKEN!
+    });
+  }
+  
+  async get<T>(key: string): Promise<T | null> {
+    const cached = await this.redis.get(key);
+    return cached as T | null;
+  }
+  
+  async set(key: string, value: any, ttl: number = 3600): Promise<void> {
+    await this.redis.setex(key, ttl, JSON.stringify(value));
+  }
+  
+  async invalidate(pattern: string): Promise<void> {
+    const keys = await this.redis.keys(pattern);
+    if (keys.length > 0) {
+      await this.redis.del(...keys);
+    }
+  }
+}
+
+export const cache = new CacheService();
+
+// Usar en generation service
+export async function generateCode(prompt: string) {
+  // Cache key basado en hash del prompt
+  const cacheKey = `generation:${hashPrompt(prompt)}`;
+  
+  // Intentar obtener de cache
+  const cached = await cache.get<GenerationResult>(cacheKey);
+  if (cached) {
+    console.log('Cache hit!');
+    return cached;
+  }
+  
+  // Si no está en cache, generar
+  const result = await joxcoderClient.generate(prompt);
+  
+  // Guardar en cache (24 horas)
+  await cache.set(cacheKey, result, 86400);
+  
+  return result;
+}
+```
+
+**Tarea:**
+```
+Implementa caching con Upstash Redis para:
+- Generaciones de código frecuentes
+- Datos de usuario (subscription, tokens)
+- Templates populares
+- Queries de DB costosas
+
+Estrategia de invalidación:
+- TTL automático
+- Invalidación manual en updates
+- Cache warming de datos críticos
+```
+
+#### 3.2 RATE LIMITING ROBUSTO
+
+```typescript
+// lib/rate-limit/rate-limiter.ts
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_URL!,
+  token: process.env.UPSTASH_REDIS_TOKEN!
+});
+
+// Rate limiters por plan
+const rateLimiters = {
+  free: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(3, '1 m'), // 3 requests por minuto
+    analytics: true
+  }),
+  
+  creator: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(10, '1 m'), // 10 requests por minuto
+    analytics: true
+  }),
+  
+  pro: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(30, '1 m'),
+    analytics: true
+  }),
+  
+  business: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(100, '1 m'),
+    analytics: true
+  })
+};
+
+export async function checkRateLimit(userId: string, plan: string) {
+  const limiter = rateLimiters[plan as keyof typeof rateLimiters] || rateLimiters.free;
+  
+  const { success, limit, remaining, reset } = await limiter.limit(userId);
+  
+  if (!success) {
+    throw new RateLimitError(
+      `Rate limit exceeded. Try again in ${Math.ceil((reset - Date.now()) / 1000)}s`
+    );
+  }
+  
+  return { remaining, reset };
+}
+
+// Middleware para API routes
+export function withRateLimit(handler: any) {
+  return async (req: Request) => {
+    const userId = await getUserId(req);
+    const plan = await getUserPlan(userId);
+    
+    try {
+      await checkRateLimit(userId, plan);
+      return handler(req);
+    } catch (error) {
+      if (error instanceof RateLimitError) {
+        return Response.json(
+          { error: error.message },
+          { status: 429, headers: { 'Retry-After': '60' } }
+        );
+      }
+      throw error;
+    }
+  };
+}
+```
+
+**Tarea:**
+```
+Implementa rate limiting con @upstash/ratelimit.
+Aplica a todos los endpoints críticos.
+Diferencia límites por plan de suscripción.
+Añade headers de rate limit en respuestas (X-RateLimit-Remaining, etc.)
+```
+
+#### 3.3 MONITORING Y OBSERVABILITY
+
+```typescript
+// lib/monitoring/logger.ts
+import pino from 'pino';
+
+export const logger = pino({
+  level: process.env.LOG_LEVEL || 'info',
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true
+    }
+  }
+});
+
+// lib/monitoring/metrics.ts
+import { Analytics } from '@segment/analytics-node';
+
+class MetricsService {
+  private analytics: Analytics;
+  
+  constructor() {
+    this.analytics = new Analytics({
+      writeKey: process.env.SEGMENT_WRITE_KEY!
+    });
+  }
+  
+  trackGeneration(userId: string, data: {
+    promptLength: number;
+    tokensUsed: number;
+    duration: number;
+    success: boolean;
+  }) {
+    this.analytics.track({
+      userId,
+      event: 'Code Generated',
+      properties: data
+    });
+  }
+  
+  trackSubscription(userId: string, plan: string, mrr: number) {
+    this.analytics.track({
+      userId,
+      event: 'Subscription Created',
+      properties: { plan, mrr }
+    });
+  }
+}
+
+export const metrics = new MetricsService();
+
+// Usar en services
+export async function generateCode(prompt: string) {
+  const startTime = Date.now();
+  
+  try {
+    const result = await joxcoderClient.generate(prompt);
+    
+    const duration = Date.now() - startTime;
+    
+    // Track success
+    metrics.trackGeneration(userId, {
+      promptLength: prompt.length,
+      tokensUsed: result.tokensUsed,
+      duration,
+      success: true
+    });
+    
+    logger.info('Generation successful', {
+      userId,
+      tokensUsed: result.tokensUsed,
+      duration
+    });
+    
+    return result;
+  } catch (error) {
+    // Track failure
+    metrics.trackGeneration(userId, {
+      promptLength: prompt.length,
+      tokensUsed: 0,
+      duration: Date.now() - startTime,
+      success: false
+    });
+    
+    logger.error('Generation failed', { error, userId });
+    throw error;
+  }
+}
+```
+
+**Tarea:**
+```
+Implementa:
+1. Logging estructurado con Pino
+2. Métricas de producto con Segment/Mixpanel
+3. Error tracking con Sentry
+4. Performance monitoring con Datadog
+
+Track:
+- Cada generación (éxito/fallo, duración, tokens)
+- Cada suscripción (creada, actualizada, cancelada)
+- Errores críticos
+- Performance de APIs
+```
+
+**Tarea:**
+```
+Configura logging, metrics y error tracking completo.
+Asegura visibilidad total del estado de AUTOCREA en producción.
+```
+
+---
+
+## PARTE 4: IMPLEMENTACIÓN DEL PLAN ESTRATÉGICO DE JOXAI
+
+### Contexto del Ecosistema JoxAI
+
+Basándote en el **Plan de Reestructuración y Expansión Global de JoxAI**, implementa las siguientes mejoras específicas para AUTOCREA:
+
+#### 4.1 ALINEACIÓN CON IDENTIDAD CORPORATIVA
+
+**Tarea:**
+```
+Actualiza AUTOCREA para reflejar la identidad corporativa de JoxAI:
+
+1. Branding Visual:
+   - Paleta de colores:
+     * Principal: Azul eléctrico (#4A90E2)
+     * Secundario: Púrpura (#9B59B6)
+     * Acento: Cian (#00D9FF)
+     * Base: Negro profundo (#0A0E27)
+   - Implementa gradientes vibrantes y glassmorphism
+   - Agrega logo JoxAI prominentemente en header
+   - Mantén diseño oscuro, futurista y moderno
+
+2. Messaging:
+   - Eslogan principal: "De idea a la materialización: donde la inteligencia se vuelve creación"
+   - Propuesta única de AUTOCREA: "De idea a la materialización"
+   - Enfatiza que es el núcleo creador del ecosistema JoxAI
+
+3. Navegación:
+   - Link a joxai.org (sitio matriz)
+   - Link a explorador de productos JoxAI
+   - Indicador de ecosistema integrado
+
+Implementa estos cambios en:
+- Landing page (autocrea.joxai.org)
+- Dashboard de usuario
+- Páginas de pricing
+- Componentes compartidos
+```
+
+#### 4.2 MODELO DE NEGOCIO Y PLANES
+
+**Tarea:**
+```
+Implementa la estructura de planes exacta definida en el plan:
+
+Plan Free Trial:
+- Precio: $0
+- Tokens: 100
+- Proyectos: 1
+- Features: Acceso limitado, soporte básico
+
+Plan Creator:
+- Precio: $29/mes
+- Tokens: 10,000
+- Proyectos: 5
+- Features: Deploy automático, templates premium
+
+Plan Professional:
+- Precio: $79/mes
+- Tokens: 30,000
+- Proyectos: 20
+- Features: API access, colaboración en equipo
+
+Plan Business:
+- Precio: $199/mes
+- Tokens: 100,000
+- Proyectos: Ilimitados
+- Features: SLA garantizado, soporte prioritario
+
+Plan Enterprise:
+- Precio: Custom
+- Tokens: Custom
+- Proyectos: Ilimitados
+- Features: Modelo on-premise, contratos personalizados, soporte 24/7
+
+Implementación técnica:
+1. Crea productos y precios en Stripe con IDs:
+   - prod_autocrea_free_trial → price_autocrea_free_trial
+   - prod_autocrea_creator → price_autocrea_creator_monthly
+   - prod_autocrea_pro → price_autocrea_pro_monthly
+   - prod_autocrea_business → price_autocrea_business_monthly
+
+2. Configura metadata en Stripe:
+   - tokens_included
+   - projects_limit
+   - product_type: "autocrea"
+   - tier: "creator" | "pro" | "business" | "enterprise"
+
+3. Implementa lógica de límites por plan en backend
+4. Crea UI de comparación de planes en /pricing
+5. Agrega banners de upgrade cuando usuario alcance límites
+```
+
+#### 4.3 SISTEMA DE TOKENS UNIFICADO
+
+**Tarea:**
+```
+Implementa el sistema de tokens exacto del ecosistema JoxAI:
+
+1. Definición de Tokens:
+   - 1 token ≈ 0.75 palabras en inglés
+   - 1 token ≈ 0.6 palabras en español
+   - Ejemplo: Generación de app web en AUTOCREA ≈ 5,000 tokens
+
+2. Tracking de Tokens:
+   - Implementa TokenTracker service siguiendo el código del plan
+   - Cuenta input_tokens + output_tokens
+   - Actualiza base de datos en tiempo real
+   - Verifica límites ANTES de generar
+
+3. Dashboard de Tokens:
+   - Muestra tokens incluidos / tokens usados / tokens restantes
+   - Barra de progreso visual
+   - Alerta al 50%, 80%, 100% de uso
+   - Desglose por tipo de generación
+
+4. Sistema de Notificaciones:
+   - Email al 50% de uso (informativo)
+   - Email al 80% de uso (advertencia + CTA upgrade)
+   - Email al 100% de uso (bloqueo + CTA urgente upgrade)
+   - Toast notifications en tiempo real durante uso
+
+5. Integración con Stripe Webhooks:
+   - Resetear tokens en invoice.payment_succeeded
+   - Actualizar tokens_included en subscription.updated
+   - Mantener acceso hasta currentPeriodEnd en cancelación
+
+Referencia de código del plan (sección 8):
+- services/token_tracker.py
+- middleware/rate_limiter.py
+- Dashboard TokenUsageCard component
+```
+
+#### 4.4 INTEGRACIÓN STRIPE COMPLETA
+
+**Tarea:**
+```
+Implementa la integración de Stripe EXACTAMENTE como se describe en el plan (sección 7):
+
+1. Configuración Inicial:
+   ✓ Crear productos en Stripe (AUTOCREA Creator, Pro, Business, Enterprise)
+   ✓ Configurar webhooks en https://api.joxai.org/webhooks/stripe
+   ✓ Eventos: subscription.created, subscription.updated, subscription.deleted, 
+     invoice.payment_succeeded, invoice.payment_failed, checkout.session.completed
+
+2. Checkout Flow:
+   - Implementa el código exacto de /api/stripe/create-checkout
+   - Función getOrCreateStripeCustomer
+   - Redirect a Stripe Checkout con success_url y cancel_url
+   - Metadata: userId, productType: "autocrea"
+
+3. Webhook Handlers:
+   - Implementa handlers siguiendo el código del plan:
+     * handleCheckoutCompleted
+     * handleSubscriptionChange
+     * handleSubscriptionCancelled
+     * handlePaymentSucceeded
+     * handlePaymentFailed
+   - Función getTokensForPrice para mapear priceId → tokens
+
+4. Customer Portal:
+   - Implementa /api/stripe/create-portal-session
+   - Botón "Gestionar Suscripción" en dashboard
+   - Permite a usuarios:
+     * Ver facturas
+     * Actualizar método de pago
+     * Cancelar suscripción
+     * Cambiar plan
+
+5. Testing:
+   - Configurar Stripe test mode
+   - Usar tarjetas de prueba (4242 4242 4242 4242)
+   - Simular webhooks con stripe CLI
+   - Verificar todos los flujos funcionan correctamente
+
+Referencia: Toda la sección 7 del plan con código completo.
+```
+
+#### 4.5 ARQUITECTURA TÉCNICA ESCALABLE
+
+**Tarea:**
+```
+Refactoriza AUTOCREA siguiendo la arquitectura recomendada (sección 5):
+
+1. Stack Tecnológico Confirmado:
+   Frontend:
+   - Next.js 14+ (App Router) ✓
+   - React 18+ ✓
+   - TypeScript ✓
+   - TailwindCSS + shadcn/ui ✓
+   - Clerk (Auth) ✓
+   - Framer Motion (Animaciones)
+   - Recharts (Gráficos de métricas)
+
+   Backend:
+   - Next.js API Routes (actual) o migrar a FastAPI (futuro)
+   - Convex (DB) ✓
+   - Redis (Upstash) para cache y rate limiting
+
+   AI:
+   - JoxCoder v1 en Hugging Face Inference Endpoints ✓
+   - Implementar caching de generaciones comunes
+   - Implementar batching si es posible
+
+2. Microservicios (preparar para futuro):
+   - Mantener AUTOCREA modular
+   - Separar concerns: generación, despliegue, gestión de proyectos
+   - APIs claramente definidas para futura separación
+
+3. Seguridad:
+   - Encriptación en reposo (AES-256) para proyectos guardados
+   - Encriptación en tránsito (TLS 1.3) ✓
+   - JWT con refresh tokens (Clerk) ✓
+   - RBAC implementado correctamente
+   - Rate limiting por plan
+
+4. Escalabilidad:
+   - Preparar para multi-región (CDN con Cloudflare)
+   - Optimizar queries de Convex
+   - Implementar caching con Redis/Upstash
+   - Auto-scaling de Hugging Face endpoints configurado
+
+Referencia: Sección 5 del plan completa.
+```
+
+#### 4.6 DIFERENCIADORES COMPETITIVOS
+
+**Tarea:**
+```
+Implementa y destaca los diferenciadores clave de AUTOCREA (sección 3.6):
+
+1. Generación Completa End-to-End:
+   - No solo snippets, sino aplicaciones funcionales completas
+   - Genera: Frontend + Backend + Base de datos + Deployment config
+   - Templates para: Landing pages, e-commerce, dashboards, SaaS, apps móviles
+
+2. Modelo Propietario JoxCoder v1:
+   - Optimizado específicamente para arquitectura empresarial
+   - Entrenado en repositorios de alta calidad
+   - Comprende patrones de best practices
+
+3. Multi-Tecnología (6+ lenguajes):
+   - Next.js, React, TypeScript, JavaScript
+   - Python (FastAPI, Django)
+   - SQL (PostgreSQL, MySQL)
+   - NoSQL (MongoDB, Convex)
+   - Destaca esta versatilidad en UI
+
+4. Deploy Automático:
+   - Integración directa con Netlify/Vercel
+   - Un clic para desplegar
+   - Preview URLs automáticas
+   - Implementa esta funcionalidad si no existe
+
+5. Contexto Profundo:
+   - Sistema de prompts inteligente que comprende requerimientos complejos
+   - Capacidad de hacer preguntas de clarificación
+   - Memoria de contexto en conversaciones largas
+
+Messaging en Landing Page:
+- Hero section destacando "De idea a aplicación funcional en minutos"
+- Comparación visual vs competidores (v0, Bolt.new, Replit)
+- Casos de uso específicos con demos
+- Testimoniales de beta testers
+
+Referencia: Sección 3.6 y Anexo C del plan.
+```
+
+#### 4.7 CAPACIDADES Y CASOS DE USO
+
+**Tarea:**
+```
+Implementa soporte completo para las capacidades listadas (sección 3.2):
+
+✅ Aplicaciones web completas (Next.js, React)
+   - Templates: Landing page, Portfolio, Blog, Marketing site
+   - Implementa generación completa con routing, componentes, estilos
+
+✅ Tiendas e-commerce con pasarelas de pago
+   - Template: E-commerce store con Stripe integration
+   - Catálogo de productos, carrito, checkout
+
+✅ Dashboards administrativos y analíticos
+   - Template: Admin dashboard con tablas, gráficos, CRUD
+   - Integración con bases de datos
+
+✅ Plataformas SaaS multi-tenant
+   - Template: SaaS starter con auth, billing, tenancy
+   - Clerk + Stripe pre-configurado
+
+✅ Aplicaciones móviles (React Native)
+   - Generación de código React Native
+   - Expo setup automático
+
+✅ APIs RESTful y GraphQL
+   - Generación de endpoints
+   - Documentación automática (Swagger/GraphQL Playground)
+
+✅ Bases de datos relacionales y NoSQL
+   - Schemas de Convex
+   - Prisma schemas para PostgreSQL
+   - MongoDB models
+
+Implementación:
+1. Crea templates base para cada caso de uso
+2. Implementa system prompts especializados por tipo
+3. Genera código listo para producción
+4. Incluye tests básicos
+5. Deploy automático configurado
+
+Galería de Templates:
+- Sección de templates pre-construidos en dashboard
+- Usuarios pueden partir de template o desde cero
+- Preview de cada template
+
+Referencia: Sección 3.2 del plan.
+```
+
+#### 4.8 ONBOARDING Y UX EXCELLENCE
+
+**Tarea:**
+```
+Implementa estrategia de retención y onboarding (sección 6.6):
+
+1. Onboarding Interactivo (Primeros 7 días):
+   Día 1:
+   - Tutorial paso a paso en primera visita
+   - Generar primera app guiada
+   - Celebrar con animación de éxito
+   - Email de bienvenida con recursos
+   
+   Día 2:
+   - Email: "Cómo generar apps más complejas"
+   - Tip del día en dashboard
+   
+   Día 3:
+   - Email: "Casos de uso inspiradores"
+   - Mostrar galería de templates
+   
+   Día 5:
+   - Email: "Tips de prompts avanzados"
+   - Si no ha generado nada: Email de reactivación
+   
+   Día 7:
+   - Email: "Beneficios de upgrading a Creator"
+   - Mostrar lo que se desbloquea
+
+2. Empty States Inteligentes:
+   - Primera visita: "Comienza generando tu primera app"
+   - Sin proyectos: Sugerencias de qué crear
+   - Límite alcanzado: CTA claro de upgrade
+
+3. Progress Tracking:
+   - "Has generado X proyectos"
+   - "Has usado Y tokens este mes"
+   - Achievements/badges (opcional pero engaging)
+
+4. In-App Help:
+   - Tooltip en hover de elementos clave
+   - Cmd+K para command palette con shortcuts
+   - FAQs contextuales
+   - Chat de soporte (para Pro+)
+
+5. Email Nurturing:
+   - Drip campaign automático
+   - Tips de uso semanales
+   - Casos de éxito mensuales
+   - Anuncios de nuevas features
+
+6. Programa de Referidos:
+   - "Invita a un amigo, ambos ganan 1 mes gratis"
+   - Link de referido único por usuario
+   - Dashboard de referidos
+
+Herramientas:
+- Intercom / Crisp para chat
+- Customer.io / Loops para email automation
+- Joyride / Intro.js para product tours
+
+Referencia: Sección 6.6 del plan.
+```
+
+#### 4.9 MÉTRICAS Y ANALYTICS
+
+**Tarea:**
+```
+Implementa tracking completo de métricas clave (sección 14):
+
+1. Product Analytics (PostHog o Mixpanel):
+   Eventos a trackear:
+   - user_signed_up
+   - project_created
+   - code_generated (con metadata: tokens_used, prompt_length)
+   - project_deployed
+   - subscription_created
+   - subscription_upgraded
+   - subscription_cancelled
+   - template_used
+   - api_accessed (para planes con API)
+
+2. SaaS Metrics (ChartMogul):
+   - MRR
+   - Churn rate
+   - LTV
+   - CAC (integrar con gastos de ads)
+   - ARPU (Average Revenue Per User)
+
+3. Funnels a Analizar:
+   - Landing → Signup → First Generation → Deploy
+   - Free → Paid conversion
+   - Churn by plan
+
+4. Dashboard de Métricas Internas:
+   - Vista real-time de actividad
+   - Generaciones por hora/día
+   - Tokens consumidos
+   - Revenue dashboard
+   - Alertas de anomalías
+
+5. A/B Testing:
+   - Pricing page variants
+   - CTA copy variants
+   - Onboarding flow variants
+
+Implementación:
+- PostHog snippet en _app.tsx
+- Eventos custom en acciones clave
+- Dashboards pre-configurados
+- Alertas en Slack para métricas críticas
+
+Referencia: Sección 14 del plan completa.
+```
+
+#### 4.10 PREPARACIÓN PARA ECOSISTEMA
+
+**Tarea:**
+```
+Prepara AUTOCREA para ser parte del ecosistema JoxAI:
+
+1. Sistema de Cuenta Única:
+   - Aunque cada producto tiene registro independiente, preparar para SSO futuro
+   - Clerk organization mode para cuando haya multi-producto
+   - ID de usuario consistente entre productos
+
+2. Dashboard Unificado (futuro):
+   - AUTOCREA debe poder integrarse en dashboard central JoxAI
+   - API endpoints bien definidos para consumo externo
+   - Webhooks para sincronización de datos
+
+3. Tokens Compartidos (futuro):
+   - Preparar para que tokens sean compartidos entre productos JoxAI
+   - Sistema de billing unificado
+   - Actualmente independiente, pero arquitectura preparada
+
+4. Bundles:
+   - AUTOCREA puede ser parte de bundles con otros productos
+   - Sistema de descuentos aplicables
+   - Facturación consolidada
+
+5. Branding Consistente:
+   - Logo JoxAI siempre visible
+   - Link a explorador de productos JoxAI
+   - Footer con links a otros productos (cuando lancen)
+   - Comunicación: "Parte del ecosistema JoxAI"
+
+6. Data Sharing (con consentimiento):
+   - Opción de compartir datos entre productos JoxAI
+   - Beneficio: Mejor personalización cross-producto
+   - Respetar privacidad y GDPR
+
+Implementación:
+- Architecture modular y APIs claras
+- Clerk setup compatible con multi-producto
+- Stripe con metadata de ecosistema
+- UI componentes compartibles (design system)
+
+Referencia: Secciones 2.5 y 4.1 del plan.
+```
+
+#### 4.11 PREPARACIÓN PARA LANZAMIENTO Q1 2026
+
+**Tarea:**
+```
+Ejecuta el checklist de lanzamiento (Anexo F del plan):
+
+PRE-LAUNCH (4 semanas antes):
+
+Technical:
+☐ Stress testing completado (1000 requests/min simulados)
+☐ Backup & disaster recovery testeado y documentado
+☐ Monitoring & alertas configuradas (Sentry + Datadog)
+☐ Stripe en modo LIVE con todos los productos
+☐ Webhooks verificados en producción
+☐ Legal pages: Terms of Service, Privacy Policy, Cookie Policy
+☐ GDPR compliance verificado
+☐ Lighthouse score >90 en todas las páginas clave
+
+Marketing:
+☐ Landing page optimizada (A/B testing completado)
+☐ 20 artículos blog escritos y programados
+☐ Press kit preparado (logo, screenshots, one-pager)
+☐ Product Hunt page draft lista
+☐ Email list de 500+ early adopters
+☐ Social media accounts activos (Twitter, LinkedIn)
+☐ Video demo de 2 minutos grabado
+☐ SEO on-page completo
+
+Product:
+☐ Onboarding flow testeado (20 usuarios beta)
+☐ Documentación completa en docs.autocrea.joxai.org
+☐ 5 video tutorials grabados
+☐ 10 templates de ejemplo listos
+☐ Soporte vía email configurado
+☐ FAQ comprehensive publicada
+☐ Roadmap público visible
+
+LAUNCH DAY:
+☐ Deploy a producción (autocrea.joxai.org)
+☐ Post en Product Hunt (8am PST)
+☐ Anuncio en redes sociales (LinkedIn, Twitter)
+☐ Email blast a early adopters
+☐ Post en Hacker News
+☐ Post en Reddit (r/SideProject, r/EntrepreneurRideAlong)
+☐ Monitoring intensivo 24h
+☐ Equipo en standby para bugs críticos
+
+POST-LAUNCH (Primera semana):
+☐ Recopilar feedback usuarios (NPS survey)
+☐ Identificar bugs top 10
+☐ Hot-fixes críticos desplegados
+☐ Análisis de conversión funnel
+☐ Ajustes de copy/pricing si necesario
+☐ Outreach a primeros 10 clientes potenciales Enterprise
+☐ Retrospectiva de lanzamiento
+
+Referencia: Anexo F del plan completo.
+```
+
+---
+
+## PARTE 5: PROMPT DE IMPLEMENTACIÓN CONSOLIDADO
+
+### INSTRUCCIONES FINALES
+
+Eres un Senior Full-Stack Developer y AI Engineer trabajando en **AUTOCREA**, el producto estrella del ecosistema **JoxAI**. Tu misión es transformar AUTOCREA de fase beta a producto listo para lanzamiento público en Q1 2026.
+
+**CONTEXTO CRÍTICO:**
+- AUTOCREA es el "núcleo creador" del ecosistema JoxAI
+- Genera aplicaciones completas a partir de prompts en lenguaje natural
+- Stack: Next.js 14, TypeScript, Clerk, Convex, Hugging Face
+- Modelo: JoxCoder v1 (propietario, entrenado y operativo)
+- Dominio: autocrea.joxai.org
+- Parte de un ecosistema de 7 productos de IA especializados
+
+**TU MISIÓN EN 5 PILARES:**
+
+### PILAR 1: CALIDAD Y ESTABILIDAD
+```
+Elimina TODOS los errores:
+- Crashes, memory leaks, race conditions
+- Errores de tipo TypeScript
+- Problemas de performance
+- Bugs de UX
+- Warnings de linting
+
+Implementa:
+- Testing completo (unit, integration, E2E)
+- Error handling unificado
+- Monitoring con Sentry + Datadog
+- Logging estructurado
+- CI/CD con GitHub Actions
+```
+
+### PILAR 2: ARQUITECTURA ESCALABLE
+```
+Reestructura siguiendo:
+- Clean Architecture (4 capas)
+- Estructura de carpetas optimizada
+- Separación de concerns
+- State management con Zustand
+- Services y hooks reutilizables
+- Preparado para microservicios futuros
+```
+
+### PILAR 3: NEGOCIO Y REVENUE
+```
+Implementa sistema completo de monetización:
+- 5 planes: Free Trial, Creator ($29), Pro ($79), Business ($199), Enterprise (Custom)
+- Integración Stripe 100% funcional
+- Sistema de tokens unificado
+- Webhooks robustos
+- Customer Portal
+- Bundles preparados para futuro
+```
+
+### PILAR 4: EXPERIENCIA DE USUARIO
+```
+Crea experiencia excepcional:
+- Onboarding interactivo (7 días)
+- Dashboard de tokens en tiempo real
+- Templates pre-construidos
+- Deploy automático
+- Documentación completa
+- Soporte contextual
+- Programa de referidos
+```
+
+### PILAR 5: ECOSISTEMA JOXAI
+```
+Integra AUTOCREA en ecosistema:
+- Branding visual JoxAI
+- Eslogan: "De idea a la materialización"
+- Logo JoxAI prominente
+- Links a otros productos (futuro)
+- Preparado para SSO
+- APIs bien definidas
+- Arquitectura modular
+```
+
+**ENTREGABLES REQUERIDOS:**
+
+1. **Código Production-Ready:**
+   - Sin errores TypeScript
+   - Tests con >80% coverage
+   - Performance optimizado
+   - Seguridad implementada
+
+2. **Documentación:**
+   - README completo
+   - API documentation
+   - Deployment guide
+   - Contributing guidelines
+
+3. **Infraestructura:**
+   - CI/CD funcionando
+   - Monitoring configurado
+   - Backups automatizados
+   - Disaster recovery testeado
+
+4. **Marketing Assets:**
+   - Landing page optimizada
+   - Pricing page clara
+   - Demo videos
+   - Template gallery
+
+**CRONOGRAMA:**
+- Semanas 1-2: Fixes críticos + Testing
+- Semanas 3-4: Reestructuración + Arquitectura
+- Semanas 5-6: Stripe + Tokens + Billing
+- Semanas 7-8: UX + Onboarding + Templates
+- Semanas 9-10: Optimización + Documentation
+- Semanas 11-12: Pre-launch testing + Launch prep
+
+**CRITERIOS DE ÉXITO:**
+✅ 99.9% uptime
+✅ <500ms respuesta API promedio
+✅ 0 errores críticos en producción
+✅ >50% conversión signup → first generation
+✅ >8% conversión free → paid (primer mes)
+✅ <5% churn mensual
+✅ NPS >50
+
+**RECURSOS CLAVE:**
+- Plan completo de JoxAI (documento proporcionado)
+- Secciones 3, 5, 6, 7, 8 críticas para AUTOCREA
+- Anexo F: Checklist de lanzamiento
+- Anexo B: Stack tecnológico
+
+**FILOSOFÍA:**
+"De idea a la materialización" - Cada decisión debe facilitar que usuarios transformen ideas en aplicaciones reales lo más rápido y fácil posible.
+
+**IMPORTANTE:**
+- Prioriza estabilidad sobre features nuevas
+- Prioriza UX sobre complejidad técnica
+- Prioriza revenue sobre métricas de vanidad
+- Prioriza lanzamiento sobre perfección infinita
+
+**¿LISTO?**
+Comienza por auditar el código actual e identificar los 10 problemas más críticos. Luego atácalos uno por uno siguiendo este plan maestro.
+
+---
+
+## CHECKLIST DE VERIFICACIÓN FINAL
+
+Antes de considerar AUTOCREA listo para lanzamiento, verifica:
+
+**FUNCIONALIDAD CORE:**
+☐ Generación de código funciona 100% del tiempo
+☐ Deploy automático funciona con Netlify/Vercel
+☐ Todos los templates generan código deployable
+☐ Sistema de tokens cuenta correctamente
+☐ Rate limiting funciona por plan
+
+**BILLING:**
+☐ Stripe checkout funciona en todos los planes
+☐ Webhooks procesan todos los eventos
+☐ Customer Portal permite gestionar suscripción
+☐ Facturas se generan correctamente
+☐ Tokens se resetean en renovación
+
+**SEGURIDAD:**
+☐ Autenticación robusta (Clerk)
+☐ Autorización por roles
+☐ Encriptación de datos sensibles
+☐ Rate limiting anti-abuse
+☐ Validación de inputs
+
+**PERFORMANCE:**
+☐ Lighthouse score >90
+☐ API response <500ms
+☐ Generación de código <30s promedio
+☐ Sin memory leaks
+☐ Optimizado para mobile
+
+**UX:**
+☐ Onboarding claro y guiado
+☐ Error messages útiles
+☐ Loading states en todo
+☐ Responsive design perfecto
+☐ Accesibilidad WCAG AA
+
+**MONITORING:**
+☐ Sentry captura errores
+☐ Datadog/PostHog tracking eventos
+☐ Logs estructurados
+☐ Alertas configuradas
+☐ Dashboard de métricas
+
+**LEGAL:**
+☐ Terms of Service
+☐ Privacy Policy
+☐ GDPR compliant
+☐ Cookie consent
+☐ Data retention policy
+
+**MARKETING:**
+☐ Landing page conversora
+☐ SEO optimizado
+☐ Social media setup
+☐ Product Hunt ready
+☐ Press kit preparado
+
+---
+
+**🚀 EJECUTA ESTE PLAN Y AUTOCREA ESTARÁ LISTO PARA CONQUISTAR EL MERCADO EN Q1 2026 🚀**
