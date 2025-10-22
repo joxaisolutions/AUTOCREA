@@ -120,6 +120,22 @@ autocrea-v2/
 │   ├── (dashboard)/           # Main app (Chat, Projects, Settings)
 │   ├── api/                   # API routes
 │   └── page.tsx               # Landing page
+├── src/                        # ⭐ NEW: Clean Architecture
+│   ├── config/                # Configuración global
+│   │   ├── plans.ts           # Sistema de planes
+│   │   ├── site.ts            # Configuración del sitio
+│   │   └── constants.ts       # Constantes
+│   ├── types/                 # TypeScript types
+│   │   ├── joxcoder.ts
+│   │   ├── user.ts
+│   │   └── project.ts
+│   ├── lib/
+│   │   ├── errors/            # Error handling unificado
+│   │   ├── hooks/             # Custom React hooks
+│   │   ├── stores/            # Zustand stores
+│   │   └── utils/             # Utilidades (token counter, etc.)
+│   └── components/
+│       └── shared/            # Componentes compartidos (UI)
 ├── components/
 │   ├── ui/                    # UI components (Button, Card, Progress)
 │   ├── chat/                  # Code Editor (Monaco)
@@ -215,9 +231,13 @@ Configure API keys and manage subscription
 
 ## 💳 Pricing
 
-- **Free Trial**: 100 tokens included
-- **Basic Plan**: $29/month - 1,000 tokens
-- **Pro Plan**: $99/month - 5,000 tokens
+| Plan | Precio | Tokens/mes | Proyectos | Popular |
+|------|--------|-----------|-----------|---------|
+| 🎯 Free Trial | $0 | 100 | 1 | - |
+| ⭐ Creator | $29 | 10,000 | 5 | ✅ Más Popular |
+| 💼 Professional | $79 | 30,000 | 20 | - |
+| 🏢 Business | $199 | 100,000 | Ilimitados | - |
+| 🌐 Enterprise | Custom | Ilimitados | Ilimitados | - |
 
 ## 🤝 Contributing
 
@@ -236,16 +256,34 @@ For support or questions:
 
 ## 🗺️ Roadmap
 
+**Fase 1: Arquitectura ✅ COMPLETADA**
 - [x] Frontend development
 - [x] Database schema design
 - [x] API route structure
 - [x] Monaco Editor integration
 - [x] Multi-agent visualization
 - [x] State management
+- [x] Clean Architecture structure (src/)
+- [x] Sistema de planes de suscripción
+- [x] Error handling unificado
+- [x] Token tracking system
+- [x] Componentes UI compartidos
+- [x] Documentación técnica completa
+
+**Fase 2: Stripe Integration 🔄 EN PROGRESO**
+- [ ] Configurar Stripe (dev + producción)
+- [ ] Implementar checkout flow
+- [ ] Webhooks de suscripción
+- [ ] Customer portal
+- [ ] Testing con tarjetas de prueba
+
+**Próximas Fases:**
 - [ ] JoxCoder model integration
 - [ ] Convex deployment
 - [ ] Clerk authentication
-- [ ] Stripe payment processing
+- [ ] Sistema de tokens en producción
+- [ ] Onboarding & Nurturing emails
+- [ ] Analytics & Monitoring
 - [ ] Git integration
 - [ ] One-click deployment
 - [ ] Mobile app
