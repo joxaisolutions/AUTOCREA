@@ -279,9 +279,18 @@ For support or questions:
 - [x] Documentación (STRIPE_SETUP_GUIDE.md)
 - [x] Aprobado por arquitecto
 
+**Fase 3: Convex Database ⏳ SIGUIENTE**
+- [ ] Deploy schema de Convex
+- [ ] Crear queries y mutations
+- [ ] Conectar webhooks de Stripe con DB
+- [ ] Sincronizar con Admin Portal de JoxAI
+- Ver: `CONVEX_SETUP_GUIDE.md`
+
 **Próximas Fases:**
-- [ ] JoxCoder model integration
-- [ ] Convex deployment
+- [ ] JoxCoder AI model integration
+- [ ] GitHub OAuth setup con Clerk
+- [ ] Repository management features
+- [ ] Code generation engine
 - [ ] Clerk authentication
 - [ ] Sistema de tokens en producción
 - [ ] Onboarding & Nurturing emails
