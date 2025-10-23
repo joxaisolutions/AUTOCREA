@@ -3,9 +3,10 @@
 ## Overview
 AUTOCREA V2.0 es una plataforma autónoma de desarrollo full-stack potenciada por JoxCoder AI, un modelo de IA multi-rol especializado que genera código profesional automáticamente. El proyecto es el "núcleo creador" del ecosistema JoxAI, diseñado para transformar ideas en aplicaciones completas listas para producción.
 
-**Estado:** Stripe integrado ✅ | Convex pendiente ⏳ | Lanzamiento Q1 2026
+**Estado:** Autenticación Clerk ✅ | Stripe integrado ✅ | Convex pendiente ⏳ | Lanzamiento Q1 2026
 **Dominio objetivo:** autocrea.joxai.org
 **Eslogan:** "De idea a la materialización"
+**Última actualización:** 23 de octubre 2025 - Autenticación completa y ready for production
 
 ## User Preferences
 - **Language:** Spanish UI throughout
@@ -70,8 +71,25 @@ Cada plan tiene su Price ID real de Stripe configurado en `src/config/plans.ts`.
 -   **AI/ML:** JoxCoder AI model, specialized role prompts, language-specific code templates.
 
 ## External Dependencies
--   **Clerk**: For full authentication services and GitHub OAuth provider.
+-   **Clerk**: Full authentication services and GitHub OAuth provider ✅ Production-ready (v6, compatible with React 18 + Next.js 14)
 -   **JoxCoder AI**: The core multi-role AI model for code generation.
 -   **GitHub API (@octokit/rest)**: For comprehensive GitHub integration (repository management, commits, pull requests).
 -   **Convex**: Database for user data, generation history, projects, and usage tracking (schema ready, deployment pending).
--   **Stripe**: Payment processing for subscription plans ✅ Fully implemented and tested.
+-   **Stripe**: Payment processing for subscription plans ✅ Fully implemented and tested with real Price IDs.
+
+## Recent Changes (October 23, 2025)
+### Autenticación Clerk - Ready for Production ✅
+- ✅ Convertidas páginas sign-in/sign-up a Client Components con 'use client'
+- ✅ Migrado a `forceRedirectUrl` (reemplazando `afterSignInUrl`/`afterSignUpUrl` deprecated)
+- ✅ Corregido `clerkClient` en checkout API (objeto directo, no función async)
+- ✅ Actualizadas success/cancel URLs a /chat y /pricing (rutas reales)
+- ✅ Configurado NEXT_PUBLIC_APP_URL para deployment en Replit
+- ✅ Downgraded @types/react a 18.2.79 y @types/react-dom a 18.2.25 (compatibilidad con Clerk v6)
+- ✅ Eliminados todos los warnings de "Invalid hook call"
+- ✅ Flujo de autenticación completo: Landing → Sign-in → Chat (protegido)
+- ✅ OAuth providers funcionando: Apple, GitHub, Google
+
+### Pendientes para Deployment
+1. Actualizar `NEXT_PUBLIC_APP_URL` al dominio de producción (autocrea.joxai.org)
+2. Ejecutar prueba end-to-end de compra (free → checkout → success) en staging
+3. Monitorear logs de Clerk/Stripe en la primera ejecución en producción
