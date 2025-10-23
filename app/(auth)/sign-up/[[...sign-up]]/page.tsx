@@ -1,3 +1,5 @@
+'use client';
+
 import { SignUp } from "@clerk/nextjs";
 
 export default function SignUpPage() {
@@ -33,7 +35,8 @@ export default function SignUpPage() {
               footerActionLink: "text-cyan-400 hover:text-cyan-300",
             }
           }}
-          fallbackRedirectUrl="/chat"
+          afterSignUpUrl="/chat"
+          signInUrl="/sign-in"
         />
       </div>
     </div>

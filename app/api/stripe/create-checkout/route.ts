@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { getPlanById } from '@/src/config/plans';
 import { createCheckoutSession } from '@/src/lib/stripe/stripe-client';
 import { AuthenticationError, ValidationError } from '@/src/lib/errors/app-error';
@@ -42,8 +42,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // TODO: Obtener email del usuario desde Clerk
-    const userEmail = 'user@example.com'; // Temporal
+    // Obtener email del usuario desde Clerk
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const userEmail = user.emailAddresses[0]?.emailAddress;
+    
+    if (!userEmail) {
+      throw new ValidationError('No se encontró email del usuario');
+    }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:5000';
     
@@ -52,7 +58,7 @@ export async function POST(req: NextRequest) {
       email: userEmail,
       planId: plan.id,
       priceId: plan.stripePriceId,
-      successUrl: `${appUrl}/dashboard?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      successUrl: `${appUrl}/chat?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${appUrl}/pricing?canceled=true`,
     });
 
