@@ -3,13 +3,15 @@
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2, Code2, Sparkles, Rocket, Save } from 'lucide-react'
+import { Loader2, Code2, Sparkles, Rocket, Save, AlertCircle } from 'lucide-react'
 import { CodeEditor } from "@/components/chat/code-editor"
 import { FileExplorer } from "@/components/chat/file-explorer"
 import TemplateSelector from "@/components/templates/template-selector"
 import { useFileStore } from "@/lib/stores/file-store"
 import { TechnicalRole } from '@/lib/joxcoder/types'
 import { ROLE_PROMPTS } from '@/lib/joxcoder/role-prompts'
+import { useAuth } from '@clerk/nextjs'
+import Link from 'next/link'
 
 const ROLE_ICONS: Record<TechnicalRole, string> = {
   arquitecto: '🏗️',
@@ -42,6 +44,7 @@ const ROLE_NAMES: Record<TechnicalRole, string> = {
 }
 
 export default function ChatPage() {
+  const { has } = useAuth()
   const [selectedRole, setSelectedRole] = useState<TechnicalRole>('fullstack')
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
@@ -53,8 +56,34 @@ export default function ChatPage() {
   const { files, selectedFileId, addFile, selectFile, getSelectedFile } = useFileStore()
   const selectedFile = getSelectedFile()
 
+  // Check user features from Clerk Billing
+  const hasTokens1000 = has({ feature: 'tokens_1000' })
+  const hasTokens10000 = has({ feature: 'tokens_10000' })
+  const hasTokens30000 = has({ feature: 'tokens_30000' })
+  const hasUnlimitedTokens = has({ feature: 'unlimited_tokens' })
+
+  // Determine token limit based on features
+  let tokenLimit = 1000
+  if (hasUnlimitedTokens) {
+    tokenLimit = -1 // Unlimited
+  } else if (hasTokens30000) {
+    tokenLimit = 30000
+  } else if (hasTokens10000) {
+    tokenLimit = 10000
+  }
+
+  // Mock current usage (TODO: integrate with Convex)
+  const currentTokensUsed = 2450
+  const tokensRemaining = tokenLimit === -1 ? Infinity : tokenLimit - currentTokensUsed
+  const usagePercentage = tokenLimit === -1 ? 0 : (currentTokensUsed / tokenLimit) * 100
+  const canGenerate = tokenLimit === -1 || currentTokensUsed < tokenLimit
+
   const handleGenerate = async () => {
     if (!prompt.trim()) return
+    if (!canGenerate) {
+      alert('Has alcanzado el límite de tokens de tu plan. Por favor, actualiza tu suscripción.')
+      return
+    }
 
     setIsGenerating(true)
     setExplanation('')
@@ -127,6 +156,41 @@ export default function ChatPage() {
           <p className="text-sm text-slate-400">
             Modelo multi-rol especializado
           </p>
+          
+          {/* Token Usage Badge */}
+          <div className="mt-2 p-2 rounded-lg bg-slate-800/50 border border-slate-700">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400">Tokens disponibles:</span>
+              <span className={`font-semibold ${usagePercentage > 80 ? 'text-orange-400' : 'text-cyan-400'}`}>
+                {tokenLimit === -1 ? '∞ Ilimitados' : `${tokensRemaining.toLocaleString()} / ${tokenLimit.toLocaleString()}`}
+              </span>
+            </div>
+            {tokenLimit !== -1 && (
+              <div className="mt-1 w-full bg-slate-700 rounded-full h-1 overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-500 ${usagePercentage > 80 ? 'bg-orange-500' : 'bg-gradient-to-r from-cyan-500 to-blue-600'}`}
+                  style={{ width: `${Math.min(usagePercentage, 100)}%` }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Warning if low on tokens */}
+          {usagePercentage > 80 && tokenLimit !== -1 && (
+            <div className="mt-2 p-2 rounded-lg bg-orange-500/10 border border-orange-500/30">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                <div className="text-xs">
+                  <p className="text-orange-300 font-medium mb-1">
+                    {usagePercentage >= 100 ? 'Sin tokens disponibles' : 'Tokens casi agotados'}
+                  </p>
+                  <Link href="/pricing" className="text-orange-200 hover:underline">
+                    Actualizar plan →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Role Selector */}
@@ -223,13 +287,19 @@ export default function ChatPage() {
             <div className="grid grid-cols-2 gap-2">
               <Button
                 onClick={handleGenerate}
-                disabled={isGenerating || !prompt.trim()}
-                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 transition-all"
+                disabled={isGenerating || !prompt.trim() || !canGenerate}
+                className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50 transition-all disabled:opacity-50"
+                title={!canGenerate ? 'Límite de tokens alcanzado. Actualiza tu plan.' : ''}
               >
                 {isGenerating ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Generando...
+                  </>
+                ) : !canGenerate ? (
+                  <>
+                    <AlertCircle className="w-4 h-4 mr-2" />
+                    Sin tokens
                   </>
                 ) : (
                   <>
