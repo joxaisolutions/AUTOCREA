@@ -7,7 +7,7 @@ export default function PricingPage() {
   // TODO: Obtener plan actual del usuario
   const currentPlanId = 'free';
 
-  const planOrder = ['free', 'creator', 'professional', 'business', 'enterprise'];
+  const planOrder = ['free', 'creator', 'professional', 'enterprise'];
   const sortedPlans = planOrder.map(id => PLANS[id]).filter(Boolean);
 
   return (
@@ -25,7 +25,7 @@ export default function PricingPage() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {sortedPlans.map((plan) => (
             <PricingCard
               key={plan.id}

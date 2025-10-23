@@ -11,10 +11,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/(auth)/sign-up/[[...sign-up]]/page": [
+    "/(marketing)/pricing/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/sign-up/[[...sign-up]]/page.js"
+      "static/chunks/app/(marketing)/pricing/page.js"
     ]
   }
 }
