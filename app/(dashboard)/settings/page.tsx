@@ -1,87 +1,68 @@
 'use client'
 
-import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Settings, Key, CreditCard, User, Sparkles, Check, Eye, EyeOff, Zap, Shield, Rocket } from "lucide-react"
+import { Settings, Key, CreditCard, Sparkles, Check, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { PLAN_LIMITS, UserPlan } from '@/lib/joxcoder/types'
-
-const PLAN_FEATURES: Record<UserPlan, { title: string; icon: any; color: string; features: string[] }> = {
-  starter: {
-    title: 'Starter',
-    icon: Rocket,
-    color: 'text-green-400',
-    features: [
-      '100 generaciones/mes',
-      '4 roles técnicos',
-      '3 lenguajes principales',
-      'Soporte comunidad',
-      'Hasta 3 repositorios',
-    ],
-  },
-  professional: {
-    title: 'Professional',
-    icon: Zap,
-    color: 'text-cyan-400',
-    features: [
-      '500 generaciones/mes',
-      '8 roles técnicos',
-      '8+ lenguajes',
-      'Soporte prioritario',
-      'Hasta 15 repositorios',
-      'Analytics avanzados',
-    ],
-  },
-  enterprise: {
-    title: 'Enterprise',
-    icon: Shield,
-    color: 'text-purple-400',
-    features: [
-      '2000 generaciones/mes',
-      'Todos los 12 roles',
-      'Todos los lenguajes',
-      'Soporte dedicado',
-      'Repositorios ilimitados',
-      'Pentesting automático',
-      'API access',
-    ],
-  },
-  custom: {
-    title: 'Custom',
-    icon: Sparkles,
-    color: 'text-pink-400',
-    features: [
-      'Generaciones ilimitadas',
-      'Todos los roles',
-      'Modelos personalizados',
-      'Soporte 24/7',
-      'White-label',
-      'On-premise deployment',
-    ],
-  },
-}
+import { useAuth, UserButton } from "@clerk/nextjs"
+import Link from 'next/link'
+import { useState } from 'react'
 
 export default function SettingsPage() {
+  const { has } = useAuth()
   const [showOpenAI, setShowOpenAI] = useState(false)
   const [showAnthropic, setShowAnthropic] = useState(false)
-  const [showGoogle, setShowGoogle] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [currentPlan, setCurrentPlan] = useState<UserPlan>('starter')
-  const [generationsUsed, setGenerationsUsed] = useState(24)
 
   const handleSave = () => {
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
 
-  const currentLimits = PLAN_LIMITS[currentPlan]
-  const usagePercentage = (generationsUsed / currentLimits.generationsPerMonth) * 100
+  // Check user features from Clerk Billing
+  const hasTokens1000 = has({ feature: 'tokens_1000' })
+  const hasTokens10000 = has({ feature: 'tokens_10000' })
+  const hasTokens30000 = has({ feature: 'tokens_30000' })
+  const hasUnlimitedTokens = has({ feature: 'unlimited_tokens' })
+  const hasGithubIntegration = has({ feature: 'github_integration' })
+  const hasPrioritySupport = has({ feature: 'priority_support' })
+
+  // Determine current plan based on features
+  let currentPlanName = 'Free Trial'
+  let currentTokens = 1000
+  let currentProjects = 1
+
+  if (hasUnlimitedTokens) {
+    currentPlanName = 'Enterprise'
+    currentTokens = -1
+    currentProjects = -1
+  } else if (hasTokens30000) {
+    currentPlanName = 'Pro'
+    currentTokens = 30000
+    currentProjects = 20
+  } else if (hasTokens10000) {
+    currentPlanName = 'Creator'
+    currentTokens = 10000
+    currentProjects = 5
+  }
+
+  // Mock usage for demo (TODO: integrate with Convex)
+  const tokensUsed = 2450
+  const usagePercentage = currentTokens === -1 ? 0 : (tokensUsed / currentTokens) * 100
 
   return (
     <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-200 mb-2">Configuración</h1>
-        <p className="text-slate-400">Gestiona tu plan de JoxCoder AI y preferencias</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-200 mb-2">Configuración</h1>
+          <p className="text-slate-400">Gestiona tu plan de JoxCoder AI y preferencias</p>
+        </div>
+        <UserButton 
+          appearance={{
+            elements: {
+              avatarBox: "w-12 h-12"
+            }
+          }}
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -92,61 +73,76 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-cyan-400" />
-                Uso de Generaciones
+                Uso de Tokens
               </CardTitle>
               <CardDescription>
-                Plan actual: <span className="font-semibold text-cyan-400">{PLAN_FEATURES[currentPlan].title}</span>
+                Plan actual: <span className="font-semibold text-cyan-400">{currentPlanName}</span>
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="p-6 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 rounded-lg mb-4">
                 <div className="text-center mb-4">
-                  <p className="text-sm text-slate-400 mb-2">Generaciones este mes</p>
+                  <p className="text-sm text-slate-400 mb-2">Tokens este mes</p>
                   <p className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    {generationsUsed} / {currentLimits.generationsPerMonth}
+                    {currentTokens === -1 ? 'Ilimitados' : `${tokensUsed.toLocaleString()} / ${currentTokens.toLocaleString()}`}
                   </p>
                 </div>
                 
-                {/* Progress Bar */}
-                <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500"
-                    style={{ width: `${usagePercentage}%` }}
-                  />
-                </div>
-                
-                <p className="text-xs text-slate-400 text-center mt-2">
-                  {currentLimits.generationsPerMonth - generationsUsed} generaciones restantes
-                </p>
+                {currentTokens !== -1 && (
+                  <>
+                    {/* Progress Bar */}
+                    <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500"
+                        style={{ width: `${Math.min(usagePercentage, 100)}%` }}
+                      />
+                    </div>
+                    
+                    <p className="text-xs text-slate-400 text-center mt-2">
+                      {(currentTokens - tokensUsed).toLocaleString()} tokens restantes
+                    </p>
+                  </>
+                )}
               </div>
 
-              {/* Plan Details */}
+              {/* Plan Features */}
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between items-center py-2 border-b border-slate-800">
-                  <span className="text-slate-400">Roles disponibles:</span>
-                  <span className="font-semibold">{currentLimits.availableRoles.length} roles</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-slate-800">
-                  <span className="text-slate-400">Lenguajes:</span>
-                  <span className="font-semibold">{currentLimits.availableLanguages.length} lenguajes</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-slate-800">
-                  <span className="text-slate-400">Repositorios:</span>
+                  <span className="text-slate-400">Tokens/mes:</span>
                   <span className="font-semibold">
-                    {currentLimits.repositoriesLimit === 9999 ? 'Ilimitados' : currentLimits.repositoriesLimit}
+                    {currentTokens === -1 ? 'Ilimitados' : currentTokens.toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-slate-800">
+                  <span className="text-slate-400">Proyectos:</span>
+                  <span className="font-semibold">
+                    {currentProjects === -1 ? 'Ilimitados' : currentProjects}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-slate-800">
+                  <span className="text-slate-400">GitHub Integration:</span>
+                  <span className={`font-semibold ${hasGithubIntegration ? 'text-green-400' : 'text-slate-500'}`}>
+                    {hasGithubIntegration ? '✓ Activo' : '✗ No disponible'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-2">
                   <span className="text-slate-400">Soporte:</span>
-                  <span className="font-semibold capitalize">{currentLimits.supportLevel}</span>
+                  <span className="font-semibold capitalize">
+                    {hasPrioritySupport ? 'Prioritario' : 'Comunidad'}
+                  </span>
                 </div>
               </div>
 
-              {usagePercentage > 80 && (
+              {usagePercentage > 80 && currentTokens !== -1 && (
                 <div className="mt-4 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
                   <p className="text-sm text-orange-300">
-                    ⚠️ Has usado más del 80% de tus generaciones. Considera hacer upgrade.
+                    ⚠️ Has usado más del 80% de tus tokens. Considera hacer upgrade.
                   </p>
+                  <Link href="/pricing">
+                    <Button variant="outline" size="sm" className="mt-2 w-full">
+                      Ver Planes
+                    </Button>
+                  </Link>
                 </div>
               )}
             </CardContent>
@@ -222,129 +218,56 @@ export default function SettingsPage() {
           </Card>
         </div>
 
-        {/* Right Column - Plans */}
+        {/* Right Column - Billing Management */}
         <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-cyan-400" />
-                Planes de Suscripción
+                Gestión de Suscripción
               </CardTitle>
               <CardDescription>
-                Elige el plan perfecto para tus necesidades
+                Administra tu plan y facturación con Clerk Billing
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {/* Starter Plan */}
-                <div
-                  className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                    currentPlan === 'starter'
-                      ? 'border-green-500 bg-green-500/10'
-                      : 'border-slate-700 hover:border-slate-600'
-                  }`}
-                  onClick={() => setCurrentPlan('starter')}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <Rocket className="w-5 h-5 text-green-400" />
-                      <h5 className="font-semibold text-lg">Starter</h5>
+                <div className="p-6 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 rounded-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-sm text-slate-400">Plan Actual</p>
+                      <p className="text-2xl font-bold text-slate-200">{currentPlanName}</p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-green-400">$29</p>
-                      <p className="text-xs text-slate-500">/ mes</p>
-                    </div>
+                    <Sparkles className="w-10 h-10 text-cyan-400" />
                   </div>
-                  <ul className="space-y-1.5 mb-3">
-                    {PLAN_FEATURES.starter.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {currentPlan === 'starter' && (
-                    <div className="text-xs text-green-400 font-medium">✓ Plan actual</div>
-                  )}
-                </div>
-
-                {/* Professional Plan */}
-                <div
-                  className={`p-4 rounded-lg border-2 transition-all cursor-pointer relative ${
-                    currentPlan === 'professional'
-                      ? 'border-cyan-500 bg-cyan-500/10'
-                      : 'border-cyan-500/30 hover:border-cyan-500/50 bg-cyan-500/5'
-                  }`}
-                  onClick={() => setCurrentPlan('professional')}
-                >
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="px-3 py-1 bg-cyan-500 text-white text-xs font-bold rounded-full">
-                      RECOMENDADO
+                  
+                  <div className="flex items-center gap-2 text-sm">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <span className="text-slate-300">
+                      {currentTokens === -1 ? 'Tokens ilimitados' : `${currentTokens.toLocaleString()} tokens/mes`}
                     </span>
                   </div>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <Zap className="w-5 h-5 text-cyan-400" />
-                      <h5 className="font-semibold text-lg">Professional</h5>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-cyan-400">$79</p>
-                      <p className="text-xs text-slate-500">/ mes</p>
-                    </div>
+                  <div className="flex items-center gap-2 text-sm mt-1">
+                    <Check className="w-4 h-4 text-green-400" />
+                    <span className="text-slate-300">
+                      {currentProjects === -1 ? 'Proyectos ilimitados' : `Hasta ${currentProjects} proyectos`}
+                    </span>
                   </div>
-                  <ul className="space-y-1.5 mb-3">
-                    {PLAN_FEATURES.professional.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {currentPlan === 'professional' && (
-                    <div className="text-xs text-cyan-400 font-medium">✓ Plan actual</div>
-                  )}
                 </div>
 
-                {/* Enterprise Plan */}
-                <div
-                  className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                    currentPlan === 'enterprise'
-                      ? 'border-purple-500 bg-purple-500/10'
-                      : 'border-slate-700 hover:border-slate-600'
-                  }`}
-                  onClick={() => setCurrentPlan('enterprise')}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <Shield className="w-5 h-5 text-purple-400" />
-                      <h5 className="font-semibold text-lg">Enterprise</h5>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-purple-400">$199</p>
-                      <p className="text-xs text-slate-500">/ mes</p>
-                    </div>
-                  </div>
-                  <ul className="space-y-1.5 mb-3">
-                    {PLAN_FEATURES.enterprise.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {currentPlan === 'enterprise' && (
-                    <div className="text-xs text-purple-400 font-medium">✓ Plan actual</div>
-                  )}
+                <Link href="/pricing" className="block">
+                  <Button className="w-full" size="lg">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Ver Todos los Planes
+                  </Button>
+                </Link>
+
+                <div className="text-center">
+                  <p className="text-xs text-slate-500">
+                    Para gestionar tu facturación, métodos de pago y facturas,
+                    haz clic en tu foto de perfil arriba → Billing
+                  </p>
                 </div>
-
-                <Button className="w-full" disabled>
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Gestionar Suscripción (Próximamente)
-                </Button>
-
-                <p className="text-xs text-slate-500 text-center">
-                  Pagos seguros procesados por Stripe
-                </p>
               </div>
             </CardContent>
           </Card>
@@ -373,9 +296,23 @@ export default function SettingsPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-cyan-400 mt-0.5">🔒</span>
-                  <span><strong>Pentesting y seguridad</strong> (Enterprise)</span>
+                  <span><strong>Pentesting y seguridad</strong> integrados</span>
                 </li>
               </ul>
+            </CardContent>
+          </Card>
+
+          {/* Billing Powered by Clerk */}
+          <Card className="border-slate-800">
+            <CardContent className="pt-6">
+              <div className="text-center text-sm text-slate-500">
+                <p>Pagos seguros procesados por</p>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <span className="font-semibold text-slate-300">Clerk Billing</span>
+                  <span className="text-slate-600">+</span>
+                  <span className="font-semibold text-slate-300">Stripe</span>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
