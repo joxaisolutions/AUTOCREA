@@ -12,29 +12,29 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Navigation */}
-      <nav className="border-b border-slate-800 backdrop-blur-sm bg-slate-950/50">
+      <nav className="border-b border-slate-800 backdrop-blur-sm bg-slate-950/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Code2 className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
+                <Code2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                   AUTOCREA
                 </h1>
-                <p className="text-xs text-slate-400">Powered by JoxAI</p>
+                <p className="text-xs text-slate-400 hidden sm:block">Powered by JoxAI</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
-              <Link href="/sign-in">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Link href="/sign-in" className="hidden sm:block">
                 <Button variant="ghost" size="sm">Iniciar Sesión</Button>
               </Link>
               <Link href="/sign-up">
-                <Button size="sm">
+                <Button size="sm" className="text-xs sm:text-sm">
                   Comenzar Gratis
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                  <ArrowRight className="ml-1 sm:ml-2 w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
               </Link>
             </div>
@@ -43,7 +43,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-32 px-4 sm:px-6 lg:px-8">
+      <section className="pt-12 sm:pt-20 pb-20 sm:pb-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -51,12 +51,12 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm text-cyan-400 font-medium">1,000 tokens gratis al registrarte</span>
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-6 sm:mb-8">
+              <Sparkles className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+              <span className="text-xs sm:text-sm text-cyan-400 font-medium">1,000 tokens gratis al registrarte</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 px-4">
               <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
                 De Idea a Aplicación
               </span>
@@ -64,22 +64,22 @@ export default function LandingPage() {
               <span className="text-slate-200">en Minutos</span>
             </h1>
             
-            <p className="text-xl text-slate-400 mb-12 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-8 sm:mb-12 max-w-3xl mx-auto px-4">
               AUTOCREA V2.0 utiliza IA avanzada para crear aplicaciones completas de forma autónoma. 
               Arquitectura, backend, frontend, DevOps y seguridad, todo automático.
-              <br />
+              <br className="hidden sm:block" />
               <span className="text-sm text-slate-500 mt-2 block">Creado por <span className="text-cyan-400 font-semibold">JoxAI</span></span>
             </p>
             
-            <div className="flex items-center justify-center gap-4">
-              <Link href="/sign-up">
-                <Button size="lg" className="text-lg">
-                  <Rocket className="mr-2 w-5 h-5" />
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
+              <Link href="/sign-up" className="w-full sm:w-auto">
+                <Button size="lg" className="text-base sm:text-lg w-full sm:w-auto">
+                  <Rocket className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
                   Crear Mi Primera App
                 </Button>
               </Link>
-              <Link href="#features">
-                <Button size="lg" variant="outline" className="text-lg">
+              <Link href="#features" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="text-base sm:text-lg w-full sm:w-auto">
                   Ver Características
                 </Button>
               </Link>
@@ -89,18 +89,18 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="features" className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-200 mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-200 mb-4 px-4">
               ¿Por qué AUTOCREA?
             </h2>
-            <p className="text-xl text-slate-400">
+            <p className="text-lg sm:text-xl text-slate-400 px-4">
               La plataforma más completa para desarrollo autónomo
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
                 icon: Zap,
@@ -162,13 +162,13 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-950/50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-200 mb-4">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-200 mb-4 px-4">
               Planes Transparentes
             </h2>
-            <p className="text-xl text-slate-400">
+            <p className="text-lg sm:text-xl text-slate-400 px-4">
               Comienza gratis, escala cuando lo necesites
             </p>
           </div>
@@ -198,7 +198,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -206,16 +206,16 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <Card className="p-12 border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-blue-500/10">
-              <h2 className="text-4xl font-bold text-slate-200 mb-6">
+            <Card className="p-6 sm:p-12 border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-blue-500/10">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-200 mb-4 sm:mb-6">
                 ¿Listo para crear tu próxima aplicación?
               </h2>
-              <p className="text-xl text-slate-400 mb-8">
+              <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-6 sm:mb-8">
                 Únete a miles de desarrolladores que ya están construyendo con AUTOCREA
               </p>
-              <Link href="/sign-up">
-                <Button size="lg" className="text-lg">
-                  <Sparkles className="mr-2 w-5 h-5" />
+              <Link href="/sign-up" className="inline-block w-full sm:w-auto">
+                <Button size="lg" className="text-base sm:text-lg w-full sm:w-auto">
+                  <Sparkles className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
                   Obtener 1,000 Tokens Gratis
                 </Button>
               </Link>
