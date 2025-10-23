@@ -67,5 +67,5 @@ The platform offers tiered service plans (Starter, Professional, Enterprise, Cus
 -   **Clerk**: For full authentication services and GitHub OAuth provider.
 -   **JoxCoder AI**: The core multi-role AI model for code generation.
 -   **GitHub API (@octokit/rest)**: For comprehensive GitHub integration (repository management, commits, pull requests).
--   **Convex**: Database for user data, generation history, projects, and usage tracking (setup pending).
--   **Stripe**: Payment processing for subscription plans (configuration pending).
+-   **Convex**: Database for user data, generation history, projects, and usage tracking (schema ready, deployment pending).
+-   **Stripe**: Payment processing for subscription plans ✅ Fully implemented and tested.
