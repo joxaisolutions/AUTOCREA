@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: 'AUTOCREA V2.0 - Powered by JoxAI',
   description: 'Plataforma autónoma de desarrollo con IA. De idea a aplicación completa en minutos. Creado por JoxAI.',
   keywords: 'AI, desarrollo, automatización, JoxAI, AUTOCREA, código, generación',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
   openGraph: {
     title: 'AUTOCREA V2.0 - Powered by JoxAI',
     description: 'De idea a aplicación completa en minutos con IA',

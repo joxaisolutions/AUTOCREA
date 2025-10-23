@@ -6,7 +6,7 @@ import { ArrowRight, Code2, Sparkles, Zap, Shield, GitBranch, Rocket, Check } fr
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { PLANS } from "@/src/config/plans"
-import { PricingCard } from "@/src/components/shared/pricing-card"
+import { PricingCardSimple } from "@/src/components/landing/pricing-card-simple"
 
 export default function LandingPage() {
   return (
@@ -173,11 +173,11 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto px-4">
             {['free', 'creator', 'professional'].map((planId) => {
               const plan = PLANS[planId];
               return (
-                <PricingCard
+                <PricingCardSimple
                   key={plan.id}
                   plan={plan}
                   currentPlanId="free"
