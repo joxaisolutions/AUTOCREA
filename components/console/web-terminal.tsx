@@ -13,6 +13,30 @@ export default function WebTerminal() {
   const executeCommand = async (command: string) => {
     if (!command.trim()) return
 
+    // Comandos especiales de la terminal
+    if (command.trim().toLowerCase() === 'clear' || command.trim().toLowerCase() === 'cls') {
+      setOutput(['$ Terminal limpiada', '$ Escribe tus comandos aquí...'])
+      return
+    }
+
+    if (command.trim().toLowerCase() === 'help') {
+      setOutput(prev => [
+        ...prev,
+        `$ ${command}`,
+        '',
+        '📘 Comandos disponibles:',
+        '  • npm install / npm run dev - Comandos de Node.js',
+        '  • ls / pwd / cd - Navegación de archivos',
+        '  • git status / git log - Comandos de Git',
+        '  • clear / cls - Limpiar terminal',
+        '  • help - Mostrar esta ayuda',
+        '',
+        '💡 Usa ↑/↓ para navegar el historial',
+        ''
+      ])
+      return
+    }
+
     setIsExecuting(true)
     setOutput(prev => [...prev, `$ ${command}`])
     setHistory(prev => [...prev, command])
@@ -21,23 +45,22 @@ export default function WebTerminal() {
       const response = await fetch('/api/terminal/execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command, cwd: process.cwd })
+        body: JSON.stringify({ command })
       })
 
       const data = await response.json()
 
-      if (data.success) {
-        const lines = data.output.split('\n').filter((line: string) => line.trim())
+      if (data.success && data.output) {
+        const lines = data.output.split('\n').map((line: string) => line)
         setOutput(prev => [...prev, ...lines])
-      } else {
+      } else if (!data.success) {
         setOutput(prev => [
           ...prev,
-          `❌ Error: ${data.error}`,
-          ...(data.stderr ? data.stderr.split('\n').filter((line: string) => line.trim()) : [])
+          data.output || `❌ Error: ${data.error || 'Comando falló'}`
         ])
       }
     } catch (error: any) {
-      setOutput(prev => [...prev, `❌ Error: ${error.message}`])
+      setOutput(prev => [...prev, `❌ Error de red: ${error.message}`])
     } finally {
       setIsExecuting(false)
       setTimeout(() => {

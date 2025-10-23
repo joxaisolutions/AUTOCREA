@@ -274,4 +274,37 @@ La plataforma ofrece 4 planes de suscripción gestionados por Clerk Billing:
 - Texto "JoxAI" en gradiente
 - SVG optimizado y escalable
 
+**Integración en UI:**
+- ✅ Agregado al footer del landing page en cuadro pequeño con hover effects
+- ✅ Border animado con glow cyan al hacer hover
+- ✅ Transiciones suaves de opacidad
+
+### Terminal Web Mejorada ✅
+
+**Archivo:** `components/console/web-terminal.tsx` y `app/api/terminal/execute/route.ts`
+
+**Mejoras implementadas:**
+1. **API Route corregido**:
+   - Ahora devuelve correctamente el campo `output` (combina stdout + stderr)
+   - Mensajes de éxito cuando no hay output visible
+   - Mejor manejo de errores con feedback claro
+
+2. **Comandos especiales**:
+   - `help` - Muestra ayuda con comandos disponibles
+   - `clear` / `cls` - Limpia la terminal
+   - Todos los comandos de sistema funcionan (npm, git, ls, etc.)
+
+3. **UX mejorada**:
+   - Feedback visual mejorado con emojis (✅, ❌, 📘)
+   - Mensajes de error más descriptivos
+   - Auto-scroll al final después de cada comando
+   - Historial navegable con ↑/↓
+
+4. **Seguridad**:
+   - Comandos peligrosos bloqueados (rm, reboot, shutdown)
+   - Timeout de 10 segundos por comando
+   - Validación de JSON en requests
+
+**Estado:** Totalmente funcional y lista para ejecutar código
+
 ### Migración Completa a Clerk Billing ✅ (Reemplaza Stripe)

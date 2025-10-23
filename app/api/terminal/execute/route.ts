@@ -44,9 +44,16 @@ export async function POST(request: Request): Promise<void | Response> {
     // Ejecuta el comando con timeout corto por seguridad (10s).
     const { stdout, stderr } = await execAsync(command, { timeout: 10_000 });
 
+    // Combinar stdout y stderr para mostrar todo el output
+    let output = stdout ?? "";
+    if (stderr && stderr.trim()) {
+      output += (output ? "\n" : "") + stderr;
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
+        output: output || "✅ Comando ejecutado exitosamente (sin output)",
         stdout: stdout ?? "",
         stderr: stderr ?? "",
       }),
@@ -61,6 +68,7 @@ export async function POST(request: Request): Promise<void | Response> {
       JSON.stringify({
         success: false,
         error: String(err?.message ?? err),
+        output: `❌ Error: ${String(err?.message ?? err)}`,
       }),
       {
         status: 500,

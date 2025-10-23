@@ -88,9 +88,30 @@ export function Footer() {
         </div>
 
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-slate-500 text-sm">
-            © {currentYear} AUTOCREA. Powered by <Link href="https://joxai.org" className="text-cyan-400 hover:underline">JoxAI</Link>. Todos los derechos reservados.
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-slate-500 text-sm">
+              © {currentYear} AUTOCREA. Powered by <Link href="https://joxai.org" className="text-cyan-400 hover:underline">JoxAI</Link>. Todos los derechos reservados.
+            </p>
+            
+            {/* Logo de JoxAI en esquina */}
+            <Link 
+              href="https://joxai.org" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group"
+            >
+              <div className="relative w-12 h-12 rounded-lg border border-slate-700/50 bg-slate-900/50 p-2 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20">
+                <Image
+                  src="/joxai-logo.svg"
+                  alt="JoxAI"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity"
+                />
+              </div>
+            </Link>
+          </div>
+          
           <div className="flex items-center gap-4">
             <a
               href="#"
