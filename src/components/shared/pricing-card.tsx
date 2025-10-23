@@ -4,29 +4,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Check, Sparkles } from 'lucide-react';
 import { Plan } from '@/src/config/plans';
-import { useState } from 'react';
+import { useStripeCheckout } from '@/src/lib/hooks/use-stripe-checkout';
 
 interface PricingCardProps {
   plan: Plan;
-  onSelect?: (planId: string) => void;
   currentPlanId?: string;
 }
 
-export function PricingCard({ plan, onSelect, currentPlanId }: PricingCardProps) {
-  const [loading, setLoading] = useState(false);
+export function PricingCard({ plan, currentPlanId }: PricingCardProps) {
+  const { createCheckoutSession, loading, error } = useStripeCheckout();
   const isCurrentPlan = currentPlanId === plan.id;
   const isFree = plan.id === 'free';
   const isEnterprise = plan.id === 'enterprise';
 
   const handleSelect = async () => {
-    if (isCurrentPlan || !onSelect) return;
+    if (isCurrentPlan) return;
     
-    setLoading(true);
-    try {
-      await onSelect(plan.id);
-    } finally {
-      setLoading(false);
+    if (isFree) {
+      window.location.href = '/sign-up';
+      return;
     }
+
+    if (isEnterprise) {
+      window.location.href = 'mailto:sales@autocrea.joxai.org';
+      return;
+    }
+    
+    await createCheckoutSession(plan.id);
   };
 
   return (
