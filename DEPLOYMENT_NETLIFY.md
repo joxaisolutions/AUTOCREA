@@ -94,16 +94,35 @@ Este comando te mostrará el deploy key que necesitas.
 
 ### 3. Agregar Variables de Entorno en Netlify:
 
-Ve a Netlify Dashboard → tu sitio → Site Settings → Environment Variables
+Ve a **Netlify Dashboard → Site Settings → Environment Variables**
 
-Agrega estas variables **REQUERIDAS**:
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-- `CLERK_SECRET_KEY`
-- `CONVEX_DEPLOYMENT`
-- `NEXT_PUBLIC_CONVEX_URL`
-- `CONVEX_DEPLOY_KEY` ⚠️ **MUY IMPORTANTE** - Sin esto el build fallará
+⚠️ **TODAS ESTAS VARIABLES SON CRÍTICAS** - El build fallará si falta alguna:
 
-Y las variables opcionales según necesites.
+**Convex (Base de Datos):**
+```
+CONVEX_DEPLOYMENT=prod:...
+NEXT_PUBLIC_CONVEX_URL=https://...convex.cloud
+CONVEX_DEPLOY_KEY=prod:...
+```
+
+**Clerk (Autenticación):**
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
+CLERK_SECRET_KEY=sk_live_...
+```
+
+**Variables Opcionales:**
+```
+JOXCODER_API_KEY=tu_api_key
+JOXCODER_API_URL=https://api.joxcoder.com
+GITHUB_TOKEN=ghp_...
+GITLAB_TOKEN=glpat-...
+```
+
+🚨 **SIN `NEXT_PUBLIC_CONVEX_URL` EL BUILD FALLARÁ** con error:
+```
+Error: No address provided to ConvexReactClient
+```
 
 ### 4. Hacer Deploy:
 
@@ -157,18 +176,35 @@ Vercel tiene mejor integración con Next.js y Convex, por lo que el deployment e
 
 ## Checklist antes de Deploy:
 
-- [ ] Convex desplegado en producción (`npx convex deploy --prod`)
-- [ ] `CONVEX_DEPLOY_KEY` obtenido del dashboard de Convex
-- [ ] Variables de entorno configuradas en Netlify:
-  - [ ] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
-  - [ ] `CLERK_SECRET_KEY`
-  - [ ] `CONVEX_DEPLOYMENT`
-  - [ ] `NEXT_PUBLIC_CONVEX_URL`
-  - [ ] `CONVEX_DEPLOY_KEY` ⚠️ **CRÍTICO**
-- [ ] Clerk configurado con URLs de producción
-- [ ] Build command en Netlify: `npm run build:netlify`
+### ✅ Paso 1: Configurar Convex
+- [ ] Ejecutar `npx convex deploy --prod` en tu terminal local
+- [ ] Copiar `CONVEX_DEPLOYMENT` y `NEXT_PUBLIC_CONVEX_URL` del output
+- [ ] Obtener `CONVEX_DEPLOY_KEY` del dashboard de Convex
+
+### ✅ Paso 2: Configurar Variables en Netlify
+Ve a **Netlify Dashboard → Site Settings → Environment Variables** y agrega:
+
+**VARIABLES CRÍTICAS** (el build fallará sin estas):
+- [ ] `NEXT_PUBLIC_CONVEX_URL` ⚠️ **LA MÁS IMPORTANTE**
+- [ ] `CONVEX_DEPLOYMENT`
+- [ ] `CONVEX_DEPLOY_KEY`
+- [ ] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- [ ] `CLERK_SECRET_KEY`
+
+**Variables Opcionales:**
+- [ ] `JOXCODER_API_KEY`
+- [ ] `JOXCODER_API_URL`
+- [ ] `GITHUB_TOKEN`
+- [ ] `GITLAB_TOKEN`
+
+### ✅ Paso 3: Verificar Configuración de Netlify
+- [ ] Build command: `npm run build:netlify`
 - [ ] Publish directory: `.next`
 - [ ] Node version: `20`
+
+### ✅ Paso 4: Deploy
+- [ ] Hacer push a GitHub
+- [ ] Verificar que el build pase en Netlify
 
 ---
 

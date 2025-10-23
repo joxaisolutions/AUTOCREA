@@ -4,6 +4,8 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { ConvexClientProvider } from '@/src/lib/convex-client'
 import './globals.css'
 
+export const dynamic = 'force-dynamic'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const viewport: Viewport = {

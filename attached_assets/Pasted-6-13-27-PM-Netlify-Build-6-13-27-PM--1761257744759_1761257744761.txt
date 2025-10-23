@@ -1,0 +1,389 @@
+6:13:27 PM: Netlify Build                                                 
+6:13:27 PM: ────────────────────────────────────────────────────────────────
+6:13:27 PM: ​
+6:13:27 PM: ❯ Version
+6:13:27 PM:   @netlify/build 35.2.7
+6:13:27 PM: ​
+6:13:27 PM: ❯ Flags
+6:13:27 PM:   accountId: 68ea999fafbfe7fda4da73d0
+6:13:27 PM:   baseRelDir: true
+6:13:27 PM:   buildId: 68faa8405d5cfb00086fbc98
+6:13:27 PM:   deployId: 68faa8405d5cfb00086fbc9a
+6:13:27 PM: ​
+6:13:27 PM: ❯ Current directory
+6:13:27 PM:   /opt/build/repo
+6:13:27 PM: ​
+6:13:27 PM: ❯ Config file
+6:13:27 PM:   /opt/build/repo/netlify.toml
+6:13:27 PM: ​
+6:13:27 PM: ❯ Context
+6:13:27 PM:   production
+6:13:27 PM: ​
+6:13:27 PM: ❯ Using Next.js Runtime - v5.14.3
+6:13:29 PM: Next.js cache restored
+6:13:29 PM: ​
+6:13:29 PM: build.command from netlify.toml                               
+6:13:29 PM: ────────────────────────────────────────────────────────────────
+6:13:29 PM: ​
+6:13:29 PM: $ npm run build:netlify
+6:13:29 PM: > workspace@1.0.0 build:netlify
+6:13:29 PM: > npx convex codegen && npm run build
+6:13:30 PM: Finding component definitions...
+6:13:30 PM: Generating server code...
+6:13:30 PM: Bundling component definitions...
+6:13:30 PM: Bundling component schemas and implementations...
+6:13:30 PM: Uploading functions to Convex...
+6:13:30 PM: Analyzing source code...
+6:13:31 PM: Generating TypeScript bindings...
+6:13:31 PM: Running TypeScript...
+6:13:33 PM: > workspace@1.0.0 build
+6:13:33 PM: > next build
+6:13:33 PM:   ▲ Next.js 14.2.33
+6:13:33 PM:    Creating an optimized production build ...
+6:13:45 PM:  ✓ Compiled successfully
+6:13:45 PM:    Linting and checking validity of types ...
+6:13:51 PM:    Collecting page data ...
+6:13:55 PM:    Generating static pages (0/26) ...
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/app/_not-found/page.js:1:4039)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '2923115395'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/_not-found". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/app/_not-found/page.js:1:4039)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM:    Generating static pages (6/26)
+6:13:56 PM: Error getting GitHub token: n [Error]: Dynamic server usage: Route /api/oauth/github/token couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/opt/build/repo/.next/server/chunks/8948.js:1:37220)
+6:13:56 PM:     at u (/opt/build/repo/.next/server/chunks/1615.js:1:1502)
+6:13:56 PM:     at n (/opt/build/repo/.next/server/chunks/4910.js:1:6096)
+6:13:56 PM:     at async O (/opt/build/repo/.next/server/chunks/4910.js:1:3411)
+6:13:56 PM:     at async c (/opt/build/repo/.next/server/app/api/oauth/github/token/route.js:1:1013)
+6:13:56 PM:     at async /opt/build/repo/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38411
+6:13:56 PM:     at async e_.execute (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:27880)
+6:13:56 PM:     at async e_.handle (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:39943)
+6:13:56 PM:     at async exportAppRoute (/opt/build/repo/node_modules/next/dist/export/routes/app-route.js:77:26)
+6:13:56 PM:     at async exportPageImpl (/opt/build/repo/node_modules/next/dist/export/worker.js:175:20) {
+6:13:56 PM:   description: "Route /api/oauth/github/token couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+6:13:56 PM:   digest: 'DYNAMIC_SERVER_USAGE'
+6:13:56 PM: }
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '1597954185'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/console". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '1597954185'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/settings". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '1597954185'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/chat". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '1597954185'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/preview". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '1597954185'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/projects". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '1597954185'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/repository". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/chunks/3192.js:1:8706)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/app/page.js:1:148443)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '373733629'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/app/page.js:1:148443)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM: Error checking GitHub connection: n [Error]: Dynamic server usage: Route /api/oauth/github/status couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at l (/opt/build/repo/.next/server/chunks/8948.js:1:37220)
+6:13:56 PM:     at u (/opt/build/repo/.next/server/chunks/1615.js:1:1502)
+6:13:56 PM:     at n (/opt/build/repo/.next/server/chunks/4910.js:1:6096)
+6:13:56 PM:     at async O (/opt/build/repo/.next/server/chunks/4910.js:1:3411)
+6:13:56 PM:     at async p (/opt/build/repo/.next/server/app/api/oauth/github/status/route.js:1:1016)
+6:13:56 PM:     at async /opt/build/repo/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38411
+6:13:56 PM:     at async e_.execute (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:27880)
+6:13:56 PM:     at async e_.handle (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:39943)
+6:13:56 PM:     at async exportAppRoute (/opt/build/repo/node_modules/next/dist/export/routes/app-route.js:77:26)
+6:13:56 PM:     at async exportPageImpl (/opt/build/repo/node_modules/next/dist/export/worker.js:175:20) {
+6:13:56 PM:   description: "Route /api/oauth/github/status couldn't be rendered statically because it used `headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+6:13:56 PM:   digest: 'DYNAMIC_SERVER_USAGE'
+6:13:56 PM: }
+6:13:56 PM:  ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/app/(marketing)/pricing/page.js:1:64672)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561) {
+6:13:56 PM:   digest: '3711415439'
+6:13:56 PM: }
+6:13:56 PM: Error occurred prerendering page "/pricing". Read more: https://nextjs.org/docs/messages/prerender-error
+6:13:56 PM: Error: No address provided to ConvexReactClient.
+6:13:56 PM: If trying to deploy to production, make sure to follow all the instructions found at https://docs.convex.dev/production/hosting/
+6:13:56 PM: If running locally, make sure to run `convex dev` and ensure the .env.local file is populated.
+6:13:56 PM:     at new ey (/opt/build/repo/.next/server/chunks/3324.js:37:43089)
+6:13:56 PM:     at 59734 (/opt/build/repo/.next/server/app/(marketing)/pricing/page.js:1:64672)
+6:13:56 PM:     at Object.t [as require] (/opt/build/repo/.next/server/webpack-runtime.js:1:143)
+6:13:56 PM:     at require (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:16:18839)
+6:13:56 PM:     at I (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:94364)
+6:13:56 PM:     at C (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:92915)
+6:13:56 PM:     at rR (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:33975)
+6:13:56 PM:     at nN (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:62305)
+6:13:56 PM:     at nB (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:67539)
+6:13:56 PM:     at nM (/opt/build/repo/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:12:58561)
+6:13:56 PM:    Generating static pages (12/26)
+6:13:56 PM:    Generating static pages (19/26)
+6:13:56 PM:  ✓ Generating static pages (26/26)
+6:13:56 PM: > Export encountered errors on following paths:
+6:13:56 PM: 	/(dashboard)/chat/page: /chat
+6:13:56 PM: 	/(dashboard)/console/page: /console
+6:13:56 PM: 	/(dashboard)/preview/page: /preview
+6:13:57 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+6:13:57 PM: 	/(dashboard)/projects/page: /projects
+6:13:57 PM: 	/(dashboard)/repository/page: /repository
+6:13:57 PM: 	/(dashboard)/settings/page: /settings
+6:13:57 PM: 	/(marketing)/pricing/page: /pricing
+6:13:57 PM: 	/_not-found/page: /_not-found
+6:13:57 PM: 	/page: /
+6:13:57 PM: ​
+6:13:57 PM: "build.command" failed                                        
+6:13:57 PM: ────────────────────────────────────────────────────────────────
+6:13:57 PM: ​
+6:13:57 PM:   Error message
+6:13:57 PM:   Command failed with exit code 1: npm run build:netlify (https://ntl.fyi/exit-code-1)
+6:13:57 PM: ​
+6:13:57 PM:   Error location
+6:13:57 PM:   In build.command from netlify.toml:
+6:13:57 PM:   npm run build:netlify
+6:13:57 PM: ​
+6:13:57 PM:   Resolved config
+6:13:57 PM:   build:
+6:13:57 PM:     command: npm run build:netlify
+6:13:57 PM:     commandOrigin: config
+6:13:57 PM:     environment:
+6:13:57 PM:       - CLERK_SECRET_KEY
+6:13:57 PM:       - CONVEX_DEPLOY_KEY
+6:13:57 PM:       - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+6:13:57 PM:       - WEBHOOK_STRIPE_SECRET_KEY
+6:13:57 PM:       - NODE_VERSION
+6:13:57 PM:     publish: /opt/build/repo/.next
+6:13:57 PM:     publishOrigin: config
+6:13:57 PM:   plugins:
+6:13:57 PM:     - inputs: {}
+6:13:57 PM:       origin: config
+6:13:57 PM:       package: "@netlify/plugin-nextjs"
+6:13:57 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+6:13:57 PM: Failing build: Failed to build site
+6:13:58 PM: Finished processing build request in 50.23s
