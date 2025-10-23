@@ -1,0 +1,65 @@
+5:57:55 PM: Netlify Build                                                 
+5:57:55 PM: ────────────────────────────────────────────────────────────────
+5:57:55 PM: ​
+5:57:55 PM: ❯ Version
+5:57:55 PM:   @netlify/build 35.2.7
+5:57:55 PM: ​
+5:57:55 PM: ❯ Flags
+5:57:55 PM:   accountId: 68ea999fafbfe7fda4da73d0
+5:57:55 PM:   baseRelDir: true
+5:57:55 PM:   buildId: 68faa4cee107bb000757803c
+5:57:55 PM:   deployId: 68faa4cee107bb000757803e
+5:57:55 PM: ​
+5:57:55 PM: ❯ Current directory
+5:57:55 PM:   /opt/build/repo
+5:57:55 PM: ​
+5:57:55 PM: ❯ Config file
+5:57:55 PM:   /opt/build/repo/netlify.toml
+5:57:55 PM: ​
+5:57:55 PM: ❯ Context
+5:57:55 PM:   production
+5:57:55 PM: ​
+5:57:55 PM: ❯ Using Next.js Runtime - v5.14.3
+5:57:57 PM: Next.js cache restored
+5:57:57 PM: ​
+5:57:57 PM: build.command from netlify.toml                               
+5:57:57 PM: ────────────────────────────────────────────────────────────────
+5:57:57 PM: ​
+5:57:57 PM: $ npm run build:netlify
+5:57:57 PM: > workspace@1.0.0 build:netlify
+5:57:57 PM: > npx convex codegen && npm run build
+5:57:57 PM: ✖ Netlify build environment detected but no Convex deployment configuration found.
+5:57:58 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+5:57:57 PM: Set one of:
+5:57:57 PM:   • CONVEX_DEPLOY_KEY for Convex Cloud deployments
+5:57:57 PM:   • CONVEX_SELF_HOSTED_URL and CONVEX_SELF_HOSTED_ADMIN_KEY for self-hosted deployments
+5:57:57 PM: See https://docs.convex.dev/production/hosting or https://docs.convex.dev/self-hosting
+5:57:57 PM: ​
+5:57:57 PM: "build.command" failed                                        
+5:57:57 PM: ────────────────────────────────────────────────────────────────
+5:57:57 PM: ​
+5:57:57 PM:   Error message
+5:57:57 PM:   Command failed with exit code 1: npm run build:netlify (https://ntl.fyi/exit-code-1)
+5:57:57 PM: ​
+5:57:57 PM:   Error location
+5:57:57 PM:   In build.command from netlify.toml:
+5:57:57 PM:   npm run build:netlify
+5:57:57 PM: ​
+5:57:57 PM:   Resolved config
+5:57:57 PM:   build:
+5:57:57 PM:     command: npm run build:netlify
+5:57:57 PM:     commandOrigin: config
+5:57:57 PM:     environment:
+5:57:57 PM:       - CLERK_SECRET_KEY
+5:57:57 PM:       - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+5:57:57 PM:       - WEBHOOK_STRIPE_SECRET_KEY
+5:57:57 PM:       - NODE_VERSION
+5:57:57 PM:     publish: /opt/build/repo/.next
+5:57:57 PM:     publishOrigin: config
+5:57:57 PM:   plugins:
+5:57:57 PM:     - inputs: {}
+5:57:57 PM:       origin: config
+5:57:57 PM:       package: "@netlify/plugin-nextjs"
+5:57:58 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+5:57:58 PM: Failing build: Failed to build site
+5:57:58 PM: Finished processing build request in 22.801s
