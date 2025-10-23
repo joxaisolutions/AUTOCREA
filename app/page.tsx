@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowRight, Code2, Sparkles, Zap, Shield, GitBranch, Rocket, Check } from "lucide-react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { PLANS } from "@/src/config/plans"
+import { PricingCard } from "@/src/components/shared/pricing-card"
 
 export default function LandingPage() {
   return (
@@ -51,7 +53,7 @@ export default function LandingPage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8">
               <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm text-cyan-400 font-medium">100 tokens gratis al registrarte</span>
+              <span className="text-sm text-cyan-400 font-medium">1,000 tokens gratis al registrarte</span>
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
@@ -171,83 +173,26 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Free Trial",
-                price: "$0",
-                description: "Perfecto para probar",
-                features: [
-                  "100 tokens gratis",
-                  "2-3 proyectos completos",
-                  "Modelo JoxCoder",
-                  "Preview en tiempo real",
-                  "Soporte comunitario"
-                ]
-              },
-              {
-                name: "Basic",
-                price: "$29",
-                description: "Para desarrolladores",
-                features: [
-                  "1,000 tokens/mes",
-                  "~20 proyectos/mes",
-                  "Modelo JoxCoder",
-                  "APIs externas opcionales",
-                  "Git automático",
-                  "Soporte prioritario"
-                ],
-                popular: true
-              },
-              {
-                name: "Pro",
-                price: "$99",
-                description: "Para equipos",
-                features: [
-                  "5,000 tokens/mes",
-                  "~100 proyectos/mes",
-                  "Modelo JoxCoder",
-                  "Todas las APIs",
-                  "Deploy automático",
-                  "Soporte dedicado",
-                  "Análisis avanzado"
-                ]
-              }
-            ].map((plan, i) => (
-              <Card key={i} className={plan.popular ? "border-cyan-500 relative" : ""}>
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full text-sm font-semibold">
-                    Más Popular
-                  </div>
-                )}
-                <CardHeader>
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold text-slate-200">{plan.price}</span>
-                    <span className="text-slate-400">/mes</span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, j) => (
-                      <li key={j} className="flex items-center gap-2">
-                        <Check className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-slate-300">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href="/sign-up" className="block mt-8">
-                    <Button 
-                      variant={plan.popular ? "default" : "outline"}
-                      className="w-full"
-                    >
-                      Comenzar Ahora
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {['free', 'creator', 'professional'].map((planId) => {
+              const plan = PLANS[planId];
+              return (
+                <PricingCard
+                  key={plan.id}
+                  plan={plan}
+                  currentPlanId="free"
+                />
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/pricing">
+              <Button variant="outline" size="lg">
+                Ver Todos los Planes
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -271,7 +216,7 @@ export default function LandingPage() {
               <Link href="/sign-up">
                 <Button size="lg" className="text-lg">
                   <Sparkles className="mr-2 w-5 h-5" />
-                  Obtener 100 Tokens Gratis
+                  Obtener 1,000 Tokens Gratis
                 </Button>
               </Link>
             </Card>
