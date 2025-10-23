@@ -22,9 +22,10 @@ CLERK_SECRET_KEY=sk_test_...
 # Convex Database (REQUERIDO)
 CONVEX_DEPLOYMENT=prod:...
 NEXT_PUBLIC_CONVEX_URL=https://...convex.cloud
+CONVEX_DEPLOY_KEY=prod:...
 
-# IMPORTANTE: NO necesitas CONVEX_ADMIN_KEY para el build
-# El comando `convex codegen` solo genera tipos, no hace deployment
+# IMPORTANTE: CONVEX_DEPLOY_KEY es necesario para que `convex codegen` 
+# pueda generar los tipos TypeScript durante el build de Netlify
 
 # JoxCoder AI (Opcional por ahora)
 JOXCODER_API_KEY=tu_api_key
@@ -74,13 +75,37 @@ npx convex deploy --prod
 # - NEXT_PUBLIC_CONVEX_URL
 ```
 
-### 2. Agregar Variables de Entorno:
+### 2. Obtener CONVEX_DEPLOY_KEY:
+
+Hay dos formas de obtener el deploy key:
+
+**Opción A: Desde el Dashboard de Convex (Recomendado)**
+1. Ve a https://dashboard.convex.dev
+2. Selecciona tu proyecto
+3. Ve a Settings → Deploy Keys
+4. Copia el "Deploy Key" para producción
+
+**Opción B: Desde la terminal**
+```bash
+npx convex deploy --cmd 'echo $CONVEX_DEPLOY_KEY'
+```
+
+Este comando te mostrará el deploy key que necesitas.
+
+### 3. Agregar Variables de Entorno en Netlify:
 
 Ve a Netlify Dashboard → tu sitio → Site Settings → Environment Variables
 
-Agrega TODAS las variables listadas arriba.
+Agrega estas variables **REQUERIDAS**:
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- `CONVEX_DEPLOYMENT`
+- `NEXT_PUBLIC_CONVEX_URL`
+- `CONVEX_DEPLOY_KEY` ⚠️ **MUY IMPORTANTE** - Sin esto el build fallará
 
-### 3. Hacer Deploy:
+Y las variables opcionales según necesites.
+
+### 4. Hacer Deploy:
 
 ```bash
 git add .
@@ -132,10 +157,16 @@ Vercel tiene mejor integración con Next.js y Convex, por lo que el deployment e
 
 ## Checklist antes de Deploy:
 
-- [ ] Variables de entorno configuradas en Netlify
 - [ ] Convex desplegado en producción (`npx convex deploy --prod`)
+- [ ] `CONVEX_DEPLOY_KEY` obtenido del dashboard de Convex
+- [ ] Variables de entorno configuradas en Netlify:
+  - [ ] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+  - [ ] `CLERK_SECRET_KEY`
+  - [ ] `CONVEX_DEPLOYMENT`
+  - [ ] `NEXT_PUBLIC_CONVEX_URL`
+  - [ ] `CONVEX_DEPLOY_KEY` ⚠️ **CRÍTICO**
 - [ ] Clerk configurado con URLs de producción
-- [ ] Build command: `npm run build:netlify`
+- [ ] Build command en Netlify: `npm run build:netlify`
 - [ ] Publish directory: `.next`
 - [ ] Node version: `20`
 
