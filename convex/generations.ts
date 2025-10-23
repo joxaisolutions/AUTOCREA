@@ -30,16 +30,16 @@ export const getByProject = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, { projectId, limit }) => {
-    let results = ctx.db
+    const query = ctx.db
       .query("generations")
       .withIndex("by_project", (q) => q.eq("projectId", projectId))
       .order("desc");
 
     if (limit) {
-      results = results.take(limit);
+      return query.take(limit);
     }
 
-    return await results.collect();
+    return await query.collect();
   },
 });
 
@@ -50,15 +50,15 @@ export const getByUser = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, { userId, limit }) => {
-    let results = ctx.db
+    const query = ctx.db
       .query("generations")
       .withIndex("by_user_created", (q) => q.eq("userId", userId))
       .order("desc");
 
     if (limit) {
-      results = results.take(limit);
+      return query.take(limit);
     }
 
-    return await results.collect();
+    return await query.collect();
   },
 });

@@ -1,0 +1,85 @@
+6:01:05 PM: Netlify Build                                                 
+6:01:05 PM: ────────────────────────────────────────────────────────────────
+6:01:05 PM: ​
+6:01:05 PM: ❯ Version
+6:01:05 PM:   @netlify/build 35.2.7
+6:01:05 PM: ​
+6:01:05 PM: ❯ Flags
+6:01:05 PM:   accountId: 68ea999fafbfe7fda4da73d0
+6:01:05 PM:   baseRelDir: true
+6:01:05 PM:   buildId: 68faa59131862f000860ecec
+6:01:05 PM:   deployId: 68faa59131862f000860ecee
+6:01:05 PM: ​
+6:01:05 PM: ❯ Current directory
+6:01:05 PM:   /opt/build/repo
+6:01:05 PM: ​
+6:01:05 PM: ❯ Config file
+6:01:05 PM:   /opt/build/repo/netlify.toml
+6:01:05 PM: ​
+6:01:05 PM: ❯ Context
+6:01:05 PM:   production
+6:01:05 PM: ​
+6:01:05 PM: ❯ Using Next.js Runtime - v5.14.3
+6:01:06 PM: Next.js cache restored
+6:01:06 PM: ​
+6:01:06 PM: build.command from netlify.toml                               
+6:01:06 PM: ────────────────────────────────────────────────────────────────
+6:01:06 PM: ​
+6:01:06 PM: $ npm run build:netlify
+6:01:06 PM: > workspace@1.0.0 build:netlify
+6:01:06 PM: > npx convex codegen && npm run build
+6:01:07 PM: Finding component definitions...
+6:01:07 PM: Generating server code...
+6:01:07 PM: Bundling component definitions...
+6:01:07 PM: Bundling component schemas and implementations...
+6:01:07 PM: Uploading functions to Convex...
+6:01:07 PM: Analyzing source code...
+6:01:08 PM: Generating TypeScript bindings...
+6:01:08 PM: Running TypeScript...
+6:01:09 PM: ✖ TypeScript typecheck via `tsc` failed.
+6:01:09 PM: To ignore failing typecheck, use `--typecheck=disable`.
+6:01:09 PM: - Collecting TypeScript errors
+6:01:10 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+6:01:10 PM: convex/commits.ts:36:7 - error TS2740: Type 'Promise<{ _id: Id<"commits">; _creationTime: number; commitUrl?: string | undefined; sha?: string | undefined; createdAt: number; userId: Id<"users">; projectId: Id<"projects">; message: string; filesChanged: string[]; repository: "github" | "gitlab"; }[]>' is missing the following properties from type 'OrderedQuery<{ document: { _id: Id<"commits">; _creationTime: number; commitUrl?: string | undefined; sha?: string | undefined; createdAt: number; userId: Id<"users">; projectId: Id<"projects">; message: string; filesChanged: string[]; repository: "github" | "gitlab"; }; fieldPaths: ExtractFieldPaths<...> | "_id"; i...': filter, paginate, collect, take, and 3 more.
+6:01:10 PM: 36       results = results.take(limit);
+6:01:10 PM:          ~~~~~~~
+6:01:10 PM: convex/generations.ts:39:7 - error TS2740: Type 'Promise<{ _id: Id<"generations">; _creationTime: number; fileName?: string | undefined; errorMessage?: string | undefined; createdAt: number; userId: Id<"users">; tokensUsed: number; ... 5 more ...; success: boolean; }[]>' is missing the following properties from type 'OrderedQuery<{ document: { _id: Id<"generations">; _creationTime: number; fileName?: string | undefined; errorMessage?: string | undefined; createdAt: number; userId: Id<"users">; tokensUsed: number; ... 5 more ...; success: boolean; }; fieldPaths: ExtractFieldPaths<...> | "_id"; indexes: { ...; }; searchIndexes: {}...': filter, paginate, collect, take, and 3 more.
+6:01:10 PM: 39       results = results.take(limit);
+6:01:10 PM:          ~~~~~~~
+6:01:10 PM: convex/generations.ts:59:7 - error TS2740: Type 'Promise<{ _id: Id<"generations">; _creationTime: number; fileName?: string | undefined; errorMessage?: string | undefined; createdAt: number; userId: Id<"users">; tokensUsed: number; ... 5 more ...; success: boolean; }[]>' is missing the following properties from type 'OrderedQuery<{ document: { _id: Id<"generations">; _creationTime: number; fileName?: string | undefined; errorMessage?: string | undefined; createdAt: number; userId: Id<"users">; tokensUsed: number; ... 5 more ...; success: boolean; }; fieldPaths: ExtractFieldPaths<...> | "_id"; indexes: { ...; }; searchIndexes: {}...': filter, paginate, collect, take, and 3 more.
+6:01:10 PM: 59       results = results.take(limit);
+6:01:10 PM:          ~~~~~~~
+6:01:10 PM: Found 3 errors in 2 files.
+6:01:10 PM: Errors  Files
+6:01:10 PM:      1  convex/commits.ts:36
+6:01:10 PM:      2  convex/generations.ts:39
+6:01:10 PM: ​
+6:01:10 PM: "build.command" failed                                        
+6:01:10 PM: ────────────────────────────────────────────────────────────────
+6:01:10 PM: ​
+6:01:10 PM:   Error message
+6:01:10 PM:   Command failed with exit code 1: npm run build:netlify (https://ntl.fyi/exit-code-1)
+6:01:10 PM: ​
+6:01:10 PM:   Error location
+6:01:10 PM:   In build.command from netlify.toml:
+6:01:10 PM:   npm run build:netlify
+6:01:10 PM: ​
+6:01:10 PM:   Resolved config
+6:01:10 PM:   build:
+6:01:10 PM:     command: npm run build:netlify
+6:01:10 PM:     commandOrigin: config
+6:01:10 PM:     environment:
+6:01:10 PM:       - CLERK_SECRET_KEY
+6:01:10 PM:       - CONVEX_DEPLOY_KEY
+6:01:10 PM:       - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+6:01:10 PM:       - WEBHOOK_STRIPE_SECRET_KEY
+6:01:10 PM:       - NODE_VERSION
+6:01:10 PM:     publish: /opt/build/repo/.next
+6:01:10 PM:     publishOrigin: config
+6:01:10 PM:   plugins:
+6:01:10 PM:     - inputs: {}
+6:01:10 PM:       origin: config
+6:01:10 PM:       package: "@netlify/plugin-nextjs"
+6:01:10 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+6:01:10 PM: Failing build: Failed to build site
+6:01:11 PM: Finished processing build request in 20.022s

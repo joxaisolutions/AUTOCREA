@@ -27,15 +27,15 @@ export const getByProject = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, { projectId, limit }) => {
-    let results = ctx.db
+    const query = ctx.db
       .query("commits")
       .withIndex("by_project", (q) => q.eq("projectId", projectId))
       .order("desc");
 
     if (limit) {
-      results = results.take(limit);
+      return query.take(limit);
     }
 
-    return await results.collect();
+    return await query.collect();
   },
 });

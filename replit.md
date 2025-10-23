@@ -46,3 +46,40 @@ The architecture emphasizes a full-stack Next.js approach, utilizing Next.js API
 -   **JoxCoder AI**: The core multi-role AI model for code generation.
 -   **GitHub API (@octokit/rest)**: For comprehensive GitHub integration (repository management, commits, pull requests).
 -   **Convex**: Database for user data, generation history, projects, and usage tracking.
+
+## Recent Changes (October 2025)
+
+### Netlify Deployment Configuration
+**Status:** Ready for Production Deployment
+**Files:** `netlify.toml`, `DEPLOYMENT_NETLIFY.md`, `package.json`
+
+**Implemented Solutions:**
+1. **Build Script:** `build:netlify` executes `npx convex codegen && npm run build`
+   - Generates Convex TypeScript types before Next.js build
+   - Requires `CONVEX_DEPLOY_KEY` environment variable
+
+2. **Netlify Config:** Uses official `@netlify/plugin-nextjs` for proper SSR/API Routes handling
+   - Node version 20 configured
+   - No SPA redirects that break Next.js routing
+
+3. **TypeScript Fixes:**
+   - Fixed type errors in `convex/commits.ts` and `convex/generations.ts`
+   - Corrected `.take(limit)` usage to return Promise directly instead of reassigning query
+   - All Convex queries now properly typed
+
+4. **Required Environment Variables for Netlify:**
+   - `CONVEX_DEPLOY_KEY` (critical - get from Convex dashboard)
+   - `CONVEX_DEPLOYMENT` and `NEXT_PUBLIC_CONVEX_URL`
+   - `CLERK_SECRET_KEY` and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+
+**Documentation:** Complete step-by-step guide in `DEPLOYMENT_NETLIFY.md`
+**Note:** Vercel is recommended for easier Next.js + Convex integration
+
+### JoxAI Logo Integration
+**Status:** Completed
+**File:** `src/components/landing/footer.tsx`
+
+- Circular logo design in footer
+- Cyan glow on hover
+- No black square borders
+- Smooth zoom animation on hover
