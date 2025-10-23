@@ -9,7 +9,7 @@ export interface Plan {
   projects: number | 'unlimited';
   features: string[];
   popular?: boolean;
-  stripePriceId?: string;
+  clerkFeatures: string[];
 }
 
 export const PLANS: Record<string, Plan> = {
@@ -30,7 +30,7 @@ export const PLANS: Record<string, Plan> = {
       'Consola web integrada',
       'Soporte comunitario'
     ],
-    stripePriceId: 'price_1SL1V9Gxtp0utKgIKqrtj0SX',
+    clerkFeatures: ['tokens_1000', 'projects_1'],
   },
   
   creator: {
@@ -53,7 +53,7 @@ export const PLANS: Record<string, Plan> = {
       'Git automático',
       'Soporte prioritario'
     ],
-    stripePriceId: 'price_1SL1V9Gxtp0utKgIrMiRpt15',
+    clerkFeatures: ['tokens_10000', 'projects_5', 'github_integration', 'priority_support'],
   },
   
   professional: {
@@ -76,7 +76,7 @@ export const PLANS: Record<string, Plan> = {
       'Soporte dedicado',
       'SLA garantizado'
     ],
-    stripePriceId: 'price_1SL1V9Gxtp0utKgIsT3MupMt',
+    clerkFeatures: ['tokens_30000', 'projects_20', 'github_integration', 'api_access', 'team_collaboration', 'advanced_analytics', 'dedicated_support'],
   },
   
   enterprise: {
@@ -99,6 +99,7 @@ export const PLANS: Record<string, Plan> = {
       'Implementación guiada',
       'Entrenamiento del equipo'
     ],
+    clerkFeatures: ['unlimited_tokens', 'unlimited_projects', 'enterprise_support', 'sso', 'sla_guarantee'],
   },
 } as const;
 

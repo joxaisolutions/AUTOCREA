@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Check, Sparkles } from 'lucide-react';
 import { Plan } from '@/src/config/plans';
-import { useStripeCheckout } from '@/src/lib/hooks/use-stripe-checkout';
 
 interface PricingCardProps {
   plan: Plan;
@@ -12,12 +11,11 @@ interface PricingCardProps {
 }
 
 export function PricingCard({ plan, currentPlanId }: PricingCardProps) {
-  const { createCheckoutSession, loading, error } = useStripeCheckout();
   const isCurrentPlan = currentPlanId === plan.id;
   const isFree = plan.id === 'free';
   const isEnterprise = plan.id === 'enterprise';
 
-  const handleSelect = async () => {
+  const handleSelect = () => {
     if (isCurrentPlan) return;
     
     if (isFree) {
@@ -30,7 +28,7 @@ export function PricingCard({ plan, currentPlanId }: PricingCardProps) {
       return;
     }
     
-    await createCheckoutSession(plan.id);
+    window.location.href = '/pricing';
   };
 
   return (
@@ -79,17 +77,12 @@ export function PricingCard({ plan, currentPlanId }: PricingCardProps) {
         
         <Button
           onClick={handleSelect}
-          disabled={isCurrentPlan || loading}
+          disabled={isCurrentPlan}
           variant={plan.popular ? 'default' : 'outline'}
           size="lg"
           className="w-full mt-auto"
         >
-          {loading ? (
-            <span className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Procesando...
-            </span>
-          ) : isCurrentPlan ? (
+          {isCurrentPlan ? (
             'Plan Actual'
           ) : isFree ? (
             <>
