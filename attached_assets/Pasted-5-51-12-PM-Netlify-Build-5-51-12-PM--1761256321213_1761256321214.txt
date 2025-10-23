@@ -1,0 +1,80 @@
+5:51:12 PM: Netlify Build                                                 
+5:51:12 PM: ────────────────────────────────────────────────────────────────
+5:51:12 PM: ​
+5:51:12 PM: ❯ Version
+5:51:12 PM:   @netlify/build 35.2.7
+5:51:12 PM: ​
+5:51:12 PM: ❯ Flags
+5:51:12 PM:   accountId: 68ea999fafbfe7fda4da73d0
+5:51:12 PM:   baseRelDir: true
+5:51:12 PM:   buildId: 68faa338cbb12f00085f05a7
+5:51:12 PM:   deployId: 68faa338cbb12f00085f05a9
+5:51:12 PM: ​
+5:51:12 PM: ❯ Current directory
+5:51:12 PM:   /opt/build/repo
+5:51:12 PM: ​
+5:51:12 PM: ❯ Config file
+5:51:12 PM:   No config file was defined: using default values.
+5:51:12 PM: ​
+5:51:12 PM: ❯ Context
+5:51:12 PM:   production
+5:51:12 PM: ​
+5:51:12 PM: ❯ Using Next.js Runtime - v5.14.3
+5:51:14 PM: Next.js cache restored
+5:51:14 PM: ​
+5:51:14 PM: Build command from Netlify app                                
+5:51:14 PM: ────────────────────────────────────────────────────────────────
+5:51:14 PM: ​
+5:51:14 PM: $ npm run build
+5:51:18 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+5:51:14 PM: > workspace@1.0.0 build
+5:51:14 PM: > next build
+5:51:14 PM:   ▲ Next.js 14.2.33
+5:51:14 PM:    Creating an optimized production build ...
+5:51:18 PM: Failed to compile.
+5:51:18 PM: 
+5:51:18 PM: ./src/lib/hooks/use-convex-user.ts
+5:51:18 PM: Module not found: Can't resolve '@/convex/_generated/api'
+5:51:18 PM: https://nextjs.org/docs/messages/module-not-found
+5:51:18 PM: Import trace for requested module:
+5:51:18 PM: ./src/lib/hooks/use-user-projects.ts
+5:51:18 PM: ./app/(dashboard)/projects/page.tsx
+5:51:18 PM: ./src/lib/hooks/use-token-usage.ts
+5:51:18 PM: Module not found: Can't resolve '@/convex/_generated/api'
+5:51:18 PM: https://nextjs.org/docs/messages/module-not-found
+5:51:18 PM: Import trace for requested module:
+5:51:18 PM: ./app/(dashboard)/layout.tsx
+5:51:18 PM: ./src/lib/hooks/use-user-projects.ts
+5:51:18 PM: Module not found: Can't resolve '@/convex/_generated/api'
+5:51:18 PM: https://nextjs.org/docs/messages/module-not-found
+5:51:18 PM: Import trace for requested module:
+5:51:18 PM: ./app/(dashboard)/projects/page.tsx
+5:51:18 PM: > Build failed because of webpack errors
+5:51:18 PM: ​
+5:51:18 PM: "build.command" failed                                        
+5:51:18 PM: ────────────────────────────────────────────────────────────────
+5:51:18 PM: ​
+5:51:18 PM:   Error message
+5:51:18 PM:   Command failed with exit code 1: npm run build (https://ntl.fyi/exit-code-1)
+5:51:18 PM: ​
+5:51:18 PM:   Error location
+5:51:18 PM:   In Build command from Netlify app:
+5:51:18 PM:   npm run build
+5:51:18 PM: ​
+5:51:18 PM:   Resolved config
+5:51:18 PM:   build:
+5:51:18 PM:     command: npm run build
+5:51:18 PM:     commandOrigin: ui
+5:51:18 PM:     environment:
+5:51:18 PM:       - CLERK_SECRET_KEY
+5:51:18 PM:       - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+5:51:18 PM:       - WEBHOOK_STRIPE_SECRET_KEY
+5:51:18 PM:     publish: /opt/build/repo/.next
+5:51:18 PM:     publishOrigin: ui
+5:51:18 PM:   plugins:
+5:51:18 PM:     - inputs: {}
+5:51:18 PM:       origin: ui
+5:51:18 PM:       package: "@netlify/plugin-nextjs"
+5:51:18 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+5:51:18 PM: Failing build: Failed to build site
+5:51:19 PM: Finished processing build request in 28.278s
