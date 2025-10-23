@@ -35,17 +35,6 @@ export const RATE_LIMITS = {
   },
 } as const;
 
-export const WEBHOOK_EVENTS = {
-  STRIPE: {
-    CHECKOUT_COMPLETED: 'checkout.session.completed',
-    SUBSCRIPTION_CREATED: 'customer.subscription.created',
-    SUBSCRIPTION_UPDATED: 'customer.subscription.updated',
-    SUBSCRIPTION_DELETED: 'customer.subscription.deleted',
-    INVOICE_PAID: 'invoice.payment_succeeded',
-    INVOICE_FAILED: 'invoice.payment_failed',
-  },
-} as const;
-
 export const EMAIL_TEMPLATES = {
   WELCOME: 'welcome',
   TOKEN_LIMIT_50: 'token_limit_50',

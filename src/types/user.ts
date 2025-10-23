@@ -15,8 +15,7 @@ export interface Subscription {
   id: string;
   userId: string;
   planId: string;
-  stripeSubscriptionId?: string;
-  stripeCustomerId?: string;
+  clerkSubscriptionId?: string;
   status: 'active' | 'canceled' | 'past_due' | 'trialing';
   currentPeriodStart: number;
   currentPeriodEnd: number;
