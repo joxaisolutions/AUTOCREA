@@ -7,8 +7,10 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { PLANS } from "@/src/config/plans"
 import { PricingCardSimple } from "@/src/components/landing/pricing-card-simple"
+import { useUser } from "@clerk/nextjs"
 
 export default function LandingPage() {
+  const { isSignedIn } = useUser();
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Navigation */}
@@ -72,10 +74,10 @@ export default function LandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
-              <Link href="/sign-up" className="w-full sm:w-auto">
+              <Link href={isSignedIn ? "/chat" : "/sign-up"} className="w-full sm:w-auto">
                 <Button size="lg" className="text-base sm:text-lg w-full sm:w-auto">
                   <Rocket className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
-                  Crear Mi Primera App
+                  {isSignedIn ? "Ir al Chat" : "Crear Mi Primera App"}
                 </Button>
               </Link>
               <Link href="#features" className="w-full sm:w-auto">
@@ -213,10 +215,10 @@ export default function LandingPage() {
               <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-6 sm:mb-8">
                 Únete a miles de desarrolladores que ya están construyendo con AUTOCREA
               </p>
-              <Link href="/sign-up" className="inline-block w-full sm:w-auto">
+              <Link href={isSignedIn ? "/chat" : "/sign-up"} className="inline-block w-full sm:w-auto">
                 <Button size="lg" className="text-base sm:text-lg w-full sm:w-auto">
                   <Sparkles className="mr-2 w-4 h-4 sm:w-5 sm:h-5" />
-                  Obtener 1,000 Tokens Gratis
+                  {isSignedIn ? "Comenzar Ahora" : "Obtener 1,000 Tokens Gratis"}
                 </Button>
               </Link>
             </Card>
