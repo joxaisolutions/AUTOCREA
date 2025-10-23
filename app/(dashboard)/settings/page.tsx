@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 export default function SettingsPage() {
-  const { has } = useAuth()
+  const { has, isLoaded } = useAuth()
   const [showOpenAI, setShowOpenAI] = useState(false)
   const [showAnthropic, setShowAnthropic] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -18,13 +18,13 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000)
   }
 
-  // Check user features from Clerk Billing
-  const hasTokens1000 = has({ feature: 'tokens_1000' })
-  const hasTokens10000 = has({ feature: 'tokens_10000' })
-  const hasTokens30000 = has({ feature: 'tokens_30000' })
-  const hasUnlimitedTokens = has({ feature: 'unlimited_tokens' })
-  const hasGithubIntegration = has({ feature: 'github_integration' })
-  const hasPrioritySupport = has({ feature: 'priority_support' })
+  // Check user features from Clerk Billing (use optional chaining)
+  const hasTokens1000 = has?.({ feature: 'tokens_1000' })
+  const hasTokens10000 = has?.({ feature: 'tokens_10000' })
+  const hasTokens30000 = has?.({ feature: 'tokens_30000' })
+  const hasUnlimitedTokens = has?.({ feature: 'unlimited_tokens' })
+  const hasGithubIntegration = has?.({ feature: 'github_integration' })
+  const hasPrioritySupport = has?.({ feature: 'priority_support' })
 
   // Determine current plan based on features
   let currentPlanName = 'Free Trial'
@@ -48,6 +48,20 @@ export default function SettingsPage() {
   // Mock usage for demo (TODO: integrate with Convex)
   const tokensUsed = 2450
   const usagePercentage = currentTokens === -1 ? 0 : (tokensUsed / currentTokens) * 100
+
+  // Show loading state while Clerk is loading
+  if (!isLoaded) {
+    return (
+      <div className="p-6">
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-slate-400">Cargando configuración...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-6">

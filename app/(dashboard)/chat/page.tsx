@@ -44,7 +44,7 @@ const ROLE_NAMES: Record<TechnicalRole, string> = {
 }
 
 export default function ChatPage() {
-  const { has } = useAuth()
+  const { has, isLoaded } = useAuth()
   const [selectedRole, setSelectedRole] = useState<TechnicalRole>('fullstack')
   const [projectName, setProjectName] = useState('')
   const [projectDescription, setProjectDescription] = useState('')
@@ -56,14 +56,14 @@ export default function ChatPage() {
   const { files, selectedFileId, addFile, selectFile, getSelectedFile } = useFileStore()
   const selectedFile = getSelectedFile()
 
-  // Check user features from Clerk Billing
-  const hasTokens1000 = has({ feature: 'tokens_1000' })
-  const hasTokens10000 = has({ feature: 'tokens_10000' })
-  const hasTokens30000 = has({ feature: 'tokens_30000' })
-  const hasUnlimitedTokens = has({ feature: 'unlimited_tokens' })
+  // Check user features from Clerk Billing (use optional chaining)
+  const hasTokens1000 = has?.({ feature: 'tokens_1000' })
+  const hasTokens10000 = has?.({ feature: 'tokens_10000' })
+  const hasTokens30000 = has?.({ feature: 'tokens_30000' })
+  const hasUnlimitedTokens = has?.({ feature: 'unlimited_tokens' })
 
   // Determine token limit based on features
-  let tokenLimit = 1000
+  let tokenLimit = 1000 // Default to Free plan
   if (hasUnlimitedTokens) {
     tokenLimit = -1 // Unlimited
   } else if (hasTokens30000) {
@@ -77,6 +77,18 @@ export default function ChatPage() {
   const tokensRemaining = tokenLimit === -1 ? Infinity : tokenLimit - currentTokensUsed
   const usagePercentage = tokenLimit === -1 ? 0 : (currentTokensUsed / tokenLimit) * 100
   const canGenerate = tokenLimit === -1 || currentTokensUsed < tokenLimit
+
+  // Show loading state while Clerk is loading
+  if (!isLoaded) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-cyan-400 mx-auto mb-4" />
+          <p className="text-slate-400">Cargando...</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return
