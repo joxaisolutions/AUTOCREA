@@ -82,7 +82,11 @@ La plataforma ofrece 4 planes de suscripción gestionados por Clerk Billing:
 
 ## Recent Changes (October 23, 2025)
 
-### Migración Completa a Clerk Billing ✅ (Reemplaza Stripe)
+### 🚀 Refactorización Completa para Producción
+
+**Objetivo**: Llevar AUTOCREA de desarrollo a producción con todas las funcionalidades listas.
+
+### Convex Database - Completamente Configurado ✅
 **Motivación**: Simplificar el stack tecnológico centralizando autenticación y pagos en Clerk Billing, eliminando la necesidad de webhooks personalizados y sincronización manual de estado.
 
 **Cambios implementados:**
@@ -127,16 +131,82 @@ La plataforma ofrece 4 planes de suscripción gestionados por Clerk Billing:
 - ✅ OAuth providers funcionando: Apple, GitHub, Google
 - ✅ Landing page con botones inteligentes (detecta si usuario está autenticado)
 
-### Pendientes para Deployment
-1. Configurar planes y features en Clerk Dashboard:
-   - Crear 4 planes (Free Trial, Creator, Pro, Enterprise)
-   - Agregar features con los slugs definidos en `src/config/plans.ts`
-   - Conectar cuenta de Stripe a Clerk
-2. Actualizar `NEXT_PUBLIC_APP_URL` al dominio de producción (autocrea.joxai.org)
-3. Integrar con Convex para persistir:
-   - Token usage real (actualmente mock: 2,450 tokens)
-   - Historial de generaciones
-   - Proyectos del usuario
-4. Testing end-to-end de flujo completo:
-   - Sign-up → Free plan → Generate código → Upgrade a Creator → Continue generando
-5. Configurar Clerk Billing en producción con Stripe live keys
+**Schemas creados:**
+- `users`: Usuarios con Clerk sync, onboarding, GitHub/GitLab connection status
+- `projects`: Proyectos con roles, frameworks, repo URLs, status
+- `tokenUsage`: Tracking mensual de tokens por usuario
+- `generations`: Historial completo de código generado
+- `projectFiles`: Archivos organizados por proyecto y path
+- `commits`: Log de commits a GitHub/GitLab
+
+**Queries y Mutations completos**: Ver `convex/` directory
+
+**ConvexProvider integrado** en `app/layout.tsx` ✅
+
+### Sistema de Onboarding Creado ✅
+
+**Componente**: `src/components/onboarding/onboarding-modal.tsx`
+
+**Features:**
+- 4 pasos interactivos con animaciones (Framer Motion)
+- Iconos temáticos: Sparkles, Code, Rocket, CheckCircle2
+- Guardado de estado en Convex (`onboardingCompleted: boolean`)
+- Skip tutorial option
+- Diseño acorde a paleta cyan/blue/purple
+
+### Navegación Mejorada ✅
+
+**Nuevos componentes:**
+- `src/components/navigation/back-to-home-button.tsx`: Botón "Volver al Inicio" en sidebar
+- `src/components/navigation/breadcrumbs.tsx`: Navegación entre páginas
+
+**Integrado en**: `app/(dashboard)/layout.tsx`
+
+### Footer con Logo JoxAI ✅
+
+**Componente**: `src/components/landing/footer.tsx`
+
+**Features:**
+- Logo de JoxAI (con fallback si no existe imagen)
+- Links a producto, recursos, precios
+- Social media icons (GitHub, Twitter, LinkedIn, Email)
+- Copyright y "Powered by JoxAI"
+
+**Integrado en**: `app/page.tsx` (landing)
+
+### Documentación Completa ✅
+
+**3 Guías Creadas:**
+
+1. **GUIA_FUNCIONAMIENTO_AUTOCREA.md** (Para Usuarios)
+   - Introducción y features únicas
+   - Primeros pasos y onboarding
+   - Interfaz principal completa
+   - Generación de código paso a paso
+   - Gestión de proyectos
+   - Integraciones (GitHub, GitLab, Convex)
+   - Preview y testing
+   - Planes y facturación
+   - FAQ completo
+
+2. **GUIA_TECNICA_ARQUITECTURA.md** (Para Desarrolladores)
+   - Stack tecnológico completo
+   - Arquitectura del sistema (diagrama)
+   - Estructura de directorios detallada
+   - Componentes principales explicados
+   - Base de datos Convex (schemas, queries, mutations)
+   - Autenticación y Billing con Clerk
+   - Flujos de datos completos
+   - Deployment y variables de entorno
+
+3. **GUIA_INTEGRACION_JOXCODER_API.md** (Integración de JoxCoder)
+   - Arquitectura de integración completa
+   - 7 pasos detallados para integrar
+   - API Route implementation
+   - Cliente JoxCoder tipado
+   - Auto-organización de archivos
+   - Auto-commit a GitHub
+   - Testing, error handling, optimizaciones
+   - Checklist completo
+
+### Migración Completa a Clerk Billing ✅ (Reemplaza Stripe)
