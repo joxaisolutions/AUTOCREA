@@ -2,6 +2,7 @@ import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban, GitBranch, Te
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { UserButton } from "@clerk/nextjs"
+import { BackToHomeButton } from "@/src/components/navigation/back-to-home-button"
 
 export default function DashboardLayout({
   children,
@@ -54,6 +55,9 @@ export default function DashboardLayout({
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         <aside className="w-64 border-r border-slate-800 bg-slate-950/30 p-4">
+          <div className="mb-4">
+            <BackToHomeButton />
+          </div>
           <nav className="space-y-1">
             <Link href="/chat">
               <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-cyan-500/10 hover:text-cyan-400">

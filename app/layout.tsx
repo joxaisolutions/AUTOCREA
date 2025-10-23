@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
+import { ConvexClientProvider } from '@/src/lib/convex-client'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -31,7 +32,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="es">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          <ConvexClientProvider>
+            {children}
+          </ConvexClientProvider>
+        </body>
       </html>
     </ClerkProvider>
   )

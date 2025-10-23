@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { PLANS } from "@/src/config/plans"
 import { PricingCardSimple } from "@/src/components/landing/pricing-card-simple"
+import { Footer } from "@/src/components/landing/footer"
 import { useUser } from "@clerk/nextjs"
 
 export default function LandingPage() {
@@ -227,12 +228,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center text-slate-500">
-          <p className="mb-4">© 2025 AUTOCREA V2.0 • Powered by JoxAI</p>
-          <p className="text-sm">De idea a aplicación completa en minutos</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
