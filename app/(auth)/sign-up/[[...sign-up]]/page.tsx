@@ -35,7 +35,7 @@ export default function SignUpPage() {
               footerActionLink: "text-cyan-400 hover:text-cyan-300",
             }
           }}
-          afterSignUpUrl="/chat"
+          forceRedirectUrl="/chat"
           signInUrl="/sign-in"
         />
       </div>
