@@ -43,8 +43,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Obtener email del usuario desde Clerk
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
+    const user = await clerkClient.users.getUser(userId);
     const userEmail = user.emailAddresses[0]?.emailAddress;
     
     if (!userEmail) {
