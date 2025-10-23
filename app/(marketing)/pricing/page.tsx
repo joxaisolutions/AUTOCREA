@@ -1,15 +1,12 @@
 'use client';
 
-import { PLANS } from '@/src/config/plans';
-import { PricingCard } from '@/src/components/shared/pricing-card';
+import { PricingTable } from '@clerk/nextjs';
+import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Sparkles } from 'lucide-react';
 
 export default function PricingPage() {
-  // TODO: Obtener plan actual del usuario
-  const currentPlanId = 'free';
-
-  const planOrder = ['free', 'creator', 'professional', 'enterprise'];
-  const sortedPlans = planOrder.map(id => PLANS[id]).filter(Boolean);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
@@ -22,18 +19,38 @@ export default function PricingPage() {
             Desde pruebas gratuitas hasta soluciones empresariales.
             Todos los planes incluyen acceso completo a JoxCoder AI.
           </p>
+          
+          <SignedOut>
+            <div className="mt-6">
+              <Link href="/sign-up">
+                <Button size="lg" className="gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  Comenzar Gratis - 1,000 Tokens
+                </Button>
+              </Link>
+            </div>
+          </SignedOut>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto px-4">
-          {sortedPlans.map((plan) => (
-            <PricingCard
-              key={plan.id}
-              plan={plan}
-              currentPlanId={currentPlanId}
-            />
-          ))}
-        </div>
+        {/* Clerk Pricing Table */}
+        <SignedIn>
+          <div className="max-w-7xl mx-auto">
+            <PricingTable />
+          </div>
+        </SignedIn>
+
+        <SignedOut>
+          <div className="max-w-7xl mx-auto bg-slate-900/50 border border-slate-800 rounded-lg p-8 text-center">
+            <p className="text-slate-300 text-lg mb-4">
+              Inicia sesión para ver los planes disponibles y suscribirte
+            </p>
+            <Link href="/sign-in">
+              <Button variant="outline" size="lg">
+                Iniciar Sesión
+              </Button>
+            </Link>
+          </div>
+        </SignedOut>
 
         {/* FAQ Section */}
         <div className="mt-24 max-w-3xl mx-auto">
@@ -57,7 +74,7 @@ export default function PricingPage() {
                 ¿Puedo cambiar de plan en cualquier momento?
               </h3>
               <p className="text-slate-400">
-                Sí, puedes mejorar o degradar tu plan en cualquier momento. Los cambios se aplicarán 
+                Sí, puedes mejorar o degradar tu plan en cualquier momento con Clerk Billing. Los cambios se aplicarán 
                 inmediatamente y se prorrateará el costo según corresponda.
               </p>
             </div>
@@ -69,6 +86,16 @@ export default function PricingPage() {
               <p className="text-slate-400">
                 El plan Enterprise incluye tokens ilimitados, proyectos ilimitados, modelo on-premise opcional, 
                 soporte dedicado 24/7, SLA personalizado, y entrenamiento del equipo.
+              </p>
+            </div>
+
+            <div className="bg-slate-900/50 rounded-lg p-6 border border-slate-800">
+              <h3 className="text-lg font-semibold text-slate-200 mb-2">
+                ¿Cómo funciona el proceso de pago?
+              </h3>
+              <p className="text-slate-400">
+                Utilizamos Clerk Billing integrado con Stripe para procesar pagos de forma segura. Todos los pagos 
+                están encriptados y cumplen con los estándares PCI-DSS.
               </p>
             </div>
 
