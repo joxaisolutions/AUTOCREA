@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth, UserButton } from "@clerk/nextjs"
 import Link from 'next/link'
 import { useState } from 'react'
+import { useTokenUsage } from '@/src/lib/hooks/use-token-usage'
 
 export default function SettingsPage() {
   const { has, isLoaded } = useAuth()
@@ -45,9 +46,8 @@ export default function SettingsPage() {
     currentProjects = 5
   }
 
-  // Mock usage for demo (TODO: integrate with Convex)
-  const tokensUsed = 2450
-  const usagePercentage = currentTokens === -1 ? 0 : (tokensUsed / currentTokens) * 100
+  // Real token usage from Convex
+  const { tokensUsed, usagePercentage } = useTokenUsage()
 
   // Show loading state while Clerk is loading
   if (!isLoaded) {

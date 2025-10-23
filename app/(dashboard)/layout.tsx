@@ -1,14 +1,28 @@
+'use client'
+
 import { Code2, Sparkles, LayoutDashboard, Settings, FolderKanban, GitBranch, Terminal, Monitor } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { UserButton } from "@clerk/nextjs"
 import { BackToHomeButton } from "@/src/components/navigation/back-to-home-button"
+import { useTokenUsage } from "@/src/lib/hooks/use-token-usage"
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const { tokensRemaining, tokensLimit, isLoading } = useTokenUsage();
+
+  // Format token display
+  const tokenDisplay = isLoading 
+    ? '...' 
+    : tokensLimit === -1 
+    ? 'Ilimitados' 
+    : tokensRemaining === Infinity
+    ? 'Ilimitados'
+    : tokensRemaining.toLocaleString();
+
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
@@ -27,11 +41,13 @@ export default function DashboardLayout({
           </Link>
           
           <div className="flex items-center gap-4">
-            {/* Token Balance */}
+            {/* Token Balance - Real from Convex */}
             <div className="px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-yellow-400" />
-                <span className="text-sm font-semibold text-slate-200">100 tokens</span>
+                <span className="text-sm font-semibold text-slate-200">
+                  {tokenDisplay} {tokensLimit !== -1 && tokensRemaining !== Infinity && 'tokens'}
+                </span>
               </div>
             </div>
             

@@ -209,4 +209,69 @@ La plataforma ofrece 4 planes de suscripción gestionados por Clerk Billing:
    - Testing, error handling, optimizaciones
    - Checklist completo
 
+### Conexión Completa con Convex Database ✅
+
+**Implementación:**
+- ✅ Creados 3 custom hooks para Convex:
+  - `useConvexUser()`: Sincroniza usuarios de Clerk con Convex automáticamente
+  - `useTokenUsage()`: Obtiene token usage real del mes actual con auto-inicialización
+  - `useUserProjects()`: Query de proyectos del usuario con mutations (create, update, archive, remove)
+
+**Eliminación de TODO el mockdata:**
+- ✅ Dashboard layout: Ahora muestra tokens restantes reales desde Convex
+- ✅ Settings page: Usa `tokensUsed` y `usagePercentage` reales desde Convex
+- ✅ Projects page: Muestra proyectos reales del usuario desde Convex con estado de carga
+
+**Features de los hooks:**
+- Auto-sync Clerk → Convex en primer login
+- Auto-inicialización de token usage mensual
+- Auto-actualización de límite de tokens cuando cambia el plan
+- Loading states apropiados
+- Type-safe con TypeScript
+
+### Preview App Mejorada ✅
+
+**Nuevas funcionalidades:**
+- ✅ Tabs funcionales: Desktop / Tablet / Mobile
+- ✅ Orientación dinámica: Portrait / Landscape (solo para tablet y mobile)
+- ✅ Botón de rotación que cambia orientación
+- ✅ Viewport sizing responsive:
+  - Desktop: Full responsive
+  - Tablet: 768x1024 (portrait) o 1024x768 (landscape)
+  - Mobile: 375x667 (portrait) o 667x375 (landscape)
+- ✅ Notch simulado para iPhone en modo portrait
+- ✅ Info panel con 4 campos: Modo, Resolución, Orientación, Hot Reload status
+- ✅ URL actualizada a `localhost:5000` (puerto correcto)
+
+### Utilidad de Auto-Organización de Archivos ✅
+
+**Archivo creado:** `src/lib/utils/file-organizer.ts`
+
+**Features implementadas:**
+1. **organizeGeneratedFiles()**: Organiza archivos en 12 categorías automáticamente:
+   - components/, pages/, api/, hooks/, utils/, types/, lib/, styles/, config/, tests/, public/, root/
+2. **Detección inteligente por:**
+   - Nombre de archivo (pattern matching)
+   - Extensión de archivo
+   - Path incluido en metadata
+   - Contenido del archivo (para configs)
+3. **flattenOrganizedFiles()**: Convierte estructura organizada a lista plana con paths
+4. **getOrganizationSummary()**: Estadísticas de organización
+5. **createFileTree()**: Genera árbol visual ASCII
+6. **detectFramework()**: Detecta framework usado (Next.js, Vite, React, Vue, etc.)
+7. **detectPrimaryLanguage()**: Detecta lenguaje principal (TypeScript, JavaScript, Python, etc.)
+
+**Listo para usar cuando JoxCoder genere código.**
+
+### Logo de JoxAI Creado ✅
+
+**Archivo:** `public/joxai-logo.svg`
+
+**Diseño:**
+- Gradiente cyan → blue → purple (acorde a paleta de AUTOCREA)
+- Forma abstracta "J" con elementos de red neuronal
+- Puntos conectados simulando AI/ML
+- Texto "JoxAI" en gradiente
+- SVG optimizado y escalable
+
 ### Migración Completa a Clerk Billing ✅ (Reemplaza Stripe)

@@ -3,19 +3,40 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Monitor, Smartphone, Tablet, RotateCcw, ExternalLink, Share2 } from 'lucide-react'
+import { Monitor, Smartphone, Tablet, RotateCcw, ExternalLink, Share2, RotateCw } from 'lucide-react'
 
 type ViewMode = 'desktop' | 'tablet' | 'mobile'
+type Orientation = 'portrait' | 'landscape'
 
 export default function PreviewPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('desktop')
-  const [previewUrl, setPreviewUrl] = useState('http://localhost:3000')
+  const [orientation, setOrientation] = useState<Orientation>('portrait')
+  const [previewUrl, setPreviewUrl] = useState('http://localhost:5000')
+  const [scale, setScale] = useState(1)
 
-  const viewportSizes = {
-    desktop: 'w-full h-full',
-    tablet: 'w-[768px] h-[1024px]',
-    mobile: 'w-[375px] h-[667px]'
+  const getViewportSize = () => {
+    if (viewMode === 'desktop') {
+      return { width: '100%', height: '100%', maxWidth: '100%' }
+    }
+    
+    const sizes = {
+      tablet: orientation === 'portrait' ? { width: 768, height: 1024 } : { width: 1024, height: 768 },
+      mobile: orientation === 'portrait' ? { width: 375, height: 667 } : { width: 667, height: 375 },
+    }
+    
+    const { width, height } = sizes[viewMode]
+    return { 
+      width: `${width}px`, 
+      height: `${height}px`,
+      maxWidth: width,
+    }
   }
+
+  const toggleOrientation = () => {
+    setOrientation(prev => prev === 'portrait' ? 'landscape' : 'portrait')
+  }
+
+  const viewportStyle = getViewportSize()
 
   return (
     <div className="h-full flex flex-col p-6 gap-6">
@@ -61,13 +82,13 @@ export default function PreviewPage() {
       {/* Controls */}
       <Card className="bg-slate-900/50 border-slate-800">
         <CardContent className="p-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-2">
               <Button
                 variant={viewMode === 'desktop' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('desktop')}
-                className={viewMode === 'desktop' ? 'bg-cyan-500' : 'border-slate-700'}
+                className={viewMode === 'desktop' ? 'bg-cyan-500 hover:bg-cyan-600' : 'border-slate-700'}
               >
                 <Monitor className="w-4 h-4 mr-2" />
                 Desktop
@@ -76,7 +97,7 @@ export default function PreviewPage() {
                 variant={viewMode === 'tablet' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('tablet')}
-                className={viewMode === 'tablet' ? 'bg-cyan-500' : 'border-slate-700'}
+                className={viewMode === 'tablet' ? 'bg-cyan-500 hover:bg-cyan-600' : 'border-slate-700'}
               >
                 <Tablet className="w-4 h-4 mr-2" />
                 Tablet
@@ -85,11 +106,23 @@ export default function PreviewPage() {
                 variant={viewMode === 'mobile' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('mobile')}
-                className={viewMode === 'mobile' ? 'bg-cyan-500' : 'border-slate-700'}
+                className={viewMode === 'mobile' ? 'bg-cyan-500 hover:bg-cyan-600' : 'border-slate-700'}
               >
                 <Smartphone className="w-4 h-4 mr-2" />
                 Mobile
               </Button>
+
+              {viewMode !== 'desktop' && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleOrientation}
+                  className="border-slate-700 ml-2"
+                >
+                  <RotateCw className="w-4 h-4 mr-2" />
+                  {orientation === 'portrait' ? 'Portrait' : 'Landscape'}
+                </Button>
+              )}
             </div>
             
             <div className="flex items-center gap-2">
@@ -98,7 +131,7 @@ export default function PreviewPage() {
                 value={previewUrl}
                 onChange={(e) => setPreviewUrl(e.target.value)}
                 placeholder="URL de la aplicación"
-                className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none"
+                className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none w-64"
               />
             </div>
           </div>
@@ -117,14 +150,34 @@ export default function PreviewPage() {
           </div>
         </CardHeader>
         
-        <CardContent className="flex-1 min-h-0 flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-950">
-          <div className={`bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 ${viewportSizes[viewMode]}`}>
-            <iframe
-              src={previewUrl}
-              className="w-full h-full"
-              title="App Preview"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-            />
+        <CardContent className="flex-1 min-h-0 flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-950 p-6 overflow-auto">
+          <div 
+            className="bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 flex-shrink-0"
+            style={{
+              width: viewportStyle.width,
+              height: viewportStyle.height,
+              transform: `scale(${scale})`,
+              transformOrigin: 'center center',
+            }}
+          >
+            <div className="relative w-full h-full">
+              {/* Device frame for mobile/tablet */}
+              {viewMode !== 'desktop' && (
+                <div className="absolute inset-0 pointer-events-none">
+                  {/* Notch for mobile in portrait */}
+                  {viewMode === 'mobile' && orientation === 'portrait' && (
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-10" />
+                  )}
+                </div>
+              )}
+              
+              <iframe
+                src={previewUrl}
+                className="w-full h-full border-0"
+                title="App Preview"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -135,7 +188,7 @@ export default function PreviewPage() {
           <CardTitle className="text-sm">Información del Preview</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-4 gap-4 text-sm">
             <div>
               <p className="text-slate-500 text-xs mb-1">Modo Actual</p>
               <p className="font-medium text-slate-200 capitalize">{viewMode}</p>
@@ -144,8 +197,16 @@ export default function PreviewPage() {
               <p className="text-slate-500 text-xs mb-1">Resolución</p>
               <p className="font-medium text-slate-200">
                 {viewMode === 'desktop' && 'Responsive'}
-                {viewMode === 'tablet' && '768 × 1024'}
-                {viewMode === 'mobile' && '375 × 667'}
+                {viewMode === 'tablet' && orientation === 'portrait' && '768 × 1024'}
+                {viewMode === 'tablet' && orientation === 'landscape' && '1024 × 768'}
+                {viewMode === 'mobile' && orientation === 'portrait' && '375 × 667'}
+                {viewMode === 'mobile' && orientation === 'landscape' && '667 × 375'}
+              </p>
+            </div>
+            <div>
+              <p className="text-slate-500 text-xs mb-1">Orientación</p>
+              <p className="font-medium text-slate-200 capitalize">
+                {viewMode === 'desktop' ? 'N/A' : orientation}
               </p>
             </div>
             <div>
