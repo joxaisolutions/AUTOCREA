@@ -3,7 +3,7 @@
 ## Overview
 AUTOCREA V2.0 es una plataforma autónoma de desarrollo full-stack potenciada por JoxCoder AI, un modelo de IA multi-rol especializado que genera código profesional automáticamente. El proyecto es el "núcleo creador" del ecosistema JoxAI, diseñado para transformar ideas en aplicaciones completas listas para producción.
 
-**Estado:** Fase de implementación de mejoras para lanzamiento Q1 2026
+**Estado:** Stripe integrado ✅ | Convex pendiente ⏳ | Lanzamiento Q1 2026
 **Dominio objetivo:** autocrea.joxai.org
 **Eslogan:** "De idea a la materialización"
 
@@ -55,8 +55,14 @@ JoxCoder AI features 12 specialized technical roles, each with tailored prompts 
 11. **Mobile Dev**: React Native, Flutter.
 12. **Blockchain Dev**: Solidity, Web3, smart contracts.
 
-### Service Plans
-The platform offers tiered service plans (Starter, Professional, Enterprise, Custom) with varying limits on generations, available roles, languages, and repositories.
+### Service Plans (Conectados a Stripe)
+La plataforma ofrece 4 planes de suscripción configurados en Stripe:
+1. **Free Trial** ($0/mes) - 1,000 tokens, 1 proyecto
+2. **Creator** ($29/mes) - 10,000 tokens, 5 proyectos
+3. **Pro** ($79/mes) - 30,000 tokens, 20 proyectos
+4. **Enterprise** (Custom) - Tokens ilimitados, soluciones personalizadas
+
+Cada plan tiene su Price ID real de Stripe configurado en `src/config/plans.ts`.
 
 ### Technical Stack
 -   **Frontend:** Next.js 14 (App Router), React 18, TypeScript, Tailwind CSS, Framer Motion, Zustand.
