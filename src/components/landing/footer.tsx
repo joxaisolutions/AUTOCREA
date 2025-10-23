@@ -85,13 +85,13 @@ export function Footer() {
               rel="noopener noreferrer"
               className="group"
             >
-              <div className="relative w-16 h-16 rounded-lg border border-slate-700/50 bg-slate-900/50 p-2 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20">
+              <div className="relative w-16 h-16 rounded-full border-2 border-slate-700/50 overflow-hidden hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20">
                 <Image
                   src="/joxai-logo-real.png"
                   alt="JoxAI"
-                  width={60}
-                  height={60}
-                  className="w-full h-full object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
                 />
               </div>
             </Link>
