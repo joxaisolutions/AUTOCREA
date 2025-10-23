@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { stripe } from '@/src/lib/stripe/stripe-client';
 import Stripe from 'stripe';
-import { getPlanById } from '@/src/config/plans';
+import { getPlanById, PLANS } from '@/src/config/plans';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -133,7 +133,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
   }
 
   const priceId = subscription.items.data[0]?.price.id;
-  const plan = Object.values(getPlanById).find(p => p && typeof p === 'object' && 'stripePriceId' in p && p.stripePriceId === priceId);
+  const plan = Object.values(PLANS).find(p => p.stripePriceId === priceId);
 
   // TODO: Actualizar suscripción en DB
   // await db.subscriptions.update({

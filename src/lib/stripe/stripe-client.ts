@@ -54,6 +54,21 @@ export async function createCheckoutSession(params: {
       userId: params.userId,
       planId: params.planId,
     },
+    subscription_data: {
+      metadata: {
+        userId: params.userId,
+        planId: params.planId,
+      },
+    },
+    invoice_creation: {
+      enabled: true,
+      invoice_data: {
+        metadata: {
+          userId: params.userId,
+          planId: params.planId,
+        },
+      },
+    },
   });
 
   return session;
