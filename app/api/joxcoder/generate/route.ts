@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { getJoxCoder } from '@/lib/joxcoder/client';
 import { JoxCoderRequest } from '@/lib/joxcoder/types';
+import { getPlanById, getDefaultPlan, canUserGenerate } from '@/src/config/plans';
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, isAuthenticated } = await auth();
+    const { userId } = await auth();
 
-    if (!isAuthenticated || !userId) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'No autenticado' },
         { status: 401 }
@@ -24,14 +25,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Verificar límites del plan del usuario
-    // const userPlan = await getUserPlan(userId);
-    // if (!canGenerate(userPlan)) {
-    //   return NextResponse.json(
-    //     { error: 'Límite de generaciones alcanzado' },
-    //     { status: 429 }
-    //   );
-    // }
+    // Verificar límites del plan del usuario
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const planId = user.publicMetadata?.plan as string || 'free';
+    const plan = getPlanById(planId) || getDefaultPlan();
+
+    // TODO: Get actual token usage from Convex
+    // For now, we'll use a simple check
+    const tokensUsed = 0; // TODO: Get from Convex
+    const tokensLimit = plan.tokens;
+
+    if (!canUserGenerate(tokensUsed, tokensLimit)) {
+      return NextResponse.json(
+        { 
+          error: 'Límite de tokens alcanzado',
+          tokensUsed,
+          tokensLimit,
+          plan: plan.name,
+        },
+        { status: 429 }
+      );
+    }
 
     // Generar código con JoxCoder AI
     const joxcoder = getJoxCoder();
@@ -45,19 +60,30 @@ export async function POST(request: NextRequest) {
     }
 
     // TODO: Guardar generación en Convex
-    // await saveGeneration({
-    //   userId,
+    // const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+    // await convex.mutation(api.generations.create, {
+    //   userId: convexUserId,
     //   role: body.role,
     //   prompt: body.prompt,
     //   code: result.generatedCode,
     //   tokensUsed: result.tokensUsed,
+    //   language: body.language || 'typescript',
+    //   success: true,
     // });
+    //
+    // await convex.mutation(api.tokenUsage.incrementTokens, {
+    //   userId: convexUserId,
+    //   tokensUsed: result.tokensUsed,
+    // });
+
+    console.log(`Code generated for user ${userId}: ${result.tokensUsed} tokens used`);
 
     return NextResponse.json({
       success: true,
       code: result.generatedCode,
       explanation: result.explanation,
-      tokensUsed: result.tokensUsed,
+      tokensUsed: result.tokensUsed || 0,
+      remainingTokens: tokensLimit === -1 ? Infinity : tokensLimit - tokensUsed - (result.tokensUsed || 0),
     });
 
   } catch (error) {
