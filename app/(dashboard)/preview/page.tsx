@@ -11,7 +11,9 @@ type Orientation = 'portrait' | 'landscape'
 export default function PreviewPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('desktop')
   const [orientation, setOrientation] = useState<Orientation>('portrait')
-  const [previewUrl, setPreviewUrl] = useState('http://localhost:5000')
+  const [previewUrl, setPreviewUrl] = useState(
+    typeof window !== 'undefined' ? window.location.origin : ''
+  )
   const [scale, setScale] = useState(1)
 
   const getViewportSize = () => {
